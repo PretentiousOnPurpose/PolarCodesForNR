@@ -1,27 +1,24 @@
 #include <stdio.h>
 #include "polarCodes.h"
 
-int * DATA_GEN(int nRows, int nCols) {
-    int iter_rows, iter_cols;
+int * DATA_GEN(int numBits) {
+    int iter_bits;
 
-    int * dataMat = (int *)malloc(sizeof(int) * nRows * nCols);
+    int * dataBits = (int *)malloc(sizeof(int) * numBits);
 
-    for (iter_rows = 0; iter_rows < nCols; iter_rows++) {
-        for (iter_cols = 0; iter_cols < nRows; iter_cols++) {
-            *(dataMat + iter_rows + iter_cols) = rand() % 2;
-        }
+    for (iter_bits = 0; iter_bits < numBits; iter_bits++) {
+        *(dataBits + iter_bits) = rand() % 2;
     }
 
-    return dataMat;
+    return dataBits;
 }
 
-void PRINT_MAT_INT(int * dataMat, int nRows, int nCols) {
-    int iter_rows, iter_cols;
+void PRINT_MAT_INT(int * dataBits, int numBits) {
+    int iter_bits;
     
-    for (iter_rows = 0; iter_rows < nRows; iter_rows++) {
-        for (iter_cols = 0; iter_cols < nCols; iter_cols++) {
-            printf("%d ", *(dataMat + iter_rows + iter_cols));
-        }
-        printf("\n");
+    for (iter_bits = 0; iter_bits < numBits; iter_bits++) {
+            printf("%d ", *(dataBits + iter_bits));
     }
+    printf("\n");
+  
 }

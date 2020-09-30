@@ -15,10 +15,10 @@ int main() {
     pcConfig.UL_DL = 0;
     pcConfig.L = 8;
     pcConfig.crcLen = 24;
-    pcConfig.crcPoly = "24B"; 
+    pcConfig.crcPolyID = 1; 
 
-    int * dataBits = DATA_GEN(10, 1);
-    PRINT_MAT_INT(dataBits, 10, 1);
+    int * dataBits = DATA_GEN(10);
+    PRINT_ARRAY_INT(dataBits, 10);
 
     return 0;
 }

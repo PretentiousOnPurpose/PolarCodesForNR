@@ -9,7 +9,7 @@ struct PC_CONFIG {
     int iBIL;
     int L;
     int crcLen;
-    char * crcPoly;
+    int crcPolyID;
 } pcConfig;
 
 int * NR_PC_ENCODER(int * bits, struct PC_CONFIG pcConfig);
@@ -31,8 +31,9 @@ int * SC_DECODER(float * bits, struct PC_CONFIG pcConfig);
 int * SCL_DECODER(float * bits, struct PC_CONFIG pcConfig);
 int * BP_DECODER(float * bits, struct PC_CONFIG pcConfig);
 
-int * DATA_GEN(int nRows, int nCols);
-void PRINT_MAT_INT(int * dataMat, int nRows, int nCols);
-void PRINT_MAT_FLOAT(float * mat);
+int * DATA_GEN(int numBits);
+
+void PRINT_ARRAY_INT(int * dataBits, int numBits);
+void PRINT_ARRAY_FLOAT(float * mat);
 
 
