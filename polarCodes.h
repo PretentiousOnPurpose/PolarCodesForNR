@@ -1,20 +1,38 @@
 #include <stdio.h>
 
-CRC_CONFIG GEN_CRC_CONFIG(int crcLen, int crcPoly);
-PC_CONFIG GEN_PC_CONFIG(int E, int K, int nMax, int UL_DL, int iBL, int iDL, CRC_CONFIG crcConfig);
+struct PC_CONFIG {
+    int E;
+    int K;
+    int nMax;
+    int UL_DL;
+    int iIL;
+    int iBIL;
+    int L;
+    int crcLen;
+    char * crcPoly;
+} pcConfig;
 
-int * NR_CRC_ENCODER(int * bits, CRC_CONFIG crcConfig);
-int * NR_CRC_DECODER(int * bits, CRC_CONFIG crcConfig);
+int * NR_PC_ENCODER(int * bits, struct PC_CONFIG pcConfig);
+int * NR_PC_DECODER(int * bits, struct PC_CONFIG pcConfig);
 
-int * NR_PC_ENCODER(int * bits, PC_CONFIG pcConfig);
-int * NR_PC_DECODER(int * bits, PC_CONFIG pcConfig);
+int * NR_CRC_ENCODER(int * bits, struct PC_CONFIG pcConfig);
+int * NR_CRC_DECODER(int * bits, struct PC_CONFIG pcConfig);
 
-int * NR_PC_RATE_MATCH(int * bits, PC_CONFIG pcConfig);
-int * NR_PC_RATE_DEMATCH(int * bits, PC_CONFIG pcConfig);
+int * NR_PC_RATE_MATCH(int * bits, struct PC_CONFIG pcConfig);
+int * NR_PC_RATE_DEMATCH(int * bits, struct PC_CONFIG pcConfig);
 
-float * AWGN(int * bits, float SNRdB);
-float * EPA1(int * bits, int numRxAnt, float dopplerFreq, float initTime);
+float * BPSK_MOD(int * bits);
+float * BPSK_DEMOD(float * syms, int BITS_LLR);
 
-int * SC_DECODER(int * bits, PC_CONFIG pcConfig);
-int * SCL_DECODER(int * bits, PC_CONFIG pcConfig);
-int * BP_DECODER(int * bits, PC_CONFIG pcConfig);
+float * AWGN(float * syms, float SNRdB);
+float * EPA1(float * syms, int numRxAnt, float dopplerFreq, float initTime);
+
+int * SC_DECODER(float * bits, struct PC_CONFIG pcConfig);
+int * SCL_DECODER(float * bits, struct PC_CONFIG pcConfig);
+int * BP_DECODER(float * bits, struct PC_CONFIG pcConfig);
+
+int * DATA_GEN(int nRows, int nCols);
+void PRINT_MAT_INT(int * dataMat, int nRows, int nCols);
+void PRINT_MAT_FLOAT(float * mat);
+
+
