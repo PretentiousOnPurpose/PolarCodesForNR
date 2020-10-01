@@ -23,7 +23,7 @@ int main() {
 
     int * rem = poly_long_div(p1, p2, L1, L2);
 
-    PRINT_ARRAY_INT(rem, 5);
+    PRINT_ARRAY_INT(rem, 7);
 
     return 0;
 }

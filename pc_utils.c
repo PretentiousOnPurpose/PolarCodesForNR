@@ -27,7 +27,6 @@ void PRINT_ARRAY_INT(int * dataBits, int numBits) {
 int * poly_long_div(int * P1, int * P2, int L1, int L2) {
     int iter_bits, tmp, deg1, deg2;
     int * tmp_poly;
-    int cnt = 0;
     int * rem = (int *)malloc(sizeof(int) * L1);
 
     for (iter_bits = 0; iter_bits < L1; iter_bits++) {
@@ -35,37 +34,22 @@ int * poly_long_div(int * P1, int * P2, int L1, int L2) {
     }
 
     while((degree_poly(rem, L1) - degree_poly(P2, L2)) >= 0) {
-        deg1 = degree_poly(rem, L1);
-        deg2 = degree_poly(P2, L2);
-        printf("DEG1: %d\n", deg1);
-        printf("DEG2: %d\n", deg2);
-        tmp = deg1 - deg2;
+        tmp = degree_poly(rem, L1) - degree_poly(P2, L2);
         tmp_poly = incr_degree_poly(P2, L2, tmp);
 
-        // L1 = deg1 + 1;
-
-        // tmp_poly = tmp_poly + (L1 - 1 - deg1);
-        // rem = rem + (L1 - 1 - deg1);
-
-        PRINT_ARRAY_INT(rem, L1);
-        PRINT_ARRAY_INT(tmp_poly, L2 + tmp);
-
+        // Replace with BITXOR Fn
         for (iter_bits = 0; iter_bits < L1; iter_bits++) {
-            if ((*(rem + iter_bits) - *(tmp_poly + iter_bits - cnt)) != 0) {
+            if ((*(rem + iter_bits) - *(tmp_poly + iter_bits)) != 0) {
                 *(rem + iter_bits) = 1;
             } else {
                 *(rem + iter_bits) = 0;
             }
         }
 
-        printf("---------------\n");
-        free(tmp_poly);
-        cnt++;
+        rem = rem + 1;
+        L1 = L1 - 1;
 
-        if (cnt == 10) {
-            printf("BROKE\n");
-            break;
-        }
+        free(tmp_poly);
     }
 
     return rem;
