@@ -5,6 +5,8 @@
 int main() {
 
     srand(108);
+    
+    int CRC24C[] = {1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1};
 
     // Polar Code Config
     pcConfig.E = 192;
@@ -17,7 +19,7 @@ int main() {
     pcConfig.crcLen = 24;
     pcConfig.crcPolyID = 1; 
 
-    int * dataBits = DATA_GEN(10);
+    int * dataBits = DATA_GEN(100);
 
     int poly[] = {1, 0, 0, 0, 0, 0, 1};
     PRINT_ARRAY_INT(poly, 7);
@@ -26,6 +28,9 @@ int main() {
     int * polyNew = incr_degree_poly(poly, 7, 3);
     printf("Degree: %d\n", degree_poly(polyNew, 10));
     PRINT_ARRAY_INT(polyNew, 10);
+
+    int * rem = poly_long_div(dataBits, CRC24C, &pcConfig);
+    PRINT_ARRAY_INT(rem, 124);
 
     return 0;
 }
