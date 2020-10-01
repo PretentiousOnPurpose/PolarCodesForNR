@@ -19,6 +19,7 @@ int * NR_CRC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig) {
     // Allocating buffer for CRC Encoded Output
     int * crcEncOut = (int *)malloc(sizeof(int) * pcConfig->K);
     int * crcPoly = (int *)malloc(sizeof(int) * 24);
+    int remLen = 0;
 
     // Selecting a CRC Polynomial as per Config    
     if (pcConfig->crcPolyID == 1) {
@@ -31,12 +32,16 @@ int * NR_CRC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig) {
         crcPoly = CRC16;
     } else if (pcConfig->crcPolyID == 5) {
         crcPoly = CRC11;
-    } else if (pcConfig->crcPolyID == 5) {
+    } else if (pcConfig->crcPolyID == 6) {
         crcPoly = CRC6;
     }
 
+    PRINT_ARRAY_INT(crcPoly, pcConfig->crcLen + 1);
+
     // Calculating Remainder to be appended to the message using Long Division
-    int * rem = poly_long_div(dataBits, crcPoly, pcConfig->K - pcConfig->crcLen, pcConfig->crcLen);
+    int * rem = poly_long_div(dataBits, crcPoly, pcConfig->K - pcConfig->crcLen, pcConfig->crcLen, &remLen);
+
+    PRINT_ARRAY_INT(rem, pcConfig->crcLen);
 
     // Appending Remainder to the Message Bits
     for (iter_bits = 0; iter_bits < (pcConfig->K - pcConfig->crcLen); iter_bits++) {

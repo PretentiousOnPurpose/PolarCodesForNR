@@ -42,6 +42,6 @@ float * EPA1(float * syms, int numRxAnt, float dopplerFreq, float initTime);
 int * DATA_GEN(int numBits);
 void PRINT_ARRAY_INT(int * dataBits, int numBits);
 void PRINT_ARRAY_FLOAT(float * mat);
-int * poly_long_div(int * P1, int * P2, int L1, int L2);
+int * poly_long_div(int * P1, int * P2, int L1, int L2, int * remLen);
 int degree_poly(int * poly, int numBits);
 int * incr_degree_poly(int * poly, int numBits, int incr_deg);

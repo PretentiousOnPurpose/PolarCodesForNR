@@ -14,16 +14,29 @@ int main() {
     pcConfig.iIL = 0;
     pcConfig.UL_DL = 0;
     pcConfig.L = 8;
-    pcConfig.crcLen = 24;
-    pcConfig.crcPolyID = 2; 
+    pcConfig.crcLen = 11;
+    pcConfig.crcPolyID = 5; 
 
-    int p1[] = {1, 0, 0, 1, 0, 0, 1, 0, 1, 1};
-    int p2[] = {1, 1, 0, 0, 0, 1};
-    int L1 = 10, L2 = 6;
+    int remLen = 0;
 
-    int * rem = poly_long_div(p1, p2, L1, L2);
+    int p1[] = {1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1};
+    int p2[] = {1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1};
+    int L1 = 72, L2 = 25;
+    PRINT_ARRAY_INT(p1, L1);
+    PRINT_ARRAY_INT(p2, L2);
 
-    PRINT_ARRAY_INT(rem, 7);
+    int * rem = poly_long_div(p1, p2, L1, L2, &remLen);
+
+    PRINT_ARRAY_INT(rem, remLen);
+
+    // int * dataBits = DATA_GEN(pcConfig.K - pcConfig.crcLen);
+
+    // PRINT_ARRAY_INT(dataBits, 72);
+    // printf("\n\n");
+
+    // int * crcEncOut = NR_CRC_ENCODER(dataBits, &pcConfig);
+
+
 
     return 0;
 }

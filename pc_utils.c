@@ -24,7 +24,7 @@ void PRINT_ARRAY_INT(int * dataBits, int numBits) {
 }
 
 // Performs Long Division between Two Polynomials
-int * poly_long_div(int * P1, int * P2, int L1, int L2) {
+int * poly_long_div(int * P1, int * P2, int L1, int L2, int * remLen) {
     int iter_bits, tmp, deg1, deg2;
     int * tmp_poly;
     int * rem = (int *)malloc(sizeof(int) * L1);
@@ -46,11 +46,14 @@ int * poly_long_div(int * P1, int * P2, int L1, int L2) {
             }
         }
 
-        rem = rem + 1;
-        L1 = L1 - 1;
+        deg1 = degree_poly(rem, L1);
+        rem = rem + L1 - deg1 - 1;
+        L1 = deg1 + 1;
 
         free(tmp_poly);
     }
+
+    *remLen = L1;
 
     return rem;
 }
