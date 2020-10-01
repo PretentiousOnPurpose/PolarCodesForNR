@@ -44,4 +44,4 @@ void PRINT_ARRAY_INT(int * dataBits, int numBits);
 void PRINT_ARRAY_FLOAT(float * mat);
 int * poly_long_div(int * dataBits, int * crcPoly, struct PC_CONFIG pcConfig);
 int degree_poly(int * poly, int numBits);
-
+int * incr_degree_poly(int * poly, int numBits, int incr_deg);

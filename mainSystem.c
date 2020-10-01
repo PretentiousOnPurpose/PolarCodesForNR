@@ -18,7 +18,14 @@ int main() {
     pcConfig.crcPolyID = 1; 
 
     int * dataBits = DATA_GEN(10);
-    PRINT_ARRAY_INT(dataBits, 10);
+
+    int poly[] = {1, 0, 0, 0, 0, 0, 1};
+    PRINT_ARRAY_INT(poly, 7);
+    printf("Degree: %d\n", degree_poly(poly, 7));
+
+    int * polyNew = incr_degree_poly(poly, 7, 3);
+    printf("Degree: %d\n", degree_poly(polyNew, 10));
+    PRINT_ARRAY_INT(polyNew, 10);
 
     return 0;
 }

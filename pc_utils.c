@@ -13,11 +13,11 @@ int * DATA_GEN(int numBits) {
     return dataBits;
 }
 
-void PRINT_MAT_INT(int * dataBits, int numBits) {
+void PRINT_ARRAY_INT(int * dataBits, int numBits) {
     int iter_bits;
     
     for (iter_bits = 0; iter_bits < numBits; iter_bits++) {
-            printf("%d ", *(dataBits + iter_bits));
+        printf("%d ", *(dataBits + iter_bits));
     }
     printf("\n");
   
