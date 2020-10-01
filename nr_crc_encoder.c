@@ -36,7 +36,7 @@ int * NR_CRC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig) {
     }
 
     // Calculating Remainder to be appended to the message using Long Division
-    int * rem = poly_long_div(dataBits, crcPoly, pcConfig);
+    int * rem = poly_long_div(dataBits, crcPoly, pcConfig->K - pcConfig->crcLen, pcConfig->crcLen);
 
     // Appending Remainder to the Message Bits
     for (iter_bits = 0; iter_bits < (pcConfig->K - pcConfig->crcLen); iter_bits++) {
