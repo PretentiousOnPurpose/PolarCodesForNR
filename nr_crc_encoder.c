@@ -55,3 +55,17 @@ int * NR_CRC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig) {
     return crcEncOut;
 }
 
+
+int * CRCGenerator(int * msg, int * crcPoly, int msgLen, int crcPolyLen) {
+    int iter_bits, remLen = 0;
+    int * crcBits = (int *)malloc(sizeof(int) * (crcPolyLen - 1));
+    msgLen = msgLen + crcPolyLen - 1;
+
+    int * msg_tmp = incr_degree_poly(msg, msgLen, crcPolyLen - 1);
+    int * rem = poly_long_div(msg_tmp, crcPoly, msgLen, crcPolyLen, &remLen);
+
+    for (iter_bits = 0; iter_bits < cr)
+
+    free(msg);
+    return crcBits;
+}

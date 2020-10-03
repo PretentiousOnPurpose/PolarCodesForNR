@@ -28,9 +28,6 @@ int * poly_long_div(int * P1, int * P2, int L1, int L2, int * remLen) {
     int iter_bits, tmp, deg1, deg2;
     int * tmp_poly;
 
-    P1 = incr_degree_poly(P1, L1, L2 - 1);
-    L1 = L1 + L2 - 1;
-    
     int * rem = (int *)malloc(sizeof(int) * L1);
 
     for (iter_bits = 0; iter_bits < L1; iter_bits++) {
