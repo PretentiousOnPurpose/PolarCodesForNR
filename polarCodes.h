@@ -45,3 +45,5 @@ void PRINT_ARRAY_FLOAT(float * mat);
 int * poly_long_div(int * P1, int * P2, int L1, int L2, int * remLen);
 int degree_poly(int * poly, int numBits);
 int * incr_degree_poly(int * poly, int numBits, int incr_deg);
+int * CRCGenerator(int * msg, int * crcPoly, int msgLen, int crcPolyLen);
+int * ones(int len);

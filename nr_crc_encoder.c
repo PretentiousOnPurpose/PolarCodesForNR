@@ -36,12 +36,8 @@ int * NR_CRC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig) {
         crcPoly = CRC6;
     }
 
-    PRINT_ARRAY_INT(crcPoly, pcConfig->crcLen + 1);
-
     // Calculating Remainder to be appended to the message using Long Division
-    int * rem = poly_long_div(dataBits, crcPoly, pcConfig->K - pcConfig->crcLen, pcConfig->crcLen, &remLen);
-
-    PRINT_ARRAY_INT(rem, pcConfig->crcLen);
+    int * rem = CRCGenerator(dataBits, crcPoly, pcConfig->K - pcConfig->crcLen, pcConfig->crcLen);
 
     // Appending Remainder to the Message Bits
     for (iter_bits = 0; iter_bits < (pcConfig->K - pcConfig->crcLen); iter_bits++) {
@@ -59,13 +55,19 @@ int * NR_CRC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig) {
 int * CRCGenerator(int * msg, int * crcPoly, int msgLen, int crcPolyLen) {
     int iter_bits, remLen = 0;
     int * crcBits = (int *)malloc(sizeof(int) * (crcPolyLen - 1));
-    msgLen = msgLen + crcPolyLen - 1;
 
     int * msg_tmp = incr_degree_poly(msg, msgLen, crcPolyLen - 1);
+    msgLen = msgLen + crcPolyLen - 1;
+
+    PRINT_ARRAY_INT(msg_tmp, msgLen);
+    PRINT_ARRAY_INT(crcPoly, crcPolyLen);
     int * rem = poly_long_div(msg_tmp, crcPoly, msgLen, crcPolyLen, &remLen);
+    PRINT_ARRAY_INT(rem, remLen);
+    for (iter_bits = crcPolyLen - 1 - remLen; iter_bits < crcPolyLen - 1; iter_bits++) {
+        *(crcBits + iter_bits) = *(rem + iter_bits - (crcPolyLen - 1 - remLen));
+    }
 
-    for (iter_bits = 0; iter_bits < cr)
+    free(msg_tmp);
 
-    free(msg);
     return crcBits;
 }
