@@ -18,14 +18,11 @@ int main() {
     pcConfig.crcPolyID = 5; 
 
     int remLen = 0;
+    int err = 0;
 
     int * dataBits = DATA_GEN(pcConfig.K - pcConfig.crcLen);
-
-
-
     int * crcData = NR_CRC_ENCODER(dataBits, &pcConfig);
-    PRINT_ARRAY_INT(dataBits, pcConfig.K - pcConfig.crcLen);
+    int * crcDecOut = NR_CRC_DECODER(crcData, &pcConfig, &err);
 
-    PRINT_ARRAY_INT(crcData, pcConfig.K);
     return 0;
 }

@@ -16,6 +16,7 @@ struct PC_CONFIG {
 
 int * NR_PC_ENCODER(int * bits, struct PC_CONFIG * pcConfig);
 int * NR_PC_DECODER(int * bits, struct PC_CONFIG * pcConfig);
+int * POLAR_TRANSFORM(int * dataBits, int ind1, int ind2) {
 
 int * NR_CRC_ENCODER(int * bits, struct PC_CONFIG * pcConfig);
 int * NR_CRC_DECODER(int * bits, struct PC_CONFIG * pcConfig, int * err);

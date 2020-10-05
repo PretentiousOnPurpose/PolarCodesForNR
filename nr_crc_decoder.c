@@ -5,12 +5,12 @@
 
 // CRC Polynomial
 
-int CRC6[] = {1, 1, 0, 0, 0, 0, 1};
-int CRC11[] = {1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1};
-int CRC16[] = {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
-int CRC24C[] = {1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1};
-int CRC24B[] = {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1};
-int CRC24A[] = {1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1};
+int CRC6_DEC[] = {1, 1, 0, 0, 0, 0, 1};
+int CRC11_DEC[] = {1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+int CRC16_DEC[] = {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+int CRC24C_DEC[] = {1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1};
+int CRC24B_DEC[] = {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1};
+int CRC24A_DEC[] = {1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1};
 
 int * NR_CRC_DECODER(int * crcBits, struct PC_CONFIG * pcConfig, int * err) {
     int iter_bits; // Iter Var
@@ -21,17 +21,17 @@ int * NR_CRC_DECODER(int * crcBits, struct PC_CONFIG * pcConfig, int * err) {
 
     // Selecting a CRC Polynomial as per Config    
     if (pcConfig->crcPolyID == 1) {
-        crcPoly = CRC24A;
+        crcPoly = CRC24A_DEC;
     } else if (pcConfig->crcPolyID == 2) {
-        crcPoly = CRC24B;
+        crcPoly = CRC24B_DEC;
     } else if (pcConfig->crcPolyID == 3) {
-        crcPoly = CRC24C;
+        crcPoly = CRC24C_DEC;
     } else if (pcConfig->crcPolyID == 4) {
-        crcPoly = CRC16;
+        crcPoly = CRC16_DEC;
     } else if (pcConfig->crcPolyID == 5) {
-        crcPoly = CRC11;
+        crcPoly = CRC11_DEC;
     } else if (pcConfig->crcPolyID == 6) {
-        crcPoly = CRC6;
+        crcPoly = CRC6_DEC;
     }
 
     // Calculating Remainder of (crcBits / crcPoly)
