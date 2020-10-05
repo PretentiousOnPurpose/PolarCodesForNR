@@ -47,3 +47,4 @@ int degree_poly(int * poly, int numBits);
 int * incr_degree_poly(int * poly, int numBits, int incr_deg);
 int * CRCGenerator(int * msg, int * crcPoly, int msgLen, int crcPolyLen);
 int * ones(int len);
+void bitxor(int * x1, int * x2, int len);

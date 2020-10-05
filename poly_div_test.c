@@ -4,13 +4,13 @@
 
 int main() {
     int p1[] = {1, 0, 1, 1, 1, 0, 1, 0};
-    int p2[] = {1, 0, 0, 1};
+    int p2[] = {1, 0, 0, 1, 0, 0, 1, 1};
 
-    int remLen = 3;
+    int remLen = 8;
 
-    int * rem = CRCGenerator(p1, p2, 8, 4);
+    bitxor(p1, p2, 8);
 
-    PRINT_ARRAY_INT(rem, remLen);
+    PRINT_ARRAY_INT(p1, remLen);
 
     return 0;
 }

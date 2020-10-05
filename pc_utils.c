@@ -40,13 +40,15 @@ int * poly_long_div(int * P1, int * P2, int L1, int L2, int * remLen) {
         tmp_poly = incr_degree_poly(P2, L2, tmp);
 
         // Replace with BITXOR Fn
-        for (iter_bits = 0; iter_bits < L1; iter_bits++) {
-            if ((*(rem + iter_bits) - *(tmp_poly + iter_bits)) != 0) {
-                *(rem + iter_bits) = 1;
-            } else {
-                *(rem + iter_bits) = 0;
-            }
-        }
+        // for (iter_bits = 0; iter_bits < L1; iter_bits++) {
+        //     if ((*(rem + iter_bits) - *(tmp_poly + iter_bits)) != 0) {
+        //         *(rem + iter_bits) = 1;
+        //     } else {
+        //         *(rem + iter_bits) = 0;
+        //     }
+        // }
+
+        bitxor(rem, tmp_poly, L1);
 
         deg1 = degree_poly(rem, L1);
         rem = rem + L1 - deg1 - 1;
@@ -101,4 +103,14 @@ int * ones(int len) {
     }
 
     return dataBits;
+}
+
+void bitxor(int * x1, int * x2, int len) {
+    int iter_bits;
+    // int * y = (int *)malloc(sizeof(int) * len);
+
+    for (iter_bits = 0; iter_bits < len; iter_bits++) {
+        *(x1 + iter_bits) = *(x1 + iter_bits) ^ *(x2 + iter_bits);
+    }
+
 }
