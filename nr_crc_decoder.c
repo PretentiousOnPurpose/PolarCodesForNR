@@ -1,6 +1,7 @@
+// NR_CRC_DECODER - Perform CRC Decoding
+
 #include <stdio.h>
 #include "polarCodes.h"
-
 
 // CRC Polynomial
 
@@ -12,7 +13,8 @@ int CRC24B[] = {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0
 int CRC24A[] = {1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1};
 
 int * NR_CRC_DECODER(int * crcBits, struct PC_CONFIG * pcConfig, int * err) {
-    int iter_bits;
+    int iter_bits; // Iter Var
+    // Allocating Buffers for Outputs and Other Vars
     int * crcDecOut = (int *)malloc(sizeof(int) * (pcConfig->K - pcConfig->crcLen));
     int * crcPoly = (int *)malloc(sizeof(int) * (pcConfig->crcLen + 1));
     int remLen = 0;
@@ -32,10 +34,11 @@ int * NR_CRC_DECODER(int * crcBits, struct PC_CONFIG * pcConfig, int * err) {
         crcPoly = CRC6;
     }
 
+    // Calculating Remainder of (crcBits / crcPoly)
     int * rem = poly_long_div(crcBits, crcPoly, pcConfig->K, pcConfig->crcLen + 1, &remLen);
 
+    //  Checking if remainder is zeros or not. If rem is zero, then there is NO ERROR
     *err = 0;
-
     for (iter_bits = 0; iter_bits < remLen; iter_bits++) {
         if (*(rem + iter_bits)) {
             *err = 1;
@@ -43,6 +46,7 @@ int * NR_CRC_DECODER(int * crcBits, struct PC_CONFIG * pcConfig, int * err) {
         }
     }
 
+    // Extracting DataBits from Systematic CRC ENCODING
     for (iter_bits = 0; iter_bits < (pcConfig->K - pcConfig->crcLen); iter_bits++) {
         *(crcDecOut + iter_bits) = *(crcBits + iter_bits);
     }
