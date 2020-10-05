@@ -18,7 +18,7 @@ int * NR_PC_ENCODER(int * bits, struct PC_CONFIG * pcConfig);
 int * NR_PC_DECODER(int * bits, struct PC_CONFIG * pcConfig);
 
 int * NR_CRC_ENCODER(int * bits, struct PC_CONFIG * pcConfig);
-int * NR_CRC_DECODER(int * bits, struct PC_CONFIG * pcConfig);
+int * NR_CRC_DECODER(int * bits, struct PC_CONFIG * pcConfig, int * err);
 
 int * NR_PC_RATE_MATCH(int * bits, struct PC_CONFIG * pcConfig);
 int * NR_PC_RATE_REMOVE(int * bits, struct PC_CONFIG * pcConfig);

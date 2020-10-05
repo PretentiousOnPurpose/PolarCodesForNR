@@ -1,4 +1,52 @@
 #include <stdio.h>
 #include "polarCodes.h"
 
-int * NR_CRC_DECODER
+
+// CRC Polynomial
+
+int CRC6[] = {1, 1, 0, 0, 0, 0, 1};
+int CRC11[] = {1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+int CRC16[] = {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+int CRC24C[] = {1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1};
+int CRC24B[] = {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1};
+int CRC24A[] = {1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1};
+
+int * NR_CRC_DECODER(int * crcBits, struct PC_CONFIG * pcConfig, int * err) {
+    int iter_bits;
+    int * crcDecOut = (int *)malloc(sizeof(int) * (pcConfig->K - pcConfig->crcLen));
+    int * crcPoly = (int *)malloc(sizeof(int) * (pcConfig->crcLen + 1));
+    int remLen = 0;
+
+    // Selecting a CRC Polynomial as per Config    
+    if (pcConfig->crcPolyID == 1) {
+        crcPoly = CRC24A;
+    } else if (pcConfig->crcPolyID == 2) {
+        crcPoly = CRC24B;
+    } else if (pcConfig->crcPolyID == 3) {
+        crcPoly = CRC24C;
+    } else if (pcConfig->crcPolyID == 4) {
+        crcPoly = CRC16;
+    } else if (pcConfig->crcPolyID == 5) {
+        crcPoly = CRC11;
+    } else if (pcConfig->crcPolyID == 6) {
+        crcPoly = CRC6;
+    }
+
+    int * rem = poly_long_div(crcBits, crcPoly, pcConfig->K, pcConfig->crcLen + 1, &remLen);
+
+    *err = 0;
+
+    for (iter_bits = 0; iter_bits < remLen; iter_bits++) {
+        if (*(rem + iter_bits)) {
+            *err = 1;
+            break;
+        }
+    }
+
+    for (iter_bits = 0; iter_bits < (pcConfig->K - pcConfig->crcLen); iter_bits++) {
+        *(crcDecOut + iter_bits) = *(crcBits + iter_bits);
+    }
+
+    return crcDecOut;
+
+}

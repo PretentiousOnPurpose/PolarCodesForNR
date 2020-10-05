@@ -18,7 +18,7 @@ int * NR_CRC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig) {
     int iter_bits;
     // Allocating buffer for CRC Encoded Output
     int * crcEncOut = (int *)malloc(sizeof(int) * pcConfig->K);
-    int * crcPoly = (int *)malloc(sizeof(int) * 24);
+    int * crcPoly = (int *)malloc(sizeof(int) * (pcConfig->crcLen + 1));
     int remLen = 0;
 
     // Selecting a CRC Polynomial as per Config    
