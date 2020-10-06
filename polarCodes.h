@@ -1,7 +1,6 @@
 #include <stdio.h>
 
 // Polar Codes
-
 struct PC_CONFIG {
     int E;
     int K;
@@ -16,7 +15,8 @@ struct PC_CONFIG {
 
 int * NR_PC_ENCODER(int * bits, struct PC_CONFIG * pcConfig);
 int * NR_PC_DECODER(int * bits, struct PC_CONFIG * pcConfig);
-int * POLAR_TRANSFORM(int * dataBits, int ind1, int ind2) {
+int * POLAR_TRANSFORM(int * dataBits, int ind1, int ind2);
+int * PC_SET_DATABITS(int * dataBits, struct PC_CONFIG * pcConfig);
 
 int * NR_CRC_ENCODER(int * bits, struct PC_CONFIG * pcConfig);
 int * NR_CRC_DECODER(int * bits, struct PC_CONFIG * pcConfig, int * err);
@@ -29,14 +29,11 @@ int * SCL_DECODER(float * bits, struct PC_CONFIG * pcConfig);
 int * BP_DECODER(float * bits, struct PC_CONFIG * pcConfig);
 
 // BPSK Modulation
-
 float * BPSK_MOD(int * bits);
 float * BPSK_DEMOD(float * syms, int BITS_LLR);
 
-// Fading and AWGN Channels
-
+// AWGN Channels
 float * AWGN(float * syms, float SNRdB);
-float * EPA1(float * syms, int numRxAnt, float dopplerFreq, float initTime);
 
 // Utilities and Misc.
 

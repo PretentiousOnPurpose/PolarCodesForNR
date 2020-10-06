@@ -7,7 +7,7 @@ int * NR_PC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig) {
     int iter_step, iter_bits, iter_group;
     int * encData = (int *)calloc(1 << pcConfig->nMax, sizeof(int));
 
-    encData = PC_SET_DATABITS(encData);
+    encData = PC_SET_DATABITS(encData, pcConfig);
 
     for (iter_step = 1; iter_step < pcConfig->nMax; iter_step++) {
         for (iter_group = 0; iter_group < (1 << (pcConfig->nMax - iter_step)); iter_group++) {
