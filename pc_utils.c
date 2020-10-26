@@ -39,15 +39,6 @@ int * poly_long_div(int * P1, int * P2, int L1, int L2, int * remLen) {
         tmp = degree_poly(rem, L1) - degree_poly(P2, L2);
         tmp_poly = incr_degree_poly(P2, L2, tmp);
 
-        // Replace with BITXOR Fn
-        // for (iter_bits = 0; iter_bits < L1; iter_bits++) {
-        //     if ((*(rem + iter_bits) - *(tmp_poly + iter_bits)) != 0) {
-        //         *(rem + iter_bits) = 1;
-        //     } else {
-        //         *(rem + iter_bits) = 0;
-        //     }
-        // }
-
         bitxor(rem, tmp_poly, L1);
 
         deg1 = degree_poly(rem, L1);
@@ -114,3 +105,4 @@ void bitxor(int * x1, int * x2, int len) {
     }
 
 }
+
