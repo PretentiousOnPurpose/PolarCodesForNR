@@ -4,6 +4,8 @@
 struct PC_CONFIG {
     int E;
     int K;
+    int N;
+    int n;
     int nMax;
     int UL_DL;
     int iIL;
@@ -13,6 +15,7 @@ struct PC_CONFIG {
     int crcPolyID;
 } pcConfig;
 
+void NR_PC_GET_N(struct PC_CONFIG * pcConfig);
 int * NR_PC_ENCODER(int * bits, struct PC_CONFIG * pcConfig);
 // int * NR_PC_DECODER(int * bits, struct PC_CONFIG * pcConfig);
 

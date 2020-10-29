@@ -1,6 +1,7 @@
 // NR_CRC_DECODER - Perform CRC Decoding
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "polarCodes.h"
 
 // CRC Polynomial

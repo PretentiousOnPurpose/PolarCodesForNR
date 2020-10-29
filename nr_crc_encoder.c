@@ -56,6 +56,7 @@ int * CRCGenerator(int * msg, int * crcPoly, int msgLen, int crcPolyLen) {
     int iter_bits, remLen = 0;
     int * crcBits = (int *)malloc(sizeof(int) * (crcPolyLen - 1));
 
+
     int * msg_tmp = incr_degree_poly(msg, msgLen, crcPolyLen - 1);
     msgLen = msgLen + crcPolyLen - 1;
 

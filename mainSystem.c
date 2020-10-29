@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "polarCodes.h"
 
 int main() {
@@ -9,6 +10,7 @@ int main() {
     // Polar Code Config
     pcConfig.E = 144;
     pcConfig.K = 72;
+    pcConfig.N = pow(2, (int)ceil(log2(pcConfig.K)));
     pcConfig.nMax = 10;
     pcConfig.iBIL = 1;
     pcConfig.iIL = 0;
@@ -22,13 +24,13 @@ int main() {
 
     int * dataBits = DATA_GEN(pcConfig.K - pcConfig.crcLen);
     int * crcData = NR_CRC_ENCODER(dataBits, &pcConfig);
-    int * pcData = NR_PC_ENCODER(crcData, &pcConfig);
+    // int * pcData = NR_PC_ENCODER(crcData, &pcConfig);
     
     PRINT_ARRAY_INT(dataBits, pcConfig.K - pcConfig.crcLen);
 
-    printf("\n\n");
+    // printf("\n\n");
     
-    PRINT_ARRAY_INT(pcData, (1 << pcConfig.nMax));
+    PRINT_ARRAY_INT(crcData, pcConfig.N);
     // int * crcDecOut = NR_CRC_DECODER(crcData, &pcConfig, &err);
 
     return 0;
