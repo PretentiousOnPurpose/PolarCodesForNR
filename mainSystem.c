@@ -22,7 +22,7 @@ int main() {
     int remLen = 0;
     int err = 0;
 
-    int nn = 128;
+    int nn = 72;
     int * dataBits = DATA_GEN(nn);
     PRINT_ARRAY_INT(dataBits, nn); // - pcConfig.crcLen);
     // int * crcData = NR_CRC_ENCODER(dataBits, &pcConfig);

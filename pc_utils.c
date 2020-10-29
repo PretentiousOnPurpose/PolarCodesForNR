@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "polarCodes.h"
 
 int * DATA_GEN(int numBits) {
@@ -106,3 +107,58 @@ void bitxor(int * x1, int * x2, int len) {
 
 }
 
+int * merge(int * s1, int * s2, int L1, int L2) {
+    int i = 0, j = 0, k = 0;
+
+    int * s_tmp = (int *)calloc(sizeof(int), (L1 + L2));
+
+    while (i < L1 && j < L2) {
+        if (s1[i] < s2[j]) {
+            s_tmp[k] = s1[i];
+            i++;
+        } else {
+            s_tmp[k] = s2[j];
+            j++;
+        }
+    }
+
+    while (i < L1) {
+        s_tmp[k] = s1[i];
+        i++;
+    }
+
+    while (j < L2) {
+        s_tmp[k] = s2[j];
+        j++;
+    }
+
+    return s_tmp;
+}
+
+int * mergeSort(int * s, int L) {
+    int i;
+
+    if (L == 1) {
+        return s;
+    }
+
+    int * s1 = (int *)calloc(sizeof(int), (int)floor(L/2));
+    int * s2 = (int *)calloc(sizeof(int), (int)(L - floor(L/2)));
+    
+    for (i = 0; i < (int)floor(L/2); i++) {
+        *(s1 + i) = *(s + i);
+    }
+
+    for (i = (int)floor(L/2); i < L; i++) {
+        *(s2 + i - (int)floor(L/2)) = *(s + i);        
+    }
+
+    s1 = mergeSort(s1, (int)floor(L/2));
+    s2 = mergeSort(s2, (int)(L - floor(L/2)));
+    s = merge(s1, s2, (int)floor(L/2), (int)(L - floor(L/2)));
+
+    free(s1);
+    free(s2);
+
+    return s;
+}
