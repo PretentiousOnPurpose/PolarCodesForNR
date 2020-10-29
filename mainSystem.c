@@ -22,15 +22,16 @@ int main() {
     int remLen = 0;
     int err = 0;
 
-    int * dataBits = DATA_GEN(pcConfig.K - pcConfig.crcLen);
-    int * crcData = NR_CRC_ENCODER(dataBits, &pcConfig);
-    // int * pcData = NR_PC_ENCODER(crcData, &pcConfig);
+    int nn = 128;
+    int * dataBits = DATA_GEN(nn);
+    PRINT_ARRAY_INT(dataBits, nn); // - pcConfig.crcLen);
+    // int * crcData = NR_CRC_ENCODER(dataBits, &pcConfig);
+    int * pcData = NR_PC_ENCODER(dataBits, &pcConfig);
     
-    PRINT_ARRAY_INT(dataBits, pcConfig.K - pcConfig.crcLen);
 
-    // printf("\n\n");
+    printf("\n\n");
     
-    PRINT_ARRAY_INT(crcData, pcConfig.N);
+    PRINT_ARRAY_INT(pcData, nn);
     // int * crcDecOut = NR_CRC_DECODER(crcData, &pcConfig, &err);
 
     return 0;
