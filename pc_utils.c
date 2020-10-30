@@ -167,3 +167,32 @@ int * mergeSort(int * s, int L) {
 
     return s;
 }
+
+double * BPSK_MOD(int * dataBits, int L) {
+    int iter_bits;
+
+    double * modData = (double *)calloc(L, sizeof(double));
+
+    for (iter_bits = 0; iter_bits < L; iter_bits++) {
+        *(modData + iter_bits) = 1 * (*(dataBits + iter_bits) == 0) + -1 * (*(dataBits + iter_bits) == 1);
+    }
+
+    return modData;
+}
+
+double * AWGN(double * modData, int L, double noiseVar_dB) {
+    int iter_syms;
+    double * rxData = (double *)calloc(L, sizeof(double));
+
+    double noiseVar = pow(10, noiseVar_dB / 10);
+
+    for (iter_syms = 0; iter_syms < L; iter_syms++) {
+        // 
+    }
+    
+    return rxData;
+}
+
+double * BPSK_DEMOD(double * rxSyms, int L) {
+
+}
