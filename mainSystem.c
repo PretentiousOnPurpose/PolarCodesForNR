@@ -18,6 +18,7 @@ int main() {
     pcConfig.L = 8;
     pcConfig.crcLen = 11;
     pcConfig.crcPolyID = 5; 
+    pcConfig.decodingMethod = 1;
 
     int remLen = 0;
     int err = 0;
