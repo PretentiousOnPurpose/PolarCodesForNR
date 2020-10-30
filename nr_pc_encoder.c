@@ -93,13 +93,8 @@ int * PC_SET_DATABITS(int * dataBits, struct PC_CONFIG * pcConfig) {
 
     int * rel_seq = NR_PC_GET_REL_SEQ(pcConfig);
 
-    printf("\n\n");
-    PRINT_ARRAY_INT(rel_seq, 128);
-    printf("\n\n");
-
     for (iter_bits = 0; iter_bits < pcConfig->K; iter_bits++) {
-        // *(encData + rel_seq[pcConfig->N - iter_bits - 1]) = *(dataBits + iter_bits);
-        *(encData + rel_seq[pcConfig->N - pcConfig->K + iter_bits]) = *(dataBits + iter_bits);
+        *(encData + *(rel_seq + iter_bits)) = *(dataBits + iter_bits);
     }  
 
     return encData;

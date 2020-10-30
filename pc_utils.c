@@ -113,23 +113,27 @@ int * merge(int * s1, int * s2, int L1, int L2) {
     int * s_tmp = (int *)calloc(sizeof(int), (L1 + L2));
 
     while (i < L1 && j < L2) {
-        if (s1[i] < s2[j]) {
-            s_tmp[k] = s1[i];
+        if (*(s1 + i) < *(s2 + j)) {
+            *(s_tmp + k) = *(s1 + i);
             i++;
+            k++;
         } else {
-            s_tmp[k] = s2[j];
+            *(s_tmp + k) = *(s2 + j);
             j++;
+            k++;
         }
     }
 
     while (i < L1) {
-        s_tmp[k] = s1[i];
+        *(s_tmp + k) = *(s1 + i);
         i++;
+        k++;
     }
 
     while (j < L2) {
-        s_tmp[k] = s2[j];
+        *(s_tmp + k) = *(s2 + j);
         j++;
+        k++;
     }
 
     return s_tmp;
@@ -155,6 +159,7 @@ int * mergeSort(int * s, int L) {
 
     s1 = mergeSort(s1, (int)floor(L/2));
     s2 = mergeSort(s2, (int)(L - floor(L/2)));
+
     s = merge(s1, s2, (int)floor(L/2), (int)(L - floor(L/2)));
 
     free(s1);
