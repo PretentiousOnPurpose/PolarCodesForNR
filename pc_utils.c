@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 #include "polarCodes.h"
 
 int * DATA_GEN(int numBits) {
@@ -20,6 +21,16 @@ void PRINT_ARRAY_INT(int * dataBits, int numBits) {
     
     for (iter_bits = 0; iter_bits < numBits; iter_bits++) {
         printf("%d,", *(dataBits + iter_bits));
+    }
+    printf("\n");
+  
+}
+
+void PRINT_ARRAY_DOUBLE(double * dataBits, int numBits) {
+    int iter_bits;
+    
+    for (iter_bits = 0; iter_bits < numBits; iter_bits++) {
+        printf("%f,", *(dataBits + iter_bits));
     }
     printf("\n");
   
@@ -174,7 +185,7 @@ double * BPSK_MOD(int * dataBits, int L) {
     double * modData = (double *)calloc(L, sizeof(double));
 
     for (iter_bits = 0; iter_bits < L; iter_bits++) {
-        *(modData + iter_bits) = 1 * (*(dataBits + iter_bits) == 0) + -1 * (*(dataBits + iter_bits) == 1);
+        *(modData + iter_bits) = -1 * (*(dataBits + iter_bits) == 0) + 1 * (*(dataBits + iter_bits) == 1);
     }
 
     return modData;
@@ -187,12 +198,28 @@ double * AWGN(double * modData, int L, double noiseVar_dB) {
     double noiseVar = pow(10, noiseVar_dB / 10);
 
     for (iter_syms = 0; iter_syms < L; iter_syms++) {
-        // 
+        *(rxData + iter_syms) = *(modData + iter_syms) + sqrt(noiseVar) * randn();
     }
     
     return rxData;
 }
 
 double * BPSK_DEMOD(double * rxSyms, int L) {
+    int iter_syms;
 
+    double * rxLLR = (double *)calloc(L, sizeof(double));
+
+    for (iter_syms = 0; iter_syms < L; iter_syms++) {
+        *(rxLLR + iter_syms) = log(exp(-(pow((*(rxSyms + iter_syms) + 1), 2)) + (pow((*(rxSyms + iter_syms) - 1), 2))));
+    }
+
+    return rxLLR;
+}
+
+double randn() {
+    // Implemented using Box Muller Transform
+    double x1 = (double)rand() / RAND_MAX;
+    double x2 = (double)rand() / RAND_MAX;
+
+    return sqrt(-2 * log(x1)) * cos(2 * 3.14159 * x2);
 }

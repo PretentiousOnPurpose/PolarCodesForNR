@@ -1,32 +1,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "polarCodes.h"
+#include <time.h>
+#include <math.h>
 
 int main() {
-    int remLen = 0;
-    remLen = 5;
+    
+    srand(time(NULL));
 
-    // int p1[] = {1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1};
-    // int p2[] = {1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1};
-    // int L1 = 72, L2 = 25;
-    // PRINT_ARRAY_INT(p1, L1);
-    // PRINT_ARRAY_INT(p2, L2);
+    int * dataBits = (int *)calloc(8, sizeof(int));
+    *(dataBits) = 1;
+    *(dataBits + 1) = 1;
+    *(dataBits + 2) = 1;
+    *(dataBits + 3) = 1;
+    *(dataBits + 4) = 0;
+    *(dataBits + 5) = 0;
+    *(dataBits + 6) = 0;
+    *(dataBits + 7) = 0;
+    
+    double * modData = BPSK_MOD(dataBits, 8);
+    double * rxLLR = BPSK_DEMOD(modData, 8);
 
-    // int * rem = poly_long_div(p1, p2, L1, L2, &remLen);
-
-    // int rem1[] = {100, -100, 3, -5,}
-    int * rem = (int * )calloc(5, sizeof(int));
-    *(rem) = 100;
-    *(rem + 1) = -100;
-    *(rem + 2) = 3;
-    *(rem + 3) = -5;
-    *(rem + 4) = 0;
-
-    PRINT_ARRAY_INT(rem, remLen);
-
-    rem = mergeSort(rem, remLen);
-    // PRINT_ARRAY_INT(rem, remLen);
-
+    PRINT_ARRAY_DOUBLE(rxLLR, 8);
 
     return 0;
 }

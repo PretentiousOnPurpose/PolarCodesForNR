@@ -35,16 +35,16 @@ int * BP_DECODER(double * rxLLR, struct PC_CONFIG * pcConfig);
 
 // BPSK Modulation
 double * BPSK_MOD(int * dataBits, int L);
-double * BPSK_DEMOD(double * rxSyms);
+double * BPSK_DEMOD(double * rxSyms, int L);
 
 // AWGN Channels
-double * AWGN(double * txSyms, double noiseVar_dB);
+double * AWGN(double * txSyms, int L, double noiseVar_dB);
 
 // Utilities and Misc.
 
 int * DATA_GEN(int numBits);
 void PRINT_ARRAY_INT(int * dataBits, int numBits);
-void PRINT_ARRAY_DOUBLE(double * mat);
+void PRINT_ARRAY_DOUBLE(double * dataBits, int numBits);
 int * poly_long_div(int * P1, int * P2, int L1, int L2, int * remLen);
 int degree_poly(int * poly, int numBits);
 int * incr_degree_poly(int * poly, int numBits, int incr_deg);
@@ -53,3 +53,4 @@ int * ones(int len);
 void bitxor(int * x1, int * x2, int len);
 int * merge(int * s1, int * s2, int L1, int L2);
 int * mergeSort(int * s, int L);
+double randn();
