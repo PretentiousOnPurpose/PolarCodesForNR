@@ -191,11 +191,9 @@ double * BPSK_MOD(int * dataBits, int L) {
     return modData;
 }
 
-double * AWGN(double * modData, int L, double noiseVar_dB) {
+double * AWGN(double * modData, int L, double noiseVar) {
     int iter_syms;
     double * rxData = (double *)calloc(L, sizeof(double));
-
-    double noiseVar = pow(10, noiseVar_dB / 10);
 
     for (iter_syms = 0; iter_syms < L; iter_syms++) {
         *(rxData + iter_syms) = *(modData + iter_syms) + sqrt(noiseVar) * randn();

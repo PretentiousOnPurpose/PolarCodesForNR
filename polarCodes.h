@@ -6,7 +6,7 @@ struct PC_CONFIG {
     int K; // Input Data Block size (in bits)
     int N; // Polar Encoding Output Size
     int n; // log2(N)
-    int nMax; 
+    int nMax; // 9 - Downlink | 10 - Uplink
     int UL_DL; // Uplink/Downlink
     int iIL;
     int iBIL; 
@@ -29,9 +29,11 @@ int * NR_CRC_DECODER(int * dataBits, struct PC_CONFIG * pcConfig, int * err);
 int * NR_PC_RATE_MATCH(int * dataBits, struct PC_CONFIG * pcConfig);
 int * NR_PC_RATE_REMOVE(int * dataBits, struct PC_CONFIG * pcConfig);
 
-int * SC_DECODER(double * rxLLR, struct PC_CONFIG * pcConfig);
+int * SC_DECODER(double * rxLLR, struct PC_CONFIG * pcConfig, int * RX_BITS_L);
 int * SCL_DECODER(double * rxLLR, struct PC_CONFIG * pcConfig);
 int * BP_DECODER(double * rxLLR, struct PC_CONFIG * pcConfig);
+double PC_LikelihoodRatio_L(double x1, double x2);
+double PC_LikelihoodRatio_R(double x1, double x2, int bit);
 
 // BPSK Modulation
 double * BPSK_MOD(int * dataBits, int L);

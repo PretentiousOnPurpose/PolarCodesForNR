@@ -19,7 +19,8 @@ int main() {
     *(dataBits + 7) = 0;
     
     double * modData = BPSK_MOD(dataBits, 8);
-    double * rxLLR = BPSK_DEMOD(modData, 8);
+    double * rxData = AWGN(modData, 8, 0.1);
+    double * rxLLR = BPSK_DEMOD(rxData, 8);
 
     PRINT_ARRAY_DOUBLE(rxLLR, 8);
 

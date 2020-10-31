@@ -26,6 +26,9 @@ int main() {
     int * dataBits = DATA_GEN(pcConfig.K - pcConfig.crcLen);
     int * crcData = NR_CRC_ENCODER(dataBits, &pcConfig);
     int * pcData = NR_PC_ENCODER(crcData, &pcConfig);
+    double * modData = BPSK_MOD(pcData, pcConfig.N);
+
+    
 
     return 0;
 }
