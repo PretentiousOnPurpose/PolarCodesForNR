@@ -217,21 +217,21 @@ double * AWGN(double * modData, int L, double noiseVar) {
 double * BPSK_DEMOD(double * rxSyms, int L) {
     int iter_syms;
 
-    double * rxLLR = (double *)calloc(L, sizeof(double));
+    double * rxLR = (double *)calloc(L, sizeof(double));
 
     for (iter_syms = 0; iter_syms < L; iter_syms++) {
-        *(rxLLR + iter_syms) = (exp(-(pow((*(rxSyms + iter_syms) + 1), 2)) + (pow((*(rxSyms + iter_syms) - 1), 2))));
+        *(rxLR + iter_syms) = (exp(-(pow((*(rxSyms + iter_syms) + 1), 2)) + (pow((*(rxSyms + iter_syms) - 1), 2))));
 
-        if (*(rxLLR + iter_syms) == 0) {
-            *(rxLLR + iter_syms) = 0.01;
+        if (*(rxLR + iter_syms) == 0) {
+            *(rxLR + iter_syms) = 0.01;
         }
 
-        if (*(rxLLR + iter_syms) > 10) {
-            *(rxLLR + iter_syms) = 10;
+        if (*(rxLR + iter_syms) > 10) {
+            *(rxLR + iter_syms) = 10;
         }
     }
 
-    return rxLLR;
+    return rxLR;
 }
 
 double randn() {

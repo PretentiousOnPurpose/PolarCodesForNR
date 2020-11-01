@@ -20,7 +20,7 @@ static int cnt = 0;
 
 void NR_PC_GET_N(struct PC_CONFIG * pcConfig);
 int * NR_PC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig);
-int * NR_PC_DECODER(double * rxLLR, struct PC_CONFIG * pcConfig);
+int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig);
 
 int * POLAR_TRANSFORM(int * dataBits, int ind1, int ind2);
 int * PC_SET_DATABITS(int * dataBits, struct PC_CONFIG * pcConfig);
@@ -31,19 +31,19 @@ int * NR_CRC_DECODER(int * dataBits, struct PC_CONFIG * pcConfig, int * err);
 int * NR_PC_RATE_MATCH(int * dataBits, struct PC_CONFIG * pcConfig);
 int * NR_PC_RATE_REMOVE(int * dataBits, struct PC_CONFIG * pcConfig);
 
-void SC_DECODER(double * rxLLR, int L, int ** rxBitsMat, int * rxLen);
-int * SCL_DECODER(double * rxLLR, struct PC_CONFIG * pcConfig);
-int * BP_DECODER(double * rxLLR, struct PC_CONFIG * pcConfig);
+void SC_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen);
+int * SCL_DECODER(double * rxLR, struct PC_CONFIG * pcConfig);
+int * BP_DECODER(double * rxLR, struct PC_CONFIG * pcConfig);
 double PC_LikelihoodRatio_L(double x1, double x2);
 double PC_LikelihoodRatio_R(double x1, double x2, int bit);
-int PC_LLR_TO_BIT(double rxLLR);
+int PC_LLR_TO_BIT(double rxLR);
 
 // BPSK Modulation
 double * BPSK_MOD(int * dataBits, int L);
 double * BPSK_DEMOD(double * rxSyms, int L);
 
 // AWGN Channels
-double * AWGN(double * txSyms, int L, double noiseVar_dB);
+double * AWGN(double * txSyms, int L, double noiseVar);
 
 // Utilities and Misc.
 

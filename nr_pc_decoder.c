@@ -10,87 +10,87 @@ double PC_LikelihoodRatio_L(double x1, double x2) {
         LR = 0.01;
     }
 
-	if (LR > 10) {
-		LR = 10;
-	}
-	
-	return LR;
+    if (LR > 10) {
+        LR = 10;
+    }
+
+    return LR;
 }
 
 double PC_LikelihoodRatio_R(double x1, double x2, int bit) {
     double LR = ((pow(x1, 1 - 2 * bit)) * x2);
-	
+
     if (LR == 0) {
         LR = 0.01;
     }
 
-	if (LR > 10) {
-		LR = 10;
-	}
-	
-	return LR;
+    if (LR > 10) {
+        LR = 10;
+    }
+
+    return LR;
 }
 
-int PC_LLR_TO_BIT(double rxLLR) {
-    return 1 * (rxLLR <= 1.0) + 0 * (rxLLR > 1.0);
+int PC_LLR_TO_BIT(double rxLR) {
+    return 1 * (rxLR <= 1.0) + 0 * (rxLR > 1.0);
 }
 
-void SC_DECODER(double * rxLLR, int L, int ** rxBitsMat, int * rxLen) {
-    int iter_llr;
+void SC_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen) {
+    int iter_lr;
     int * rxBits = (int *)calloc(L, sizeof(int));
 
-    double * rxLLR_L = (double *)calloc(L/2, sizeof(double));
-    double * rxLLR_R = (double *)calloc(L/2, sizeof(double));
+    double * rxLR_L = (double *)calloc(L/2, sizeof(double));
+    double * rxLR_R = (double *)calloc(L/2, sizeof(double));
 
-    for (iter_llr = 0; iter_llr < L/2; iter_llr++) {
-        *(rxLLR_L + iter_llr) = PC_LikelihoodRatio_L(*(rxLLR + iter_llr), *(rxLLR + iter_llr + L/2));
-        *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + iter_llr) = PC_LLR_TO_BIT(*(rxLLR_L + iter_llr));
-	}
-		
-	if (L > 2) {
-		SC_DECODER(rxLLR_L, L/2, rxBitsMat, rxLen);
-	}
-		
-    for (iter_llr = 0; iter_llr < L/2; iter_llr++) {
-        *(rxLLR_R + iter_llr) = PC_LikelihoodRatio_R(*(rxLLR + iter_llr), *(rxLLR + iter_llr + L/2), *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + iter_llr));
-        *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + L/2 + iter_llr) = PC_LLR_TO_BIT(*(rxLLR_R + iter_llr));
+    for (iter_lr = 0; iter_lr < L/2; iter_lr++) {
+        *(rxLR_L + iter_lr) = PC_LikelihoodRatio_L(*(rxLR + iter_lr), *(rxLR + iter_lr + L/2));
+        *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + iter_lr) = PC_LLR_TO_BIT(*(rxLR_L + iter_lr));
     }
-		
-	*(rxLen + (int)log2(L/2)) = *(rxLen + (int)log2(L/2)) + L;
-		
-	if (L > 2) {
-		SC_DECODER(rxLLR_R, L/2, rxBitsMat, rxLen);
-	}
 
-    free(rxLLR_L);
-    free(rxLLR_R);
+    if (L > 2) {
+        SC_DECODER(rxLR_L, L/2, rxBitsMat, rxLen);
+    }
+
+    for (iter_lr = 0; iter_lr < L/2; iter_lr++) {
+        *(rxLR_R + iter_lr) = PC_LikelihoodRatio_R(*(rxLR + iter_lr), *(rxLR + iter_lr + L/2), *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + iter_lr));
+        *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + L/2 + iter_lr) = PC_LLR_TO_BIT(*(rxLR_R + iter_lr));
+    }
+
+    *(rxLen + (int)log2(L/2)) = *(rxLen + (int)log2(L/2)) + L;
+
+    if (L > 2) {
+        SC_DECODER(rxLR_R, L/2, rxBitsMat, rxLen);
+    }
+    
+    free(rxLR_L);
+    free(rxLR_R);
 }
 
-int * NR_PC_DECODER(double * rxLLR, struct PC_CONFIG * pcConfig) {
+int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
     int iter_bits, iter_step;
 
     int * dataBits = (int *)calloc(pcConfig->K, sizeof(int));
-	
-	int ** rxBitsMat = (int **)calloc(pcConfig->n, sizeof(int));
+
+    int ** rxBitsMat = (int **)calloc(pcConfig->n, sizeof(int));
 
     for (iter_step = 0; iter_step < pcConfig->n; iter_step++) {
         *(rxBitsMat + iter_step) = (int *)calloc(pcConfig->N, sizeof(int));
     }
 
-	int * rxLen = (int *)calloc(pcConfig->n, sizeof(int));
+    int * rxLen = (int *)calloc(pcConfig->n, sizeof(int));
 
     int * rel_seq = NR_PC_GET_REL_SEQ(pcConfig);
 
     if (pcConfig->decodingMethod == 1) {
         // Perform Successive Cancellation (SC) Decoding
-        SC_DECODER(rxLLR, pcConfig->N, rxBitsMat, rxLen);
+        SC_DECODER(rxLR, pcConfig->N, rxBitsMat, rxLen);
 
     } else if (pcConfig->decodingMethod == 2) {
         // Perform SC List Decoding
-        // decData = SCL_DECODER(rxLLR, pcConfig);
+        // decData = SCL_DECODER(rxLR, pcConfig);
     } else {
         // Perform Belief Propagation (BP) based List Decoding
-        // decData = BP_DECODER(rxLLR, pcConfig);    
+        // decData = BP_DECODER(rxLR, pcConfig);    
     }
 
     // Extracting Data from Informatiom Bit Positions
@@ -103,7 +103,7 @@ int * NR_PC_DECODER(double * rxLLR, struct PC_CONFIG * pcConfig) {
     }
 
     free(rxBitsMat);
-	free(rxLen);
+    free(rxLen);
 
     return dataBits;
 }
