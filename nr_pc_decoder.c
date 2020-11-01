@@ -6,6 +6,10 @@
 double PC_LikelihoodRatio_L(double x1, double x2) {    
     double LR = (1 + x1 * x2) / (x1 + x2);
 	
+    if (LR == 0) {
+        LR = 0.01;
+    }
+
 	if (LR > 10) {
 		LR = 10;
 	}
@@ -16,6 +20,10 @@ double PC_LikelihoodRatio_L(double x1, double x2) {
 double PC_LikelihoodRatio_R(double x1, double x2, int bit) {
     double LR = ((pow(x1, 1 - 2 * bit)) * x2);
 	
+    if (LR == 0) {
+        LR = 0.01;
+    }
+
 	if (LR > 10) {
 		LR = 10;
 	}
@@ -31,32 +39,31 @@ void SC_DECODER(double * rxLLR, int L, int ** rxBitsMat, int * rxLen) {
     int iter_llr;
     int * rxBits = (int *)calloc(L, sizeof(int));
 
-        double * rxLLR_L = (double *)calloc(L/2, sizeof(double));
-        double * rxLLR_R = (double *)calloc(L/2, sizeof(double));
+    double * rxLLR_L = (double *)calloc(L/2, sizeof(double));
+    double * rxLLR_R = (double *)calloc(L/2, sizeof(double));
 
-        for (iter_llr = 0; iter_llr < L/2; iter_llr++) {
-            *(rxLLR_L + iter_llr) = PC_LikelihoodRatio_L(*(rxLLR + iter_llr), *(rxLLR + iter_llr + L/2));
-            *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + iter_llr) = PC_LLR_TO_BIT(*(rxLLR_L + iter_llr));
-		}
+    for (iter_llr = 0; iter_llr < L/2; iter_llr++) {
+        *(rxLLR_L + iter_llr) = PC_LikelihoodRatio_L(*(rxLLR + iter_llr), *(rxLLR + iter_llr + L/2));
+        *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + iter_llr) = PC_LLR_TO_BIT(*(rxLLR_L + iter_llr));
+	}
 		
-		if (L > 2) {
-			SC_DECODER(rxLLR_L, L/2, rxBitsMat, rxLen);
-		}
+	if (L > 2) {
+		SC_DECODER(rxLLR_L, L/2, rxBitsMat, rxLen);
+	}
 		
-        for (iter_llr = 0; iter_llr < L/2; iter_llr++) {
-            *(rxLLR_R + iter_llr) = PC_LikelihoodRatio_R(*(rxLLR + iter_llr), *(rxLLR + iter_llr + L/2), *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + iter_llr));
-            *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + L/2 + iter_llr) = PC_LLR_TO_BIT(*(rxLLR_R + iter_llr));
-        }
+    for (iter_llr = 0; iter_llr < L/2; iter_llr++) {
+        *(rxLLR_R + iter_llr) = PC_LikelihoodRatio_R(*(rxLLR + iter_llr), *(rxLLR + iter_llr + L/2), *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + iter_llr));
+        *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + L/2 + iter_llr) = PC_LLR_TO_BIT(*(rxLLR_R + iter_llr));
+    }
 		
-		*(rxLen + (int)log2(L/2)) = *(rxLen + (int)log2(L/2)) + L;
+	*(rxLen + (int)log2(L/2)) = *(rxLen + (int)log2(L/2)) + L;
 		
-		if (L > 2) {
-			SC_DECODER(rxLLR_R, L/2, rxBitsMat, rxLen);
-		}
+	if (L > 2) {
+		SC_DECODER(rxLLR_R, L/2, rxBitsMat, rxLen);
+	}
 
-        free(rxLLR_L);
-        free(rxLLR_R);
-
+    free(rxLLR_L);
+    free(rxLLR_R);
 }
 
 int * NR_PC_DECODER(double * rxLLR, struct PC_CONFIG * pcConfig) {
