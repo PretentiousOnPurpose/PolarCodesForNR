@@ -15,6 +15,5 @@
 %     enc_data = LLR(:, iter_step);
 % end
 
-x = [1;1;1;1;0;0;0;0];
-y = qammod(x, 2, 'InputType', 'bit', 'UnitAveragePower', 1);
-z = qamdemod(y, 2, 'OutputType', 'approxllr', 'UnitAveragePower', 1);
+x = [1,1,0,1,1,0,0,0,0,1,1,0,1,0,1,1,0,1,0,0,0,0,1,1,1,1,0,0,1,1,0,0,0,0,1,0,0,0,0,1,1,1,1,0,0,0,0,1,0,1,0,0,1,0,0,0,0,1,0,0,0,1,0,0,1,1,1,0,1,1,1,1];
+y = nrPolarEncode(

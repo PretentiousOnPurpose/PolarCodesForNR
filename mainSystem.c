@@ -22,13 +22,19 @@ int main() {
 
     int remLen = 0;
     int err = 0;
-
-    int * dataBits = DATA_GEN(pcConfig.K - pcConfig.crcLen);
-    int * crcData = NR_CRC_ENCODER(dataBits, &pcConfig);
-    int * pcData = NR_PC_ENCODER(crcData, &pcConfig);
+//
+    int * dataBits = DATA_GEN(pcConfig.K);
+//    int * crcData = NR_CRC_ENCODER(dataBits, &pcConfig);
+    int * pcData = NR_PC_ENCODER(dataBits, &pcConfig);
     double * modData = BPSK_MOD(pcData, pcConfig.N);
+	double * demodData = BPSK_DEMOD(modData, pcConfig.N);
+	int * dataHat = NR_PC_DECODER(demodData, &pcConfig);
 
-    
+    PRINT_ARRAY_INT(dataBits, 72);
+    PRINT_ARRAY_INT(dataHat, 72);
+
+    // printf("Isequal: %d\n", isEqual(dataBits, dataHat, pcConfig.K));
+
 
     return 0;
 }

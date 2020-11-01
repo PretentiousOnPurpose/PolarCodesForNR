@@ -27,7 +27,7 @@ int main() {
 
     SC_DECODER(rxLLR, 8, rxBitsMat, rxLen);
 
-    // PRINT_ARRAY_INT(*(rxBitsMat), 8);
+	PRINT_MAT_INT(rxBitsMat, 8, 3);
 
     return 0;
 }

@@ -220,7 +220,15 @@ double * BPSK_DEMOD(double * rxSyms, int L) {
     double * rxLLR = (double *)calloc(L, sizeof(double));
 
     for (iter_syms = 0; iter_syms < L; iter_syms++) {
-        *(rxLLR + iter_syms) = log(exp(-(pow((*(rxSyms + iter_syms) + 1), 2)) + (pow((*(rxSyms + iter_syms) - 1), 2))));
+        *(rxLLR + iter_syms) = (exp(-(pow((*(rxSyms + iter_syms) + 1), 2)) + (pow((*(rxSyms + iter_syms) - 1), 2))));
+
+        if (*(rxLLR + iter_syms) == 0) {
+            *(rxLLR + iter_syms) = 0.01;
+        }
+
+        if (*(rxLLR + iter_syms) > 10) {
+            *(rxLLR + iter_syms) = 10;
+        }
     }
 
     return rxLLR;
