@@ -16,27 +16,24 @@ int main() {
     pcConfig.UL_DL = 0;
     pcConfig.L = 8;
     pcConfig.crcLen = 24;
-    pcConfig.crcPolyID = 2; 
+    pcConfig.crcPolyID = 3; 
     pcConfig.decodingMethod = 1;
 
     int remLen = 0;
     int err = 0;
 //
-    int * dataBits = DATA_GEN(pcConfig.K);
-//    int * crcData = NR_CRC_ENCODER(dataBits, &pcConfig);
-   int * encData = NR_PC_ENCODER(dataBits, &pcConfig);
-   double * modData = BPSK_MOD(encData, pcConfig.N);
-   double * rxData = AWGN(modData, pcConfig.N, 0.1);
-   double * rxLR = BPSK_DEMOD(modData, pcConfig.N);
-   int * dataHat = NR_PC_DECODER(rxLR, &pcConfig);
-//    int * dataHat = NR_CRC_DECODER(decData, &pcConfig, &err);
+    int * dataBits = DATA_GEN(pcConfig.K - pcConfig.crcLen);
+    int * crcData = NR_CRC_ENCODER(dataBits, &pcConfig);
+    // int * encData = NR_PC_ENCODER(dataBits, &pcConfig);
+    // double * modData = BPSK_MOD(encData, pcConfig.N);
+    // double * rxData = AWGN(modData, pcConfig.N, 0.1);
+    // double * rxLR = BPSK_DEMOD(rxData, pcConfig.N);
+    // int * dataHat = NR_PC_DECODER(rxLR, &pcConfig);
+    int * dataHat = NR_CRC_DECODER(crcData, &pcConfig, &err);
 
-
-    // PRINT_ARRAY_INT(dataHat, pcConfig.K);
-    // // PRINT_ARRAY_DOUBLE(modData, pcConfig.N);
-
-    PRINT_ARRAY_INT(dataHat, pcConfig.K);
-    PRINT_ARRAY_INT(dataBits, pcConfig.K);
+    printf("Err: %d\n", err);
+    PRINT_ARRAY_INT(dataBits, pcConfig.K - pcConfig.crcLen);
+    PRINT_ARRAY_INT(dataHat, pcConfig.K - pcConfig.crcLen);
 
     return 0;
 }

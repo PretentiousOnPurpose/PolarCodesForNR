@@ -62,11 +62,14 @@ int * CRCGenerator(int * msg, int * crcPoly, int msgLen, int crcPolyLen) {
 
     int * rem = poly_long_div(msg_tmp, crcPoly, msgLen, crcPolyLen, &remLen);
 
+    PRINT_ARRAY_INT(rem, remLen);
+
     for (iter_bits = crcPolyLen - 1 - remLen; iter_bits < crcPolyLen - 1; iter_bits++) {
         *(crcBits + iter_bits) = *(rem + iter_bits - (crcPolyLen - 1 - remLen));
     }
 
-    free(msg_tmp);
+    // free(msg_tmp);
+    free(rem);
 
     return crcBits;
 }
