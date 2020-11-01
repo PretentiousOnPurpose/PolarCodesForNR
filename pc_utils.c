@@ -36,6 +36,18 @@ void PRINT_ARRAY_DOUBLE(double * dataBits, int numBits) {
   
 }
 
+void PRINT_MAT_INT(int ** dataMat, int rows, int cols) {
+    int iter_rows, iter_cols;
+
+    for (iter_rows = 0; iter_rows < rows; iter_rows++) {
+        for (iter_cols = 0; iter_cols < cols; iter_cols++) {
+            printf("%d ", *(*(dataMat + iter_cols) + iter_rows));
+        }
+        printf("\n");
+    }
+
+}
+
 // Performs Long Division between Two Polynomials
 int * poly_long_div(int * P1, int * P2, int L1, int L2, int * remLen) {
     int iter_bits, tmp, deg1, deg2;

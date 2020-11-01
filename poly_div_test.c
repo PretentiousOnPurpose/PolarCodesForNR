@@ -5,24 +5,29 @@
 #include <math.h>
 
 int main() {
-    
-    srand(time(NULL));
+    double * rxLLR = (double *)calloc(8, sizeof(double));
 
-    int * dataBits = (int *)calloc(8, sizeof(int));
-    *(dataBits) = 1;
-    *(dataBits + 1) = 1;
-    *(dataBits + 2) = 1;
-    *(dataBits + 3) = 1;
-    *(dataBits + 4) = 0;
-    *(dataBits + 5) = 0;
-    *(dataBits + 6) = 0;
-    *(dataBits + 7) = 0;
-    
-    double * modData = BPSK_MOD(dataBits, 8);
-    double * rxData = AWGN(modData, 8, 0.1);
-    double * rxLLR = BPSK_DEMOD(rxData, 8);
+    *(rxLLR) = 10;
+    *(rxLLR + 1) = 10;
+    *(rxLLR + 2) = 0.01;
+    *(rxLLR + 3) = 0.01;
+    *(rxLLR + 4) = 0.01;
+    *(rxLLR + 5) = 10;
+    *(rxLLR + 6) = 10;
+    *(rxLLR + 7) = 10;
 
-    PRINT_ARRAY_DOUBLE(rxLLR, 8);
+	int ** rxBitsMat = (int **)calloc(3, sizeof(int));
+	int * rxLen = (int *)calloc(3, sizeof(int));
+
+    *(rxBitsMat) = (int *)calloc(8, sizeof(int));
+    *(rxBitsMat + 1) = (int *)calloc(8, sizeof(int));
+    *(rxBitsMat + 2) = (int *)calloc(8, sizeof(int));
+
+    // PRINT_MAT_INT(rxBitsMat, 8, 3);
+
+    SC_DECODER(rxLLR, 8, rxBitsMat, rxLen);
+
+    // PRINT_ARRAY_INT(*(rxBitsMat), 8);
 
     return 0;
 }
