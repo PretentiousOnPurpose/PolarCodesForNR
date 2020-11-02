@@ -7,7 +7,7 @@
 int * DATA_GEN(int numBits) {
     int iter_bits;
 
-    int * dataBits = (int *)malloc(sizeof(int) * numBits);
+    int * dataBits = (int *)calloc(numBits, sizeof(int));
 
     for (iter_bits = 0; iter_bits < numBits; iter_bits++) {
         *(dataBits + iter_bits) = rand() % 2;
@@ -53,7 +53,7 @@ int * poly_long_div(int * P1, int * P2, int L1, int L2, int * remLen) {
     int iter_bits, tmp, deg1, deg2;
     int * tmp_poly;
 
-    int * rem = (int *)malloc(sizeof(int) * L1);
+    int * rem = (int *)calloc(L1, sizeof(int));
 
     for (iter_bits = 0; iter_bits < L1; iter_bits++) {
         *(rem + iter_bits) = *(P1 + iter_bits);
@@ -63,7 +63,17 @@ int * poly_long_div(int * P1, int * P2, int L1, int L2, int * remLen) {
         tmp = degree_poly(rem, L1) - degree_poly(P2, L2);
         tmp_poly = incr_degree_poly(P2, L2, tmp);
 
-        bitxor(rem, tmp_poly, L1);
+        for (iter_bits = 0; iter_bits < L1; iter_bits++) {
+            if ((*(rem + iter_bits) - *(tmp_poly + iter_bits)) != 0) {
+                *(rem + iter_bits) = 1;
+            } else {
+                *(rem + iter_bits) = 0;
+            }
+        }
+
+        if (SUM_ARRAY_INT(rem, L1) == 0) {
+            break;
+        }
 
         deg1 = degree_poly(rem, L1);
         rem = rem + L1 - deg1 - 1;
@@ -75,6 +85,16 @@ int * poly_long_div(int * P1, int * P2, int L1, int L2, int * remLen) {
     *remLen = L1;
 
     return rem;
+}
+
+int SUM_ARRAY_INT(int * dataBits, int L) {
+    int iter_bits, sum = 0;
+
+    for (iter_bits = 0; iter_bits < L; iter_bits++) {
+        sum += *(dataBits + iter_bits);
+    }
+
+    return sum;
 }
 
 // Returns Degree of a Polynomial
@@ -96,7 +116,7 @@ int degree_poly(int * poly, int numBits) {
 // Increase the Degree of the Polynomial
 int * incr_degree_poly(int * poly, int numBits, int incr_deg) {
     int iter_bits;
-    int * newPoly = (int * )malloc(sizeof(int) * (numBits + incr_deg));
+    int * newPoly = (int * )calloc(numBits + incr_deg, sizeof(int));
 
     for (iter_bits = 0; iter_bits < numBits; iter_bits++) {
         *(newPoly + iter_bits) = *(poly + iter_bits);
@@ -111,7 +131,7 @@ int * incr_degree_poly(int * poly, int numBits, int incr_deg) {
 
 int * ones(int len) {
     int iter_bits;
-    int * dataBits = (int *)malloc(sizeof(int) * len);
+    int * dataBits = (int *)calloc(len, sizeof(int));
 
     for (iter_bits = 0; iter_bits < len; iter_bits++) {
         *(dataBits + iter_bits) = 1;

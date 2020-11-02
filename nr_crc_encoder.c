@@ -17,8 +17,8 @@ int * NR_CRC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig) {
     // For iter variable
     int iter_bits;
     // Allocating buffer for CRC Encoded Output
-    int * crcEncOut = (int *)malloc(sizeof(int) * pcConfig->K);
-    int * crcPoly = (int *)malloc(sizeof(int) * (pcConfig->crcLen + 1));
+    int * crcEncOut = (int *)calloc(pcConfig->K, sizeof(int));
+    int * crcPoly = (int *)calloc(pcConfig->crcLen + 1, sizeof(int));
     int remLen = 0;
 
     // Selecting a CRC Polynomial as per Config    
@@ -54,21 +54,18 @@ int * NR_CRC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig) {
 
 int * CRCGenerator(int * msg, int * crcPoly, int msgLen, int crcPolyLen) {
     int iter_bits, remLen = 0;
-    int * crcBits = (int *)malloc(sizeof(int) * (crcPolyLen - 1));
-
+    int * crcBits = (int *)calloc(crcPolyLen - 1, sizeof(int));
 
     int * msg_tmp = incr_degree_poly(msg, msgLen, crcPolyLen - 1);
     msgLen = msgLen + crcPolyLen - 1;
 
     int * rem = poly_long_div(msg_tmp, crcPoly, msgLen, crcPolyLen, &remLen);
 
-    PRINT_ARRAY_INT(rem, remLen);
-
     for (iter_bits = crcPolyLen - 1 - remLen; iter_bits < crcPolyLen - 1; iter_bits++) {
         *(crcBits + iter_bits) = *(rem + iter_bits - (crcPolyLen - 1 - remLen));
     }
 
-    // free(msg_tmp);
+    free(msg_tmp);
     free(rem);
 
     return crcBits;

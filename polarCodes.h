@@ -19,6 +19,7 @@ struct PC_CONFIG {
 static int cnt = 0;
 
 void NR_PC_GET_N(struct PC_CONFIG * pcConfig);
+int * NR_PC_GET_REL_SEQ(struct PC_CONFIG * pcConfig);
 int * NR_PC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig);
 int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig);
 
@@ -48,6 +49,7 @@ double * AWGN(double * txSyms, int L, double noiseVar);
 // Utilities and Misc.
 
 int * DATA_GEN(int numBits);
+int SUM_ARRAY_INT(int * dataBits, int L);
 void PRINT_ARRAY_INT(int * dataBits, int numBits);
 void PRINT_ARRAY_DOUBLE(double * dataBits, int numBits);
 void PRINT_MAT_INT(int ** dataMat, int rows, int cols);

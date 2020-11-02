@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 #include "polarCodes.h"
 
 int main() {
@@ -16,7 +17,7 @@ int main() {
     pcConfig.UL_DL = 0;
     pcConfig.L = 8;
     pcConfig.crcLen = 24;
-    pcConfig.crcPolyID = 3; 
+    pcConfig.crcPolyID = 1; 
     pcConfig.decodingMethod = 1;
 
     int remLen = 0;
@@ -24,14 +25,15 @@ int main() {
 //
     int * dataBits = DATA_GEN(pcConfig.K - pcConfig.crcLen);
     int * crcData = NR_CRC_ENCODER(dataBits, &pcConfig);
-    // int * encData = NR_PC_ENCODER(dataBits, &pcConfig);
-    // double * modData = BPSK_MOD(encData, pcConfig.N);
-    // double * rxData = AWGN(modData, pcConfig.N, 0.1);
-    // double * rxLR = BPSK_DEMOD(rxData, pcConfig.N);
-    // int * dataHat = NR_PC_DECODER(rxLR, &pcConfig);
-    int * dataHat = NR_CRC_DECODER(crcData, &pcConfig, &err);
+    int * encData = NR_PC_ENCODER(crcData, &pcConfig);
+    double * modData = BPSK_MOD(encData, pcConfig.N);
+    double * rxData = AWGN(modData, pcConfig.N, 0.1);
+    double * rxLR = BPSK_DEMOD(rxData, pcConfig.N);
+    int * decData = NR_PC_DECODER(rxLR, &pcConfig);
+    int * dataHat = NR_CRC_DECODER(decData, &pcConfig, &err);
 
     printf("Err: %d\n", err);
+
     PRINT_ARRAY_INT(dataBits, pcConfig.K - pcConfig.crcLen);
     PRINT_ARRAY_INT(dataHat, pcConfig.K - pcConfig.crcLen);
 

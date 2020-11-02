@@ -16,8 +16,8 @@ int CRC24A_DEC[] = {1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 
 int * NR_CRC_DECODER(int * crcBits, struct PC_CONFIG * pcConfig, int * err) {
     int iter_bits; // Iter Var
     // Allocating Buffers for Outputs and Other Vars
-    int * crcDecOut = (int *)malloc(sizeof(int) * (pcConfig->K - pcConfig->crcLen));
-    int * crcPoly = (int *)malloc(sizeof(int) * (pcConfig->crcLen + 1));
+    int * crcDecOut = (int *)calloc(pcConfig->K - pcConfig->crcLen, sizeof(int));
+    int * crcPoly = (int *)calloc(pcConfig->crcLen + 1, sizeof(int));
     int remLen = 0;
 
     // Selecting a CRC Polynomial as per Config    

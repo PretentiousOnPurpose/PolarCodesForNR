@@ -5,29 +5,28 @@
 #include <math.h>
 
 int main() {
-    double * rxLLR = (double *)calloc(8, sizeof(double));
+    pcConfig.E = 144;
+    pcConfig.K = 72;
+    pcConfig.nMax = 10;
+    pcConfig.iBIL = 0;
+    pcConfig.iIL = 0;
+    pcConfig.UL_DL = 0;
+    pcConfig.L = 8;
+    pcConfig.crcLen = 11;
+    pcConfig.crcPolyID = 5; 
+    pcConfig.decodingMethod = 1;
 
-    *(rxLLR) = 10;
-    *(rxLLR + 1) = 10;
-    *(rxLLR + 2) = 0.01;
-    *(rxLLR + 3) = 0.01;
-    *(rxLLR + 4) = 0.01;
-    *(rxLLR + 5) = 10;
-    *(rxLLR + 6) = 10;
-    *(rxLLR + 7) = 10;
+    int err = 0;
 
-	int ** rxBitsMat = (int **)calloc(3, sizeof(int));
-	int * rxLen = (int *)calloc(3, sizeof(int));
+    int * dataBits = DATA_GEN(61);
+    int CRC11[] = {1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1};
 
-    *(rxBitsMat) = (int *)calloc(8, sizeof(int));
-    *(rxBitsMat + 1) = (int *)calloc(8, sizeof(int));
-    *(rxBitsMat + 2) = (int *)calloc(8, sizeof(int));
+    int * encData = NR_CRC_ENCODER(dataBits, &pcConfig);
 
-    // PRINT_MAT_INT(rxBitsMat, 8, 3);
+    int * rem =
 
-    SC_DECODER(rxLLR, 8, rxBitsMat, rxLen);
-
-	PRINT_MAT_INT(rxBitsMat, 8, 3);
+    PRINT_ARRAY_INT(dataBits, 61);
+    PRINT_ARRAY_INT(encData, 72);
 
     return 0;
 }
