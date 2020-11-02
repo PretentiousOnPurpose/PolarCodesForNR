@@ -27,7 +27,7 @@ int main() {
     int * crcData = NR_CRC_ENCODER(dataBits, &pcConfig);
     int * encData = NR_PC_ENCODER(crcData, &pcConfig);
     double * modData = BPSK_MOD(encData, pcConfig.N);
-    double * rxData = AWGN(modData, pcConfig.N, 0.1);
+    double * rxData = AWGN(modData, pcConfig.N, 0.15);
     double * rxLR = BPSK_DEMOD(rxData, pcConfig.N);
     int * decData = NR_PC_DECODER(rxLR, &pcConfig);
     int * dataHat = NR_CRC_DECODER(decData, &pcConfig, &err);

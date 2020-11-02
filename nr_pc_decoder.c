@@ -35,7 +35,7 @@ int PC_LLR_TO_BIT(double rxLR) {
     return 1 * (rxLR <= 1.0) + 0 * (rxLR > 1.0);
 }
 
-void SC_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen) {
+void SC_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen, int * frozen_pos) {
     int iter_lr;
     int * rxBits = (int *)calloc(L, sizeof(int));
 
@@ -45,21 +45,31 @@ void SC_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen) {
     for (iter_lr = 0; iter_lr < L/2; iter_lr++) {
         *(rxLR_L + iter_lr) = PC_LikelihoodRatio_L(*(rxLR + iter_lr), *(rxLR + iter_lr + L/2));
         *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + iter_lr) = PC_LLR_TO_BIT(*(rxLR_L + iter_lr));
+        
+        if ((L == 2) && (*(frozen_pos + *(rxLen + (int)log2(L/2)) + iter_lr) == 1)) { 
+            *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + iter_lr) = 0;
+        }
+
     }
 
     if (L > 2) {
-        SC_DECODER(rxLR_L, L/2, rxBitsMat, rxLen);
+        SC_DECODER(rxLR_L, L/2, rxBitsMat, rxLen, frozen_pos);
     }
 
     for (iter_lr = 0; iter_lr < L/2; iter_lr++) {
         *(rxLR_R + iter_lr) = PC_LikelihoodRatio_R(*(rxLR + iter_lr), *(rxLR + iter_lr + L/2), *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + iter_lr));
         *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + L/2 + iter_lr) = PC_LLR_TO_BIT(*(rxLR_R + iter_lr));
+
+        if ((L == 2) && (*(frozen_pos + *(rxLen + (int)log2(L/2)) + L/2 + iter_lr) == 1)) { 
+            *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + L/2 + iter_lr) = 0;
+        }
+
     }
 
     *(rxLen + (int)log2(L/2)) = *(rxLen + (int)log2(L/2)) + L;
 
     if (L > 2) {
-        SC_DECODER(rxLR_R, L/2, rxBitsMat, rxLen);
+        SC_DECODER(rxLR_R, L/2, rxBitsMat, rxLen, frozen_pos);
     }
     
     free(rxLR_L);
@@ -80,10 +90,11 @@ int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
     int * rxLen = (int *)calloc(pcConfig->n, sizeof(int));
 
     int * rel_seq = NR_PC_GET_REL_SEQ(pcConfig);
+    int * frozen_pos = NR_PC_GET_FROZEN_POS(pcConfig);
 
     if (pcConfig->decodingMethod == 1) {
         // Perform Successive Cancellation (SC) Decoding
-        SC_DECODER(rxLR, pcConfig->N, rxBitsMat, rxLen);
+        SC_DECODER(rxLR, pcConfig->N, rxBitsMat, rxLen, frozen_pos);
 
     } else if (pcConfig->decodingMethod == 2) {
         // Perform SC List Decoding

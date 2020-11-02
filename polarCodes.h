@@ -20,6 +20,7 @@ static int cnt = 0;
 
 void NR_PC_GET_N(struct PC_CONFIG * pcConfig);
 int * NR_PC_GET_REL_SEQ(struct PC_CONFIG * pcConfig);
+int * NR_PC_GET_FROZEN_POS(struct PC_CONFIG * pcConfig);
 int * NR_PC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig);
 int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig);
 
@@ -32,7 +33,7 @@ int * NR_CRC_DECODER(int * dataBits, struct PC_CONFIG * pcConfig, int * err);
 int * NR_PC_RATE_MATCH(int * dataBits, struct PC_CONFIG * pcConfig);
 int * NR_PC_RATE_REMOVE(int * dataBits, struct PC_CONFIG * pcConfig);
 
-void SC_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen);
+void SC_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen, int * frozen_pos);
 int * SCL_DECODER(double * rxLR, struct PC_CONFIG * pcConfig);
 int * BP_DECODER(double * rxLR, struct PC_CONFIG * pcConfig);
 double PC_LikelihoodRatio_L(double x1, double x2);
