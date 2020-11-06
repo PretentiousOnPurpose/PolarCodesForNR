@@ -261,3 +261,21 @@ double randn() {
 
     return sqrt(-2 * log(x1)) * cos(2 * 3.14159 * x2);
 }
+
+double * LR_TO_PROB(double * rxLR, int L) {
+    int iter_LR;
+
+    double * rxProb = (double *)calloc(L, sizeof(double));
+
+    for (iter_LR = 0; iter_LR < L; iter_LR++) {
+        if (*(rxLR + iter_LR) < 0) {
+            *(rxProb + iter_LR) = *(rxLR + iter_LR) / (-4);
+        } else if (*(rxLR + iter_LR) > 0) {
+            *(rxProb + iter_LR) = 1 - *(rxLR + iter_LR) / 4;
+        } else {
+            *(rxProb + iter_LR) = rand() % 2;
+        }
+    }
+
+    return rxProb;
+}

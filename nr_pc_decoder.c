@@ -77,7 +77,13 @@ void SC_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen, int * froze
 }
 
 
-void BP_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen, int * frozen_pos, int iter_BP) {
+void BP_ProcessUnit(int ** rxBeliefsMat, int Back_Fwd, int currStep, int ind1, int ind2) {
+    double PROB_X_XOR_Y = (1 - *(*(rxBeliefsMat + currStep) + ind1)) * (*(*(rxBeliefsMat + currStep) + ind2)) + *(*(rxBeliefsMat + currStep) + ind1) * (1 - *(*(rxBeliefsMat + currStep) + ind2));
+    *(*(rxBeliefsMat + currStep + (1 - 2 * Back_Fwd)) + ind1) = PROB_X_XOR_Y;
+    *(*(rxBeliefsMat + currStep + (1 - 2 * Back_Fwd)) + ind2) = *(*(rxBeliefsMat + currStep) + ind2);
+}
+
+void BP_DECODER(int ** rxBeliefsMat, int L, int * frozen_pos, int iter_BP) {
     int iter, iter_step, iter_group, iter_LR, n = (int)log2(L);
     
     for (iter = 0; iter < iter_BP; iter++) {
@@ -86,7 +92,7 @@ void BP_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen, int * froze
         for (iter_step = n; iter_step >= 1; iter_step--) {
             for (iter_group = 0; iter_group < (1 << (n - iter_step)); iter_group++) {
                 for (iter_LR = 0; iter_LR < (1 << (iter_step - 1)); iter_LR++) {
-                    iter_LR + iter_group * (1 << iter_step), iter_LR + iter_group * (1 << iter_step) + (1 << (iter_step - 1));
+                    BP_ProcessUnit(rxBeliefsMat, 0, iter_step, iter_LR + iter_group * (1 << iter_step), iter_LR + iter_group * (1 << iter_step) + (1 << (iter_step - 1)));
                 }
             }
         }
@@ -96,7 +102,7 @@ void BP_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen, int * froze
         for (iter_step = 1; iter_step <= n; iter_step++) {
             for (iter_group = 0; iter_group < (1 << (n - iter_step)); iter_group++) {
                 for (iter_LR = 0; iter_LR < (1 << (iter_step - 1)); iter_LR++) {
-                    iter_LR + iter_group * (1 << iter_step), iter_LR + iter_group * (1 << iter_step) + (1 << (iter_step - 1));
+                    BP_ProcessUnit(rxBeliefsMat, 1, iter_step, iter_LR + iter_group * (1 << iter_step), iter_LR + iter_group * (1 << iter_step) + (1 << (iter_step - 1)))
                 }
             }
         }
@@ -110,40 +116,53 @@ int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
 
     int * dataBits = (int *)calloc(pcConfig->K, sizeof(int));
 
-    int ** rxBitsMat = (int **)calloc(pcConfig->n, sizeof(int));
-
-    for (iter_step = 0; iter_step < pcConfig->n; iter_step++) {
-        *(rxBitsMat + iter_step) = (int *)calloc(pcConfig->N, sizeof(int));
-    }
-
-    int * rxLen = (int *)calloc(pcConfig->n, sizeof(int));
-
     int * rel_seq = NR_PC_GET_REL_SEQ(pcConfig);
     int * frozen_pos = NR_PC_GET_FROZEN_POS(pcConfig);
 
     if (pcConfig->decodingMethod == 1) {
+        int ** rxBitsMat = (int **)calloc(pcConfig->n, sizeof(int));
+
+        for (iter_step = 0; iter_step < pcConfig->n; iter_step++) {
+            *(rxBitsMat + iter_step) = (int *)calloc(pcConfig->N, sizeof(int));
+        }
+
+        int * rxLen = (int *)calloc(pcConfig->n, sizeof(int));
+
         // Perform Successive Cancellation (SC) Decoding
         SC_DECODER(rxLR, pcConfig->N, rxBitsMat, rxLen, frozen_pos);
+
+        for (iter_step = 0; iter_step < pcConfig->n; iter_step++) {
+            free(*(rxBitsMat + iter_step));
+        }
+
+        // Extracting Data from Informatiom Bit Positions
+        for (iter_bits = 0; iter_bits < pcConfig->K; iter_bits++) {
+            *(dataBits + iter_bits) = *(*(rxBitsMat) + *(rel_seq + iter_bits));
+        }
+
+        free(rxBitsMat);
+        free(rxLen);
 
     } else if (pcConfig->decodingMethod == 2) {
         // Perform SC List Decoding
         // decData = SCL_DECODER(rxLR, pcConfig);
     } else {
+        int ** rxBeliefsMat = (int **)calloc(pcConfig->n + 1, sizeof(int));
+
+        for (iter_step = 0; iter_step < pcConfig->n + 1; iter_step++) {
+            *(rxBeliefsMat + iter_step) = (int *)calloc(pcConfig->N, sizeof(int));
+        }
+
+        *(rxBeliefsMat + pcConfig->n) = LR_TO_PROB(rxLR, pcConfig->N);
+
         // Perform Belief Propagation (BP) based List Decoding
-        BP_DECODER(rxLR, pcConfig->N, rxBitsMat, rxLen, frozen_pos, pcConfig->iter_BP);
+        BP_DECODER(rxBeliefsMat, pcConfig->N, frozen_pos, pcConfig->iter_BP);
+
+        for (iter_step = 0; iter_step < pcConfig->n + 1; iter_step++) {
+            free(*(rxBeliefsMat + iter_step));
+        }
+
+        free(rxBeliefsMat);
     }
-
-    // Extracting Data from Informatiom Bit Positions
-    for (iter_bits = 0; iter_bits < pcConfig->K; iter_bits++) {
-        *(dataBits + iter_bits) = *(*(rxBitsMat) + *(rel_seq + iter_bits));
-    }
-
-    for (iter_step = 0; iter_step < pcConfig->n; iter_step++) {
-        free(*(rxBitsMat + iter_step));
-    }
-
-    free(rxBitsMat);
-    free(rxLen);
-
     return dataBits;
 }

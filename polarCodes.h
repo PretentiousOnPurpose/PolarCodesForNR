@@ -34,12 +34,15 @@ int * NR_CRC_DECODER(int * dataBits, struct PC_CONFIG * pcConfig, int * err);
 int * NR_PC_RATE_MATCH(int * dataBits, struct PC_CONFIG * pcConfig);
 int * NR_PC_RATE_REMOVE(int * dataBits, struct PC_CONFIG * pcConfig);
 
-void SC_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen, int * frozen_pos);
-int * SCL_DECODER(double * rxLR, struct PC_CONFIG * pcConfig);
-void BP_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen, int * frozen_pos, int iter_BP);
 double PC_LikelihoodRatio_L(double x1, double x2);
 double PC_LikelihoodRatio_R(double x1, double x2, int bit);
 int PC_LLR_TO_BIT(double rxLR);
+void SC_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen, int * frozen_pos);
+int * SCL_DECODER(double * rxLR, struct PC_CONFIG * pcConfig);
+
+double * LR_TO_PROB(double * rxLR, int L);
+void BP_ProcessUnit(int ** rxBeliefsMat, int Back_Fwd, int currStep, int ind1, int ind2);
+void BP_DECODER(int ** rxBitsMat, int L, int * frozen_pos, int iter_BP);
 
 // BPSK Modulation
 double * BPSK_MOD(int * dataBits, int L);
@@ -64,4 +67,3 @@ void bitxor(int * x1, int * x2, int len);
 int * merge(int * s1, int * s2, int L1, int L2);
 int * mergeSort(int * s, int L);
 double randn();
-
