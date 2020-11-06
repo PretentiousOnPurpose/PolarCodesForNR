@@ -14,6 +14,7 @@ struct PC_CONFIG {
     int crcLen; // CRC Length
     int crcPolyID; // 1 - 24A, 2 - 24B, 3 - 24C, 4 - 16, 5 - 11
     int decodingMethod; // 1 - SC, 2 - SCL, 3 - BPL
+    int iter_BP; // Number of iterations for BP Decoder
 } pcConfig;
 
 static int cnt = 0;
@@ -35,7 +36,7 @@ int * NR_PC_RATE_REMOVE(int * dataBits, struct PC_CONFIG * pcConfig);
 
 void SC_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen, int * frozen_pos);
 int * SCL_DECODER(double * rxLR, struct PC_CONFIG * pcConfig);
-int * BP_DECODER(double * rxLR, struct PC_CONFIG * pcConfig);
+void BP_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen, int * frozen_pos, int iter_BP);
 double PC_LikelihoodRatio_L(double x1, double x2);
 double PC_LikelihoodRatio_R(double x1, double x2, int bit);
 int PC_LLR_TO_BIT(double rxLR);

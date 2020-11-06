@@ -76,6 +76,35 @@ void SC_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen, int * froze
     free(rxLR_R);
 }
 
+
+void BP_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen, int * frozen_pos, int iter_BP) {
+    int iter, iter_step, iter_group, iter_LR, n = (int)log2(L);
+    
+    for (iter = 0; iter < iter_BP; iter++) {
+        // Backward Message Passing
+
+        for (iter_step = n; iter_step >= 1; iter_step--) {
+            for (iter_group = 0; iter_group < (1 << (n - iter_step)); iter_group++) {
+                for (iter_LR = 0; iter_LR < (1 << (iter_step - 1)); iter_LR++) {
+                    iter_LR + iter_group * (1 << iter_step), iter_LR + iter_group * (1 << iter_step) + (1 << (iter_step - 1));
+                }
+            }
+        }
+
+        // Forward Message Passing
+
+        for (iter_step = 1; iter_step <= n; iter_step++) {
+            for (iter_group = 0; iter_group < (1 << (n - iter_step)); iter_group++) {
+                for (iter_LR = 0; iter_LR < (1 << (iter_step - 1)); iter_LR++) {
+                    iter_LR + iter_group * (1 << iter_step), iter_LR + iter_group * (1 << iter_step) + (1 << (iter_step - 1));
+                }
+            }
+        }
+
+    }
+}
+
+
 int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
     int iter_bits, iter_step;
 
@@ -101,7 +130,7 @@ int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
         // decData = SCL_DECODER(rxLR, pcConfig);
     } else {
         // Perform Belief Propagation (BP) based List Decoding
-        // decData = BP_DECODER(rxLR, pcConfig);    
+        BP_DECODER(rxLR, pcConfig->N, rxBitsMat, rxLen, frozen_pos, pcConfig->iter_BP);
     }
 
     // Extracting Data from Informatiom Bit Positions
