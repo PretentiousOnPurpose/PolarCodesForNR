@@ -77,10 +77,20 @@ void SC_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen, int * froze
 }
 
 
-void BP_ProcessUnit(int ** rxBeliefsMat, int Back_Fwd, int currStep, int ind1, int ind2) {
+void BP_ProcessUnit(int ** rxBeliefsMat, int Fwd_Back, int currStep, int ind1, int ind2, int * frozen_pos) {
     double PROB_X_XOR_Y = (1 - *(*(rxBeliefsMat + currStep) + ind1)) * (*(*(rxBeliefsMat + currStep) + ind2)) + *(*(rxBeliefsMat + currStep) + ind1) * (1 - *(*(rxBeliefsMat + currStep) + ind2));
-    *(*(rxBeliefsMat + currStep + (1 - 2 * Back_Fwd)) + ind1) = PROB_X_XOR_Y;
-    *(*(rxBeliefsMat + currStep + (1 - 2 * Back_Fwd)) + ind2) = *(*(rxBeliefsMat + currStep) + ind2);
+
+    *(*(rxBeliefsMat + currStep + (1 - 2 * Fwd_Back)) + ind1) = PROB_X_XOR_Y;
+    *(*(rxBeliefsMat + currStep + (1 - 2 * Fwd_Back)) + ind2) = *(*(rxBeliefsMat + currStep) + ind2);
+
+    if (*(frozen_pos + ind1) && currStep == 1 && Fwd_Back == 0) {
+        *(*(rxBeliefsMat + currStep + (1 - 2 * Fwd_Back)) + ind1) = 0;
+    }
+
+    if (*(frozen_pos + ind2) && currStep == 1 && Fwd_Back == 0) {
+        *(*(rxBeliefsMat + currStep + (1 - 2 * Fwd_Back)) + ind2) = 0;
+    }
+
 }
 
 void BP_DECODER(int ** rxBeliefsMat, int L, int * frozen_pos, int iter_BP) {
@@ -92,17 +102,17 @@ void BP_DECODER(int ** rxBeliefsMat, int L, int * frozen_pos, int iter_BP) {
         for (iter_step = n; iter_step >= 1; iter_step--) {
             for (iter_group = 0; iter_group < (1 << (n - iter_step)); iter_group++) {
                 for (iter_LR = 0; iter_LR < (1 << (iter_step - 1)); iter_LR++) {
-                    BP_ProcessUnit(rxBeliefsMat, 0, iter_step, iter_LR + iter_group * (1 << iter_step), iter_LR + iter_group * (1 << iter_step) + (1 << (iter_step - 1)));
+                    BP_ProcessUnit(rxBeliefsMat, 1, iter_step, iter_LR + iter_group * (1 << iter_step), iter_LR + iter_group * (1 << iter_step) + (1 << (iter_step - 1)), frozen_pos);
                 }
             }
         }
 
         // Forward Message Passing
 
-        for (iter_step = 1; iter_step <= n; iter_step++) {
+        for (iter_step = 0; iter_step < n; iter_step++) {
             for (iter_group = 0; iter_group < (1 << (n - iter_step)); iter_group++) {
                 for (iter_LR = 0; iter_LR < (1 << (iter_step - 1)); iter_LR++) {
-                    BP_ProcessUnit(rxBeliefsMat, 1, iter_step, iter_LR + iter_group * (1 << iter_step), iter_LR + iter_group * (1 << iter_step) + (1 << (iter_step - 1)))
+                    BP_ProcessUnit(rxBeliefsMat, 0, iter_step, iter_LR + iter_group * (1 << iter_step), iter_LR + iter_group * (1 << iter_step) + (1 << (iter_step - 1)), frozen_pos);
                 }
             }
         }

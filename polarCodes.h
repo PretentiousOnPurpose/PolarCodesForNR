@@ -41,7 +41,7 @@ void SC_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen, int * froze
 int * SCL_DECODER(double * rxLR, struct PC_CONFIG * pcConfig);
 
 double * LR_TO_PROB(double * rxLR, int L);
-void BP_ProcessUnit(int ** rxBeliefsMat, int Back_Fwd, int currStep, int ind1, int ind2);
+void BP_ProcessUnit(int ** rxBeliefsMat, int Fwd_Back, int currStep, int ind1, int ind2, int * frozen_pos);
 void BP_DECODER(int ** rxBitsMat, int L, int * frozen_pos, int iter_BP);
 
 // BPSK Modulation
