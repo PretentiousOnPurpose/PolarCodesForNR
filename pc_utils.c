@@ -48,6 +48,19 @@ void PRINT_MAT_INT(int ** dataMat, int rows, int cols) {
 
 }
 
+
+void PRINT_MAT_DOUBLE(double ** dataMat, int rows, int cols) {
+    int iter_rows, iter_cols;
+
+    for (iter_rows = 0; iter_rows < rows; iter_rows++) {
+        for (iter_cols = 0; iter_cols < cols; iter_cols++) {
+            printf("%f ", *(*(dataMat + iter_cols) + iter_rows));
+        }
+        printf("\n");
+    }
+
+}
+
 // Performs Long Division between Two Polynomials
 int * poly_long_div(int * P1, int * P2, int L1, int L2, int * remLen) {
     int iter_bits, tmp, deg1, deg2;
@@ -234,20 +247,24 @@ double * AWGN(double * modData, int L, double noiseVar) {
     return rxData;
 }
 
-double * BPSK_DEMOD(double * rxSyms, int L) {
+double * BPSK_DEMOD(double * rxSyms, int L, int LR_LLR) {
     int iter_syms;
 
     double * rxLR = (double *)calloc(L, sizeof(double));
 
     for (iter_syms = 0; iter_syms < L; iter_syms++) {
-        *(rxLR + iter_syms) = (exp(-(pow((*(rxSyms + iter_syms) + 1), 2)) + (pow((*(rxSyms + iter_syms) - 1), 2))));
+        if (LR_LLR) {
+            *(rxLR + iter_syms) = (exp(-(pow((*(rxSyms + iter_syms) - 1), 2))));
+        } else {
+            *(rxLR + iter_syms) = (exp(-(pow((*(rxSyms + iter_syms) + 1), 2)) + (pow((*(rxSyms + iter_syms) - 1), 2))));
+            
+            if (*(rxLR + iter_syms) <= 0.025) {
+                *(rxLR + iter_syms) = 0.001;
+            }
 
-        if (*(rxLR + iter_syms) == 0) {
-            *(rxLR + iter_syms) = 0.01;
-        }
-
-        if (*(rxLR + iter_syms) > 10) {
-            *(rxLR + iter_syms) = 10;
+            if (*(rxLR + iter_syms) > 10) {
+                *(rxLR + iter_syms) = 10;
+            }
         }
     }
 
@@ -260,22 +277,4 @@ double randn() {
     double x2 = (double)rand() / RAND_MAX;
 
     return sqrt(-2 * log(x1)) * cos(2 * 3.14159 * x2);
-}
-
-double * LR_TO_PROB(double * rxLR, int L) {
-    int iter_LR;
-
-    double * rxProb = (double *)calloc(L, sizeof(double));
-
-    for (iter_LR = 0; iter_LR < L; iter_LR++) {
-        if (*(rxLR + iter_LR) < 0) {
-            *(rxProb + iter_LR) = *(rxLR + iter_LR) / (-4);
-        } else if (*(rxLR + iter_LR) > 0) {
-            *(rxProb + iter_LR) = 1 - *(rxLR + iter_LR) / 4;
-        } else {
-            *(rxProb + iter_LR) = rand() % 2;
-        }
-    }
-
-    return rxProb;
 }

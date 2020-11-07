@@ -30,7 +30,7 @@ int * NR_PC_GET_FROZEN_POS(struct PC_CONFIG * pcConfig) {
 int * NR_PC_GET_REL_SEQ(struct PC_CONFIG * pcConfig) {
     int iter_seq = 0, iter_master_seq = 0, iter_bits;
 
-    NR_PC_GET_N(pcConfig);
+    // NR_PC_GET_N(pcConfig);
 
     int * rel_seq = (int *)calloc(pcConfig->K, sizeof(int));
 
@@ -110,9 +110,10 @@ int * POLAR_TRANSFORM(int * dataBits, int ind1, int ind2) {
 
 int * PC_SET_DATABITS(int * dataBits, struct PC_CONFIG * pcConfig) {
     int iter_bits;
-    int * encData = (int *)calloc(pcConfig->N, sizeof(int));
 
     int * rel_seq = NR_PC_GET_REL_SEQ(pcConfig);
+
+    int * encData = (int *)calloc(pcConfig->N, sizeof(int));
 
     for (iter_bits = 0; iter_bits < pcConfig->K; iter_bits++) {
         *(encData + *(rel_seq + iter_bits)) = *(dataBits + iter_bits);
