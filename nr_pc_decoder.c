@@ -103,7 +103,7 @@ double PROB_A_B_XOR(double P1, double P2) {
 
 void BP_ProcessUnit(double ** rxBeliefsMat, int currStep, int ind1, int ind2, int * frozen_pos) {
     *(*(rxBeliefsMat + currStep - 1) + ind1) = PROB_A_B_XOR(*(*(rxBeliefsMat + currStep) + ind1), *(*(rxBeliefsMat + currStep) + ind2));
-    *(*(rxBeliefsMat + currStep - 1) + ind2) = PROB_A_B_XOR(*(*(rxBeliefsMat + currStep - 1) + ind1), *(*(rxBeliefsMat + currStep) + ind1)) * (*(*(rxBeliefsMat + currStep) + ind2));
+    *(*(rxBeliefsMat + currStep - 1) + ind2) = (*(*(rxBeliefsMat + currStep) + ind2));
 
     if (*(frozen_pos + ind1) && currStep == 1) {
         *(*(rxBeliefsMat + currStep - 1) + ind1) = 0;
@@ -186,9 +186,11 @@ int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
 
         // Extracting Data from Informatiom Bit Positions
         for (iter_bits = 0; iter_bits < pcConfig->K; iter_bits++) {
-            *(dataBits + iter_bits) = *(*(rxBeliefsMat) + *(rel_seq + iter_bits)) >= 0.5;
+            if (*(*(rxBeliefsMat) + *(rel_seq + iter_bits)) >= 0.5) {
+                *(dataBits + iter_bits) = 1;
+            }
         }
-
+        
         for (iter_step = 0; iter_step < pcConfig->n + 1; iter_step++) {
             free(*(rxBeliefsMat + iter_step));
         }

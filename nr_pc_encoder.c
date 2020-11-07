@@ -30,7 +30,7 @@ int * NR_PC_GET_FROZEN_POS(struct PC_CONFIG * pcConfig) {
 int * NR_PC_GET_REL_SEQ(struct PC_CONFIG * pcConfig) {
     int iter_seq = 0, iter_master_seq = 0, iter_bits;
 
-    // NR_PC_GET_N(pcConfig);
+    NR_PC_GET_N(pcConfig);
 
     int * rel_seq = (int *)calloc(pcConfig->K, sizeof(int));
 
