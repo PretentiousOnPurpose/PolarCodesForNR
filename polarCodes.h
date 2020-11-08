@@ -15,7 +15,7 @@ struct PC_CONFIG {
     int crcPolyID; // 1 - 24A, 2 - 24B, 3 - 24C, 4 - 16, 5 - 11
     int decodingMethod; // 1 - SC, 2 - SCL, 3 - BPL
     int iter_BP; // Number of iterations for BP Decoder
-    int LR_LLR; // Demod output type - Likelihood or Log-likelihood Ratio 
+    int LR_PROB_1; // Demod output type - Likelihood Ratio or Probability of Bit being 1
 } pcConfig;
 
 static int cnt = 0;
@@ -44,8 +44,7 @@ int * SCL_DECODER(double * rxLR, struct PC_CONFIG * pcConfig);
 double * LR_TO_PROB(double * rxLR, int L);
 double PROB_A_B_EQ(double P1, double P2);
 double PROB_A_B_XOR(double P1, double P2);
-void BP_ProcessUnit_BACK(double ** rxBeliefsMat, int currStep, int ind1, int ind2, int * frozen_pos);
-void BP_ProcessUnit_FWD(double ** rxBeliefsMat, int currStep, int ind1, int ind2, int * frozen_pos);
+void BP_ProcessUnit(double ** rxBeliefsMat, int currStep, int ind1, int ind2, int * frozen_pos);
 void BP_DECODER(double ** rxBeliefsMat, int L, int * frozen_pos, int iter_BP);
 
 // BPSK Modulation

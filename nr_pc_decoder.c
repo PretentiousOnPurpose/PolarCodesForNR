@@ -94,6 +94,13 @@ double * LR_TO_PROB(double * rxLR, int L) {
     return rxProb;
 }
 
+double PROB_A_B_EQ(double P1, double P2) {
+    double P_1 = P1 * P2;
+    P_1 = P_1 / (P_1 + ((1 - P1) * (1 - P2)));
+
+    return P_1;
+}
+
 double PROB_A_B_XOR(double P1, double P2) {
     double P_1 = ((1 - P1) * P2 + P1 * (1 - P2));
     P_1 = P_1 / (P_1 + (P1 * P2 + (1 - P1) * (1 - P2)));
@@ -102,7 +109,7 @@ double PROB_A_B_XOR(double P1, double P2) {
 }
 
 void BP_ProcessUnit(double ** rxBeliefsMat, int currStep, int ind1, int ind2, int * frozen_pos) {
-    *(*(rxBeliefsMat + currStep - 1) + ind1) = PROB_A_B_XOR(*(*(rxBeliefsMat + currStep) + ind1), *(*(rxBeliefsMat + currStep) + ind2));
+    *(*(rxBeliefsMat + currStep - 1) + ind1) = PROB_A_B_XOR(*(*(rxBeliefsMat + currStep) + ind1), PROB_A_B_EQ(*(*(rxBeliefsMat + currStep) + ind2), *(*(rxBeliefsMat + currStep - 1) + ind2)));
     *(*(rxBeliefsMat + currStep - 1) + ind2) = (*(*(rxBeliefsMat + currStep) + ind2));
 
     if (*(frozen_pos + ind1) && currStep == 1) {
@@ -129,7 +136,6 @@ void BP_DECODER(double ** rxBeliefsMat, int L, int * frozen_pos, int iter_BP) {
             }
         }
     }
-
 }
 
 

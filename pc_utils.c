@@ -247,13 +247,13 @@ double * AWGN(double * modData, int L, double noiseVar) {
     return rxData;
 }
 
-double * BPSK_DEMOD(double * rxSyms, int L, int LR_LLR) {
+double * BPSK_DEMOD(double * rxSyms, int L, int LR_PROB_1) {
     int iter_syms;
 
     double * rxLR = (double *)calloc(L, sizeof(double));
 
     for (iter_syms = 0; iter_syms < L; iter_syms++) {
-        if (LR_LLR) {
+        if (LR_PROB_1) {
             *(rxLR + iter_syms) = (exp(-(pow((*(rxSyms + iter_syms) - 1), 2))));
         } else {
             *(rxLR + iter_syms) = (exp(-(pow((*(rxSyms + iter_syms) + 1), 2)) + (pow((*(rxSyms + iter_syms) - 1), 2))));
