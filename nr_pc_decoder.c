@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include "polarCodes.h"
-
 double PC_LikelihoodRatio_L(double x1, double x2) {    
     double LR = (1 + x1 * x2) / (x1 + x2);
 	
@@ -142,7 +141,8 @@ void BP_DECODER(double ** rxBeliefsMat, int L, int * frozen_pos, int iter_BP) {
 int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
     int iter_bits, iter_step;
 
-    int * dataBits = (int *)calloc(pcConfig->K, sizeof(int));
+    int * intrlvData = (int *)calloc(pcConfig->K, sizeof(int));
+    int * dataBits = NULL;
 
     int * rel_seq = NR_PC_GET_REL_SEQ(pcConfig);
     int * frozen_pos = NR_PC_GET_FROZEN_POS(pcConfig);
@@ -165,7 +165,7 @@ int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
 
         // Extracting Data from Informatiom Bit Positions
         for (iter_bits = 0; iter_bits < pcConfig->K; iter_bits++) {
-            *(dataBits + iter_bits) = *(*(rxBitsMat) + *(rel_seq + iter_bits));
+            *(intrlvData + iter_bits) = *(*(rxBitsMat) + *(rel_seq + iter_bits));
         }
 
         free(rxBitsMat);
@@ -193,7 +193,7 @@ int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
         // Extracting Data from Informatiom Bit Positions
         for (iter_bits = 0; iter_bits < pcConfig->K; iter_bits++) {
             if (*(*(rxBeliefsMat) + *(rel_seq + iter_bits)) >= 0.5) {
-                *(dataBits + iter_bits) = 1;
+                *(intrlvData + iter_bits) = 1;
             }
         }
         
@@ -203,5 +203,8 @@ int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
 
         free(rxBeliefsMat);
     }
+
+    dataBits = NR_PC_INPUT_BITS_INTERLEAVING(intrlvData, pcConfig, 1);
+
     return dataBits;
 }

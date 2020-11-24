@@ -10,6 +10,7 @@ struct PC_CONFIG {
     int UL_DL; // Uplink/Downlink
     int iIL;
     int iBIL; 
+    int K_IL_MAX;
     int L; // List length for SCL
     int crcLen; // CRC Length
     int crcPolyID; // 1 - 24A, 2 - 24B, 3 - 24C, 4 - 16, 5 - 11
@@ -21,6 +22,8 @@ struct PC_CONFIG {
 static int cnt = 0;
 
 void NR_PC_GET_N(struct PC_CONFIG * pcConfig);
+int * NR_PC_INPUT_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig, int FWD_BWD);
+int * NR_PC_CODED_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig, int FWD_BWD);
 int * NR_PC_GET_REL_SEQ(struct PC_CONFIG * pcConfig);
 int * NR_PC_GET_FROZEN_POS(struct PC_CONFIG * pcConfig);
 int * NR_PC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig);

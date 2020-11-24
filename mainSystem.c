@@ -14,6 +14,7 @@ int main() {
     pcConfig.nMax = 10;
     pcConfig.iBIL = 0;
     pcConfig.iIL = 0;
+    pcConfig.K_IL_MAX = 164;
     pcConfig.UL_DL = 0;
     pcConfig.L = 8;
     pcConfig.crcLen = 24;
