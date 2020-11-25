@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 // Polar Codes
 struct PC_CONFIG {
     int E; // Rate-Matched Output
@@ -19,38 +17,45 @@ struct PC_CONFIG {
     int LR_PROB_1; // Demod output type - Likelihood Ratio or Probability of Bit being 1
 } pcConfig;
 
-static int cnt = 0;
-
-void NR_PC_GET_N(struct PC_CONFIG * pcConfig);
+// Input and Coded Bits Interleaving
 int * NR_PC_INPUT_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig, int FWD_BWD);
-int * NR_PC_CODED_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig, int FWD_BWD);
+int * NR_PC_CODED_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig);
+int * NR_PC_CODED_BITS_DEINTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig);
+
+// Polar Encoding
+void NR_PC_GET_N(struct PC_CONFIG * pcConfig);
 int * NR_PC_GET_REL_SEQ(struct PC_CONFIG * pcConfig);
 int * NR_PC_GET_FROZEN_POS(struct PC_CONFIG * pcConfig);
 int * NR_PC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig);
 int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig);
-
 int * POLAR_TRANSFORM(int * dataBits, int ind1, int ind2);
 int * PC_SET_DATABITS(int * dataBits, struct PC_CONFIG * pcConfig);
 
+// Cyclic Redudancy Check (CRC)
 int * NR_CRC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig);
 int * NR_CRC_DECODER(int * dataBits, struct PC_CONFIG * pcConfig, int * err);
 
+// Rate Matching and Recovery
 int * NR_PC_RATE_MATCH(int * dataBits, struct PC_CONFIG * pcConfig);
-int * NR_PC_RATE_REMOVE(int * dataBits, struct PC_CONFIG * pcConfig);
+int * NR_PC_RATE_RECOVER(int * dataBits, struct PC_CONFIG * pcConfig);
 
+// Likelihood Calculation
 double PC_LikelihoodRatio_L(double x1, double x2);
 double PC_LikelihoodRatio_R(double x1, double x2, int bit);
 int PC_LLR_TO_BIT(double rxLR);
-void SC_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen, int * frozen_pos);
-int * SCL_DECODER(double * rxLR, struct PC_CONFIG * pcConfig);
-
 double * LR_TO_PROB(double * rxLR, int L);
 double PROB_A_B_EQ(double P1, double P2);
 double PROB_A_B_XOR(double P1, double P2);
+
+// Successive Cancellation (SC) and SC List Decoder 
+void SC_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen, int * frozen_pos);
+int * SCL_DECODER(double * rxLR, struct PC_CONFIG * pcConfig);
+
+// Belief Propagation Decoder
 void BP_ProcessUnit(double ** rxBeliefsMat, int currStep, int ind1, int ind2, int * frozen_pos);
 void BP_DECODER(double ** rxBeliefsMat, int L, int * frozen_pos, int iter_BP);
 
-// BPSK Modulation
+// BPSK Modulation and LLR based Demodulation
 double * BPSK_MOD(int * dataBits, int L);
 double * BPSK_DEMOD(double * rxSyms, int L, int LR_LLR);
 
@@ -58,7 +63,6 @@ double * BPSK_DEMOD(double * rxSyms, int L, int LR_LLR);
 double * AWGN(double * txSyms, int L, double noiseVar);
 
 // Utilities and Misc.
-
 int * DATA_GEN(int numBits);
 int SUM_ARRAY_INT(int * dataBits, int L);
 void PRINT_ARRAY_INT(int * dataBits, int numBits);
@@ -74,3 +78,4 @@ void bitxor(int * x1, int * x2, int len);
 int * merge(int * s1, int * s2, int L1, int L2);
 int * mergeSort(int * s, int L);
 double randn();
+int QUAD_EQN_SOL(int a, int b, int c);

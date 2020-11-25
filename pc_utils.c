@@ -278,3 +278,23 @@ double randn() {
 
     return sqrt(-2 * log(x1)) * cos(2 * 3.14159 * x2);
 }
+
+int * QUAD_EQN_SOL(int a, int b, int c) {
+    double delta = (b * b) - 4 * a * c;
+    double root1, root2;
+
+    if (delta > 0) {
+        root1 = (-b + sqrt(delta)) / (2 * a);
+        root2 = (-b - sqrt(delta)) / (2 * a);
+    } else if (delta == 0) {
+        root1 = root2 = -b / (2 * a);
+    } else {
+        root1 = root2 = 0;
+    }
+
+    if (root1 < root2) {
+        return (int)ceil(root1);
+    }
+
+    return (int)ceil(root2);
+}
