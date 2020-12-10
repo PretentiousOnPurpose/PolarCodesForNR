@@ -105,7 +105,7 @@ int * NR_PC_INPUT_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig,
                 if (FWD_BWD == 0) {
                     *(dataOut + iter_bits1) = *(dataBits + *(INPUT_INTERLEAVE_PATTERN + iter_bits2) - (pcConfig->K_IL_MAX - pcConfig->K));
                 } else {
-                    *(dataBits + *(INPUT_INTERLEAVE_PATTERN + iter_bits2) - (pcConfig->K_IL_MAX - pcConfig->K)) = *(dataOut + iter_bits1);
+                    *(dataOut + *(INPUT_INTERLEAVE_PATTERN + iter_bits2) - (pcConfig->K_IL_MAX - pcConfig->K)) = *(dataBits + iter_bits1);
                 }
 
                 iter_bits1++;
@@ -113,15 +113,11 @@ int * NR_PC_INPUT_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig,
         }
     } else {
         for (iter_bits1 = 0; iter_bits1 < pcConfig->K; iter_bits1++) {
-            if (FWD_BWD == 0) {
-                *(dataOut + iter_bits1) = *(dataBits + iter_bits1);
-            } else {
-                *(dataBits + iter_bits1) = *(dataOut + iter_bits1);
-            }
+            *(dataOut + iter_bits1) = *(dataBits + iter_bits1);
         }
     }
 
     free(dataBits);
-
+    // exit(0);
     return dataOut;
 }
