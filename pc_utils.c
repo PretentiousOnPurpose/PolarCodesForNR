@@ -298,3 +298,29 @@ int QUAD_EQN_SOL(int a, int b, int c) {
 
     return (int)ceil(root2);
 }
+
+int isEqual_INT(int * x1, int * x2, int L) {
+    int iter;
+
+    for (iter = 0; iter < L; iter++) {
+        if ((*(x1 + iter) - *(x2 + iter)) != 0) {
+            break;
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
+int isEqual_DOUBLE(double * x1, double * x2, int L) {
+    int iter;
+
+    for (iter = 0; iter < L; iter++) {
+        if ((*(x1 + iter) - *(x2 + iter)) != 0.0) {
+            break;
+            return -1;
+        }
+    }
+
+    return 0;
+}

@@ -79,3 +79,5 @@ int * merge(int * s1, int * s2, int L1, int L2);
 int * mergeSort(int * s, int L);
 double randn();
 int QUAD_EQN_SOL(int a, int b, int c);
+int isEqual_INT(int * x1, int * x2, int L);
+int isEqual_DOUBLE(double * x1, double * x2, int L);
