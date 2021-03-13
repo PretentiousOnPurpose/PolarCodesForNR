@@ -66,7 +66,7 @@ int * CRCGenerator(int * msg, int * crcPoly, int msgLen, int crcPolyLen) {
     }
 
     free(msg_tmp);
-    free(rem);
+    // free(rem);
 
     return crcBits;
 }

@@ -250,30 +250,25 @@ double * AWGN(double * modData, int L, double noiseVar) {
     return rxData;
 }
 
-double * BPSK_DEMOD(double * rxSyms, int L, int LR_PROB_1) {
+double * BPSK_DEMOD(double * rxSyms, int L, int r) {
     int iter_syms;
 
     double * rxLR = (double *)calloc(L, sizeof(double));
 
     for (iter_syms = 0; iter_syms < L; iter_syms++) {
-        if (LR_PROB_1) {
-            *(rxLR + iter_syms) = (exp(-(pow((*(rxSyms + iter_syms) - 1), 2))));
-        } else {
-            *(rxLR + iter_syms) = (exp(-(pow((*(rxSyms + iter_syms) + 1), 2)) + (pow((*(rxSyms + iter_syms) - 1), 2))));
-            
-            if (*(rxLR + iter_syms) <= 0.025) {
-                *(rxLR + iter_syms) = 0.001;
-            }
+        *(rxLR + iter_syms) = (exp(-(pow((*(rxSyms + iter_syms) + 1), 2)) + (pow((*(rxSyms + iter_syms) - 1), 2))));
 
-            if (*(rxLR + iter_syms) > 10) {
-                *(rxLR + iter_syms) = 10;
-            }
+        if (*(rxLR + iter_syms) == 0) {
+            *(rxLR + iter_syms) = 0.01;
+        }
+
+        if (*(rxLR + iter_syms) > 10) {
+            *(rxLR + iter_syms) = 10;
         }
     }
 
     return rxLR;
 }
-
 double randn() {
     // Implemented using Box Muller Transform
     double x1 = (double)rand() / RAND_MAX;

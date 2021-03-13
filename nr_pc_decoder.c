@@ -122,7 +122,7 @@ void BP_ProcessUnit(double ** rxBeliefsMat, int currStep, int ind1, int ind2, in
 
 }
 
-// Need an optimized version using Intel Intrinsics (AVX2/SSE 4.1 or 4.2)
+
 void BP_DECODER(double ** rxBeliefsMat, int L, int * frozen_pos, int iter_BP) {
     int iter, iter_step, iter_group, iter_LR, n = (int)log2(L);
 
@@ -149,7 +149,7 @@ int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
     int * frozen_pos = NR_PC_GET_FROZEN_POS(pcConfig);
 
     if (pcConfig->decodingMethod == 1) {
-        int ** rxBitsMat = (int **)calloc(pcConfig->n, sizeof(int));
+        int ** rxBitsMat = (int **)calloc(pcConfig->n, sizeof(int *));
 
         for (iter_step = 0; iter_step < pcConfig->n; iter_step++) {
             *(rxBitsMat + iter_step) = (int *)calloc(pcConfig->N, sizeof(int));
@@ -169,7 +169,11 @@ int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
             *(intrlvData + iter_bits) = *(*(rxBitsMat) + *(rel_seq + iter_bits));
         }
 
-        free(rxBitsMat);
+        // for (iter_step = 0; iter_step < pcConfig->n; iter_step++) {
+        //     free(*(rxBitsMat + iter_step));
+        // }
+
+        // free(rxBitsMat);
         free(rxLen);
 
     } else if (pcConfig->decodingMethod == 2) {

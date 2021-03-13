@@ -27,13 +27,12 @@ int main() {
     int err = 1;
 
     int * dataBits = DATA_GEN(pcConfig.K - pcConfig.crcLen);
+    int * cp = (int * )calloc(pcConfig.K - pcConfig.crcLen, sizeof(int));
+    ARRAY_INT_COPY(cp, dataBits, pcConfig.K - pcConfig.crcLen);
     int * crcData = NR_CRC_ENCODER(dataBits, &pcConfig);
-    int * encData = NR_PC_ENCODER(crcData, &pcConfig);
-    double * modData = BPSK_MOD(encData, pcConfig.N);
-    double * rxData = AWGN(modData, pcConfig.N, 0.25);
-    double * rxLR = BPSK_DEMOD(rxData, pcConfig.N, pcConfig.LR_PROB_1);
-    int * decData = NR_PC_DECODER(rxLR, &pcConfig);
-    int * dataHat = NR_CRC_DECODER(decData, &pcConfig, &err);
+    int * dataHat = NR_CRC_DECODER(crcData, &pcConfig, &err);
+
+    err = isEqual_INT(cp, dataHat, pcConfig.K - pcConfig.crcLen);
 
     if (err == 0) {
         printf("Successful Transmission\n");
