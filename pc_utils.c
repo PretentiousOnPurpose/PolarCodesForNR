@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include <immintrin.h>
 #include "polarCodes.h"
 
 int * DATA_GEN(int numBits) {
@@ -62,6 +63,8 @@ void PRINT_MAT_DOUBLE(double ** dataMat, int rows, int cols) {
 }
 
 // Performs Long Division between Two Polynomials
+
+// Need an optimized version using Intel Intrinsics (AVX2/SSE 4.1 or 4.2)
 int * poly_long_div(int * P1, int * P2, int L1, int L2, int * remLen) {
     int iter_bits, tmp, deg1, deg2;
     int * tmp_poly;
@@ -303,9 +306,8 @@ int isEqual_INT(int * x1, int * x2, int L) {
     int iter;
 
     for (iter = 0; iter < L; iter++) {
-        if ((*(x1 + iter) - *(x2 + iter)) != 0) {
-            break;
-            return -1;
+        if ((*(x1 + iter) != *(x2 + iter))) {
+            return 1;
         }
     }
 
@@ -317,10 +319,18 @@ int isEqual_DOUBLE(double * x1, double * x2, int L) {
 
     for (iter = 0; iter < L; iter++) {
         if ((*(x1 + iter) - *(x2 + iter)) != 0.0) {
-            break;
-            return -1;
+            return 1;
         }
     }
 
     return 0;
+}
+
+// Need an optimized version using Intel Intrinsics (AVX2/SSE 4.1 or 4.2)
+void ARRAY_INT_COPY(int * dst, int * src, int L) {
+    int iter;
+
+    for (iter = 0; iter < L; iter++) {
+        *(dst + iter) = *(src + iter);
+    }
 }

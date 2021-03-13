@@ -81,3 +81,4 @@ double randn();
 int QUAD_EQN_SOL(int a, int b, int c);
 int isEqual_INT(int * x1, int * x2, int L);
 int isEqual_DOUBLE(double * x1, double * x2, int L);
+void ARRAY_INT_COPY(int * dst, int * src, int L);

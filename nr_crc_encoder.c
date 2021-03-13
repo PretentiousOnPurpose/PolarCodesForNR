@@ -58,7 +58,7 @@ int * CRCGenerator(int * msg, int * crcPoly, int msgLen, int crcPolyLen) {
 
     int * msg_tmp = incr_degree_poly(msg, msgLen, crcPolyLen - 1);
     msgLen = msgLen + crcPolyLen - 1;
-
+    
     int * rem = poly_long_div(msg_tmp, crcPoly, msgLen, crcPolyLen, &remLen);
 
     for (iter_bits = crcPolyLen - 1 - remLen; iter_bits < crcPolyLen - 1; iter_bits++) {

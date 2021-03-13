@@ -34,6 +34,7 @@ int PC_LLR_TO_BIT(double rxLR) {
     return 1 * (rxLR <= 1.0) + 0 * (rxLR > 1.0);
 }
 
+// Need an optimized version using Intel Intrinsics (AVX2/SSE 4.1 or 4.2)
 void SC_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen, int * frozen_pos) {
     int iter_lr;
     int * rxBits = (int *)calloc(L, sizeof(int));
@@ -121,7 +122,7 @@ void BP_ProcessUnit(double ** rxBeliefsMat, int currStep, int ind1, int ind2, in
 
 }
 
-
+// Need an optimized version using Intel Intrinsics (AVX2/SSE 4.1 or 4.2)
 void BP_DECODER(double ** rxBeliefsMat, int L, int * frozen_pos, int iter_BP) {
     int iter, iter_step, iter_group, iter_LR, n = (int)log2(L);
 
