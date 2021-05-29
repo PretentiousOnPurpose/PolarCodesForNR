@@ -28,6 +28,7 @@ int * NR_PC_GET_FROZEN_POS(struct PC_CONFIG * pcConfig) {
 
 }
 
+
 int * NR_PC_GET_REL_SEQ(struct PC_CONFIG * pcConfig) {
     int iter_seq = 0, iter_master_seq = 0, iter_bits;
 
@@ -104,7 +105,6 @@ int * NR_PC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig) {
 
 }
 
-// Need an optimized version using Intel Intrinsics (AVX2/SSE 4.1 or 4.2)
 int * POLAR_TRANSFORM(int * dataBits, int ind1, int ind2) {
 
     *(dataBits + ind1) = *(dataBits + ind1) ^ *(dataBits + ind2);

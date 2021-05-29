@@ -7,15 +7,15 @@ struct PC_CONFIG {
     int nMax; // 9 - Downlink | 10 - Uplink
     int UL_DL; // Uplink/Downlink
     int iIL;
-    int iBIL; 
+    int iBIL;
     int K_IL_MAX;
     int L; // List length for SCL
     int crcLen; // CRC Length
     int crcPolyID; // 1 - 24A, 2 - 24B, 3 - 24C, 4 - 16, 5 - 11
-    int decodingMethod; // 1 - SC, 2 - SCL, 3 - BPL
+    int decodingMethod; // 1 - SC, 2 - CRC-SCL, 3 - BP, 4 - CRC-BPL
     int iter_BP; // Number of iterations for BP Decoder
     int LR_PROB_1; // Demod output type - Likelihood Ratio or Probability of Bit being 1
-} pcConfig;
+};
 
 // Input and Coded Bits Interleaving
 int * NR_PC_INPUT_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig, int FWD_BWD);
@@ -82,3 +82,5 @@ int QUAD_EQN_SOL(int a, int b, int c);
 int isEqual_INT(int * x1, int * x2, int L);
 int isEqual_DOUBLE(double * x1, double * x2, int L);
 void ARRAY_INT_COPY(int * dst, int * src, int L);
+int bitXORSum(int * x1, int * x2, int L);
+double norm(double * x, int L);

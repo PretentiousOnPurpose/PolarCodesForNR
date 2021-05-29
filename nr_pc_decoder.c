@@ -34,7 +34,6 @@ int PC_LLR_TO_BIT(double rxLR) {
     return 1 * (rxLR <= 1.0) + 0 * (rxLR > 1.0);
 }
 
-// Need an optimized version using Intel Intrinsics (AVX2/SSE 4.1 or 4.2)
 void SC_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen, int * frozen_pos) {
     int iter_lr;
     int * rxBits = (int *)calloc(L, sizeof(int));
