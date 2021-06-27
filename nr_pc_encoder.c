@@ -86,6 +86,7 @@ void NR_PC_GET_N(struct PC_CONFIG * pcConfig) {
 int * NR_PC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig) {
     // For Iter Vars
     int iter_step, iter_bits, iter_group;
+    int * intrlvCodedData;
 
     int * intrlvData = NR_PC_INPUT_BITS_INTERLEAVING(dataBits, pcConfig, 0);
 
@@ -102,7 +103,6 @@ int * NR_PC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig) {
     }
 
     return encData;
-
 }
 
 int * POLAR_TRANSFORM(int * dataBits, int ind1, int ind2) {

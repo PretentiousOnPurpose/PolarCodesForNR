@@ -36,6 +36,7 @@ int * NR_CRC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig);
 int * NR_CRC_DECODER(int * dataBits, struct PC_CONFIG * pcConfig, int * err);
 
 // Rate Matching and Recovery
+int * subBlockInterleaving(int * dataBits, struct PC_CONFIG * pcConfig);
 int * NR_PC_RATE_MATCH(int * dataBits, struct PC_CONFIG * pcConfig);
 int * NR_PC_RATE_RECOVER(int * dataBits, struct PC_CONFIG * pcConfig);
 

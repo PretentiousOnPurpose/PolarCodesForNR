@@ -21,7 +21,7 @@ int main() {
     pcConfig.L = 8;
     pcConfig.crcLen = 24;
     pcConfig.crcPolyID = 1; 
-    pcConfig.decodingMethod = 0;
+    pcConfig.decodingMethod = 1;
     pcConfig.iter_BP = 10;
     pcConfig.LR_PROB_1 = 1;
 
@@ -32,7 +32,7 @@ int main() {
     int * crcData = NR_CRC_ENCODER(dataBits, &pcConfig);
     int * encData = NR_PC_ENCODER(crcData, &pcConfig);
     double * modData = BPSK_MOD(encData, pcConfig.N);
-    double * rxData = AWGN(modData, pcConfig.N, 0.1);
+    double * rxData = AWGN(modData, pcConfig.N, 0);
     double * rxLR = BPSK_DEMOD(rxData, pcConfig.N, pcConfig.LR_PROB_1);
     int * decData = NR_PC_DECODER(rxLR, &pcConfig);
     int * dataHat = NR_CRC_DECODER(decData, &pcConfig, &err);
