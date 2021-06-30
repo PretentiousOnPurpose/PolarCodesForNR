@@ -56,66 +56,54 @@ int * NR_PC_CODED_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig)
 }
 
 int * NR_PC_CODED_BITS_DEINTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig) {
-    int * dataOut = (int *)calloc(pcConfig->E, sizeof(int));
-    int iter_bits1, iter_bits2, iter_bits3;
-    
+    int * deintrlvData = (int *)calloc(pcConfig->E, sizeof(int));
+    int cnt, E = pcConfig->E;
     int T = QUAD_EQN_SOL(1, 1, -2 * pcConfig->E);
 
-    int ** intrlvMat = (int **)calloc(T, sizeof(int));
+    int ** deintrlvMat = (int **)calloc(T, sizeof(int));
 
-    for (iter_bits2 = 0; iter_bits2 < T; iter_bits2++) {
-        *(intrlvMat + iter_bits2) = (int *)calloc(T, sizeof(int));
+    for (int iter_bits = 0; iter_bits < T; iter_bits++) {
+        *(deintrlvMat + iter_bits) = (int *)calloc(T, sizeof(int));
     }
 
-    iter_bits1 = 0;
-
     if (pcConfig->iBIL) {
-        for (iter_bits2 = 0; iter_bits2 < T; iter_bits2++) {
-            for (iter_bits3 = 0; iter_bits3 < T - iter_bits2; iter_bits3++) {
-                if (iter_bits1 < pcConfig->E) {
-                    *(*(intrlvMat + iter_bits2) + iter_bits3) = 1;
-                    iter_bits1++;
+        cnt = 0;
+
+        for (int iter_col = 0; iter_col < T; iter_col++) {
+            for (int iter_row = 0; iter_row < T-iter_col; iter_row++) {
+                if (cnt < E) {
+                    *(*(deintrlvMat + iter_row) + iter_col) = *(dataBits + cnt);
                 } else {
-                    *(*(intrlvMat + iter_bits2) + iter_bits3) = -1;
+                    *(*(deintrlvMat + iter_row) + iter_col) = -1;
                 }
+                cnt++;
             }
         }
 
-        iter_bits1 = 0;
+        cnt = 0;
 
-        for (iter_bits3 = 0; iter_bits3 < T; iter_bits3++) {
-            for (iter_bits2 = 0; iter_bits2 < T - iter_bits3; iter_bits2++) {                
-                if (*(*(intrlvMat + iter_bits2) + iter_bits3) != -1) {
-                    *(*(intrlvMat + iter_bits2) + iter_bits3) = *(dataBits + iter_bits1);
-                    iter_bits1++;
-                }
-            }
-        }
-
-        iter_bits1 = 0;
-
-        for (iter_bits2 = 0; iter_bits2 < T; iter_bits2++) {
-            for (iter_bits3 = 0; iter_bits3 < T - iter_bits2; iter_bits3++) {
-                if (*(*(intrlvMat + iter_bits2) + iter_bits3) != -1) {
-                    *(dataOut + iter_bits1) = *(*(intrlvMat + iter_bits2) + iter_bits3);
-                    iter_bits1++;
+        for (int iter_row = 0; iter_row < T; iter_row++) {
+            for (int iter_col = 0; iter_col < T-iter_row; iter_col++) {
+                if (*(*(deintrlvMat + iter_row) + iter_col) > 0) {
+                    *(deintrlvData + cnt) = *(*(deintrlvMat + iter_row) + iter_col);
+                    cnt++;
                 }
             }
         }
 
     } else {
-        for (iter_bits1 = 0; iter_bits1 < pcConfig->E; iter_bits1++) {
-            *(dataOut + iter_bits1) = *(dataBits + iter_bits1);
+        for (int iter_bits = 0; iter_bits < pcConfig->E; iter_bits++) {
+            *(deintrlvData + iter_bits) = *(dataBits + iter_bits);
         }
     }
 
-    for (iter_bits2 = 0; iter_bits2 < T; iter_bits2++) {
-        free(*(intrlvMat + iter_bits2));
+    for (int iter_bits = 0; iter_bits < T; iter_bits++) {
+        free(*(deintrlvMat + iter_bits));
     }
 
-    free(intrlvMat);
+    free(deintrlvMat);
 
-    return dataOut;
+    return deintrlvData;
 }
 
 int * NR_PC_INPUT_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig, int FWD_BWD) {

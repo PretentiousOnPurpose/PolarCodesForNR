@@ -37,6 +37,9 @@ int * NR_CRC_DECODER(int * dataBits, struct PC_CONFIG * pcConfig, int * err);
 
 // Rate Matching and Recovery
 int * subBlockInterleaving(int * dataBits, struct PC_CONFIG * pcConfig);
+int * subBlockDeinterleaving(int * dataBits, struct PC_CONFIG * pcConfig);
+int * bitSelection(int * dataBits, struct PC_CONFIG * pcConfig);
+int * bitDeselection(int * dataBits, struct PC_CONFIG * pcConfig);
 int * NR_PC_RATE_MATCH(int * dataBits, struct PC_CONFIG * pcConfig);
 int * NR_PC_RATE_RECOVER(int * dataBits, struct PC_CONFIG * pcConfig);
 

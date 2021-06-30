@@ -19,6 +19,20 @@ int * subBlockInterleaving(int * dataBits, struct PC_CONFIG * pcConfig) {
     return intrlvData;
 }
 
+int * subBlockDeinterleaving(int * dataBits, struct PC_CONFIG * pcConfig) {
+    int N = pcConfig->N;
+    int idx;
+
+    int * intrlvData = (int *)calloc(N, sizeof(int));
+
+    for (int iter_bits = 0; iter_bits < N; iter_bits++) {
+        idx = SUB_BLOCK_INTERLEAVE_PATTERN[(int)floor(32 * (double)iter_bits / N)] * N / 32 + (iter_bits % (N / 32));
+        *(intrlvData + idx) = *(dataBits + iter_bits);
+    }
+
+    return intrlvData;
+}
+
 int * bitSelection(int * dataBits, struct PC_CONFIG * pcConfig) {
     int N = pcConfig->N;
     int E = pcConfig->E;
@@ -45,3 +59,44 @@ int * bitSelection(int * dataBits, struct PC_CONFIG * pcConfig) {
     return rateMatchedData;
 }
 
+int * bitDeselection(int * dataBits, struct PC_CONFIG * pcConfig) {
+    int N = pcConfig->N;
+    int E = pcConfig->E;
+    int K = pcConfig->K;
+
+    int idx;
+
+    int * rateRecoveredData = (int *)calloc(N, sizeof(int)); 
+
+    if (E > N) { // Repetition
+        for (int iter_bits = 0; iter_bits < N; iter_bits++) {
+            *(rateRecoveredData + iter_bits) = *(dataBits + iter_bits);
+        }
+    } else if ((double)K/E <= 7/16) {  // Puncturing
+        for (int iter_bits = 0; iter_bits < N; iter_bits++) {
+            *(rateRecoveredData + iter_bits + N - E) = *(dataBits + iter_bits);
+        }
+    } else {  // Shortening
+        for (int iter_bits = 0; iter_bits < E; iter_bits++) {
+            *(rateRecoveredData + iter_bits) = *(dataBits + iter_bits);
+        }
+    }
+
+    return rateRecoveredData;
+}
+
+int * NR_PC_RATE_MATCH(int * dataBits, struct PC_CONFIG * pcConfig) {
+    int * subBlockIntrlvData = subBlockInterleaving(dataBits, pcConfig);
+    int * rateMatchedData = bitSelection(subBlockIntrlvData, pcConfig);
+    int * rateMatchedIntrlvData = NR_PC_CODED_BITS_INTERLEAVING(rateMatchedData, pcConfig);
+
+    return rateMatchedIntrlvData;
+}
+
+int * NR_PC_RATE_RECOVER(int * dataBits, struct PC_CONFIG * pcConfig) {
+    int * deintrlvData = NR_PC_CODED_BITS_DEINTERLEAVING(dataBits, pcConfig);
+    int * rateRecoveredIntrlvData = bitDeselection(deintrlvData, pcConfig);
+    int * rateRecoveredData = subBlockDeinterleaving(rateRecoveredIntrlvData, pcConfig);
+
+    return rateRecoveredData;
+}
