@@ -20,7 +20,7 @@ struct PC_CONFIG {
 // Input and Coded Bits Interleaving
 int * NR_PC_INPUT_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig, int FWD_BWD);
 int * NR_PC_CODED_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig);
-int * NR_PC_CODED_BITS_DEINTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig);
+double * NR_PC_CODED_BITS_DEINTERLEAVING(double * dataBits, struct PC_CONFIG * pcConfig);
 
 // Polar Encoding
 void NR_PC_GET_N(struct PC_CONFIG * pcConfig);
@@ -37,11 +37,11 @@ int * NR_CRC_DECODER(int * dataBits, struct PC_CONFIG * pcConfig, int * err);
 
 // Rate Matching and Recovery
 int * subBlockInterleaving(int * dataBits, struct PC_CONFIG * pcConfig);
-int * subBlockDeinterleaving(int * dataBits, struct PC_CONFIG * pcConfig);
+double * subBlockDeinterleaving(double * dataBits, struct PC_CONFIG * pcConfig);
 int * bitSelection(int * dataBits, struct PC_CONFIG * pcConfig);
-int * bitDeselection(int * dataBits, struct PC_CONFIG * pcConfig);
+double * bitDeselection(double * dataBits, struct PC_CONFIG * pcConfig);
 int * NR_PC_RATE_MATCH(int * dataBits, struct PC_CONFIG * pcConfig);
-int * NR_PC_RATE_RECOVER(int * dataBits, struct PC_CONFIG * pcConfig);
+double * NR_PC_RATE_RECOVER(double * dataBits, struct PC_CONFIG * pcConfig);
 
 // Likelihood Calculation
 double PC_LikelihoodRatio_L(double x1, double x2);

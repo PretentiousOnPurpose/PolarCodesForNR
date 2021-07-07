@@ -19,11 +19,11 @@ int * subBlockInterleaving(int * dataBits, struct PC_CONFIG * pcConfig) {
     return intrlvData;
 }
 
-int * subBlockDeinterleaving(int * dataBits, struct PC_CONFIG * pcConfig) {
+double * subBlockDeinterleaving(double * dataBits, struct PC_CONFIG * pcConfig) {
     int N = pcConfig->N;
     int idx;
 
-    int * intrlvData = (int *)calloc(N, sizeof(int));
+    double * intrlvData = (double *)calloc(N, sizeof(double));
 
     for (int iter_bits = 0; iter_bits < N; iter_bits++) {
         idx = SUB_BLOCK_INTERLEAVE_PATTERN[(int)floor(32 * (double)iter_bits / N)] * N / 32 + (iter_bits % (N / 32));
@@ -59,14 +59,14 @@ int * bitSelection(int * dataBits, struct PC_CONFIG * pcConfig) {
     return rateMatchedData;
 }
 
-int * bitDeselection(int * dataBits, struct PC_CONFIG * pcConfig) {
+double * bitDeselection(double * dataBits, struct PC_CONFIG * pcConfig) {
     int N = pcConfig->N;
     int E = pcConfig->E;
     int K = pcConfig->K;
 
     int idx;
 
-    int * rateRecoveredData = (int *)calloc(N, sizeof(int)); 
+    double * rateRecoveredData = (double *)calloc(N, sizeof(double)); 
 
     if (E > N) { // Repetition
         for (int iter_bits = 0; iter_bits < N; iter_bits++) {
@@ -93,10 +93,10 @@ int * NR_PC_RATE_MATCH(int * dataBits, struct PC_CONFIG * pcConfig) {
     return rateMatchedIntrlvData;
 }
 
-int * NR_PC_RATE_RECOVER(int * dataBits, struct PC_CONFIG * pcConfig) {
-    int * deintrlvData = NR_PC_CODED_BITS_DEINTERLEAVING(dataBits, pcConfig);
-    int * rateRecoveredIntrlvData = bitDeselection(deintrlvData, pcConfig);
-    int * rateRecoveredData = subBlockDeinterleaving(rateRecoveredIntrlvData, pcConfig);
+double * NR_PC_RATE_RECOVER(double * dataBits, struct PC_CONFIG * pcConfig) {
+    double * deintrlvData = NR_PC_CODED_BITS_DEINTERLEAVING(dataBits, pcConfig);
+    double * rateRecoveredIntrlvData = bitDeselection(deintrlvData, pcConfig);
+    double * rateRecoveredData = subBlockDeinterleaving(rateRecoveredIntrlvData, pcConfig);
 
     return rateRecoveredData;
 }

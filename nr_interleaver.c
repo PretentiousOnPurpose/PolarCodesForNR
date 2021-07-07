@@ -46,24 +46,24 @@ int * NR_PC_CODED_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig)
         }
     }
 
-    for (int iter_bits = 0; iter_bits < T; iter_bits++) {
-        free(*(intrlvMat + iter_bits));
-    }
+    // for (int iter_bits = 0; iter_bits < T; iter_bits++) {
+    //     free(&intrlvMat[iter_bits]);
+    // }
 
     free(intrlvMat);
 
     return intrlvData;
 }
 
-int * NR_PC_CODED_BITS_DEINTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig) {
-    int * deintrlvData = (int *)calloc(pcConfig->E, sizeof(int));
+double * NR_PC_CODED_BITS_DEINTERLEAVING(double * dataBits, struct PC_CONFIG * pcConfig) {
+    double * deintrlvData = (double *)calloc(pcConfig->E, sizeof(int));
     int cnt, E = pcConfig->E;
     int T = QUAD_EQN_SOL(1, 1, -2 * pcConfig->E);
 
-    int ** deintrlvMat = (int **)calloc(T, sizeof(int));
+    double ** deintrlvMat = (double **)calloc(T, sizeof(double));
 
     for (int iter_bits = 0; iter_bits < T; iter_bits++) {
-        *(deintrlvMat + iter_bits) = (int *)calloc(T, sizeof(int));
+        *(deintrlvMat + iter_bits) = (double *)calloc(T, sizeof(double));
     }
 
     if (pcConfig->iBIL) {
@@ -97,9 +97,9 @@ int * NR_PC_CODED_BITS_DEINTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfi
         }
     }
 
-    for (int iter_bits = 0; iter_bits < T; iter_bits++) {
-        free(*(deintrlvMat + iter_bits));
-    }
+    // for (int iter_bits = 0; iter_bits < T; iter_bits++) {
+    //     free(*(deintrlvMat + iter_bits));
+    // }
 
     free(deintrlvMat);
 
@@ -108,23 +108,23 @@ int * NR_PC_CODED_BITS_DEINTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfi
 
 int * NR_PC_INPUT_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig, int FWD_BWD) {
     int * dataOut = (int *)calloc(pcConfig->K, sizeof(int));
-    int iter_bits1 = 0, iter_bits2;
+    int cnt = 0;
     
     if (pcConfig->iIL) {
-        for (iter_bits2 = 0; iter_bits2 < pcConfig->K_IL_MAX; iter_bits2++) {
-            if (*(INPUT_INTERLEAVE_PATTERN + iter_bits2) >= pcConfig->K_IL_MAX - pcConfig->K) {
+        for (int iter_bits = 0; iter_bits < pcConfig->K_IL_MAX; iter_bits++) {
+            if (*(INPUT_INTERLEAVE_PATTERN + iter_bits) >= pcConfig->K_IL_MAX - pcConfig->K) {
                 if (FWD_BWD == 0) {
-                    *(dataOut + iter_bits1) = *(dataBits + *(INPUT_INTERLEAVE_PATTERN + iter_bits2) - (pcConfig->K_IL_MAX - pcConfig->K));
+                    *(dataOut + cnt) = *(dataBits + *(INPUT_INTERLEAVE_PATTERN + iter_bits) - (pcConfig->K_IL_MAX - pcConfig->K));
                 } else {
-                    *(dataOut + *(INPUT_INTERLEAVE_PATTERN + iter_bits2) - (pcConfig->K_IL_MAX - pcConfig->K)) = *(dataBits + iter_bits1);
+                    *(dataOut + *(INPUT_INTERLEAVE_PATTERN + iter_bits) - (pcConfig->K_IL_MAX - pcConfig->K)) = *(dataBits + cnt);
                 }
 
-                iter_bits1++;
+                cnt++;
             }
         }
     } else {
-        for (iter_bits1 = 0; iter_bits1 < pcConfig->K; iter_bits1++) {
-            *(dataOut + iter_bits1) = *(dataBits + iter_bits1);
+        for (int iter_bits = 0; iter_bits < pcConfig->K; iter_bits++) {
+            *(dataOut + iter_bits) = *(dataBits + iter_bits);
         }
     }
 
