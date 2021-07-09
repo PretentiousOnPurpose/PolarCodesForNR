@@ -14,6 +14,10 @@ int CRC24B_DEC[] = {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 
 int CRC24A_DEC[] = {1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1};
 
 int * NR_CRC_DECODER(int * crcBits, struct PC_CONFIG * pcConfig, int * err) {
+    if (_DEBUG_ == 1) {
+        printf("Peforming CRC decoding and error detection...\n");
+    }
+
     int iter_bits; // Iter Var
     // Allocating Buffers for Outputs and Other Vars
     int * crcDecOut = (int *)calloc(pcConfig->K - pcConfig->crcLen, sizeof(int));

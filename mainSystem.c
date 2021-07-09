@@ -11,16 +11,16 @@ int main() {
     struct PC_CONFIG pcConfig;
 
     // Polar Code Config
-    pcConfig.E = 144;
-    pcConfig.K = 72;
+    pcConfig.E = 256;
+    pcConfig.K = 144;
     pcConfig.nMax = 10;
-    pcConfig.iBIL = 0;
+    pcConfig.iBIL = 1;
     pcConfig.iIL = 1;
     pcConfig.K_IL_MAX = 164;
     pcConfig.UL_DL = 0;
     pcConfig.L = 8;
-    pcConfig.crcLen = 24;
-    pcConfig.crcPolyID = 1; 
+    pcConfig.crcLen = 11;
+    pcConfig.crcPolyID = 5; 
     pcConfig.decodingMethod = 1;
     pcConfig.iter_BP = 10;
     pcConfig.LR_PROB_1 = 1;
@@ -28,12 +28,14 @@ int main() {
     int remLen = 0;
     int err = 1;
 
+    printf("Polar Codes for 5G NR\n\n");
+
     int * dataBits = DATA_GEN(pcConfig.K - pcConfig.crcLen);
     int * crcData = NR_CRC_ENCODER(dataBits, &pcConfig);
     int * encData = NR_PC_ENCODER(crcData, &pcConfig);
     int * rateMatcData = NR_PC_RATE_MATCH(encData, &pcConfig);
     double * modData = BPSK_MOD(rateMatcData, pcConfig.E);
-    double * rxData = AWGN(modData, pcConfig.E, 0.05);
+    double * rxData = AWGN(modData, pcConfig.E, 0);
     double * rxLR = BPSK_DEMOD(rxData, pcConfig.E, pcConfig.LR_PROB_1);
     double * rateRecoverData = NR_PC_RATE_RECOVER(rxLR, &pcConfig);
     int * decData = NR_PC_DECODER(rateRecoverData, &pcConfig);

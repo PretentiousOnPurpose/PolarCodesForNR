@@ -9,7 +9,7 @@ int * NR_PC_CODED_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig)
     int cnt, E = pcConfig->E;
     int T = QUAD_EQN_SOL(1, 1, -2 * pcConfig->E);
 
-    int ** intrlvMat = (int **)calloc(T, sizeof(int));
+    int ** intrlvMat = (int **)calloc(T, sizeof(int *));
 
     for (int iter_bits = 0; iter_bits < T; iter_bits++) {
         *(intrlvMat + iter_bits) = (int *)calloc(T, sizeof(int));
@@ -46,9 +46,9 @@ int * NR_PC_CODED_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig)
         }
     }
 
-    // for (int iter_bits = 0; iter_bits < T; iter_bits++) {
-    //     free(&intrlvMat[iter_bits]);
-    // }
+    for (int iter_bits = 0; iter_bits < T; iter_bits++) {
+        free(*(intrlvMat + iter_bits));
+    }
 
     free(intrlvMat);
 
@@ -56,11 +56,11 @@ int * NR_PC_CODED_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig)
 }
 
 double * NR_PC_CODED_BITS_DEINTERLEAVING(double * dataBits, struct PC_CONFIG * pcConfig) {
-    double * deintrlvData = (double *)calloc(pcConfig->E, sizeof(int));
+    double * deintrlvData = (double *)calloc(pcConfig->E, sizeof(double));
     int cnt, E = pcConfig->E;
     int T = QUAD_EQN_SOL(1, 1, -2 * pcConfig->E);
 
-    double ** deintrlvMat = (double **)calloc(T, sizeof(double));
+    double ** deintrlvMat = (double **)calloc(T, sizeof(double *));
 
     for (int iter_bits = 0; iter_bits < T; iter_bits++) {
         *(deintrlvMat + iter_bits) = (double *)calloc(T, sizeof(double));
@@ -84,7 +84,7 @@ double * NR_PC_CODED_BITS_DEINTERLEAVING(double * dataBits, struct PC_CONFIG * p
 
         for (int iter_row = 0; iter_row < T; iter_row++) {
             for (int iter_col = 0; iter_col < T-iter_row; iter_col++) {
-                if (*(*(deintrlvMat + iter_row) + iter_col) > 0) {
+                if (*(*(deintrlvMat + iter_row) + iter_col) != -1) {
                     *(deintrlvData + cnt) = *(*(deintrlvMat + iter_row) + iter_col);
                     cnt++;
                 }
@@ -97,9 +97,9 @@ double * NR_PC_CODED_BITS_DEINTERLEAVING(double * dataBits, struct PC_CONFIG * p
         }
     }
 
-    // for (int iter_bits = 0; iter_bits < T; iter_bits++) {
-    //     free(*(deintrlvMat + iter_bits));
-    // }
+    for (int iter_bits = 0; iter_bits < T; iter_bits++) {
+        free(*(deintrlvMat + iter_bits));
+    }
 
     free(deintrlvMat);
 
@@ -107,6 +107,14 @@ double * NR_PC_CODED_BITS_DEINTERLEAVING(double * dataBits, struct PC_CONFIG * p
 }
 
 int * NR_PC_INPUT_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig, int FWD_BWD) {
+    if (_DEBUG_ == 1 && FWD_BWD == 0) {
+        printf("Peforming Input bit interleaving...\n");
+    }
+
+    if (_DEBUG_ == 1 && FWD_BWD == 1) {
+        printf("Peforming Input bit deinterleaving...\n");
+    }
+
     int * dataOut = (int *)calloc(pcConfig->K, sizeof(int));
     int cnt = 0;
     

@@ -1,3 +1,5 @@
+#define _DEBUG_ 1
+
 // Polar Codes
 struct PC_CONFIG {
     int E; // Rate-Matched Output

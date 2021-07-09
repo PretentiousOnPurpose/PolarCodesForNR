@@ -5,6 +5,10 @@
 #include "polarCodes.h"
 
 int * DATA_GEN(int numBits) {
+    if (_DEBUG_ == 1) {
+        printf("Generating random data bits...\n");
+    }
+
     int iter_bits;
 
     int * dataBits = (int *)calloc(numBits, sizeof(int));
@@ -226,6 +230,10 @@ int * mergeSort(int * s, int L) {
 }
 
 double * BPSK_MOD(int * dataBits, int L) {
+    if (_DEBUG_ == 1) {
+        printf("Peforming BPSK modulation...\n");
+    }
+
     int iter_bits;
 
     double * modData = (double *)calloc(L, sizeof(double));
@@ -238,6 +246,10 @@ double * BPSK_MOD(int * dataBits, int L) {
 }
 
 double * AWGN(double * modData, int L, double noiseVar) {
+    if (_DEBUG_ == 1) {
+        printf("Simulating AWGN Channel...\n");
+    }
+
     int iter_syms;
     double * rxData = (double *)calloc(L, sizeof(double));
 
@@ -249,6 +261,10 @@ double * AWGN(double * modData, int L, double noiseVar) {
 }
 
 double * BPSK_DEMOD(double * rxSyms, int L, int r) {
+    if (_DEBUG_ == 1) {
+        printf("Peforming BPSK demodulation...\n");
+    }
+
     int iter_syms;
 
     double * rxLR = (double *)calloc(L, sizeof(double));

@@ -84,6 +84,10 @@ void NR_PC_GET_N(struct PC_CONFIG * pcConfig) {
 }
 
 int * NR_PC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig) {
+    if (_DEBUG_ == 1) {
+        printf("Performing polar encoding on the crc augmented data bits...\n");
+    }
+
     // For Iter Vars
     int iter_step, iter_bits, iter_group;
     int * intrlvCodedData;

@@ -139,6 +139,10 @@ void BP_DECODER(double ** rxBeliefsMat, int L, int * frozen_pos, int iter_BP) {
 
 
 int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
+    if (_DEBUG_ == 1) {
+        printf("Peforming polar decoding...\n");
+    }
+
     int iter_bits, iter_step;
 
     int * intrlvData = (int *)calloc(pcConfig->K, sizeof(int));

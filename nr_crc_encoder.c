@@ -14,6 +14,10 @@ int CRC24B[] = {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0
 int CRC24A[] = {1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1};
 
 int * NR_CRC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig) {
+    if (_DEBUG_ == 1) {
+        printf("Performing CRC on the data bits...\n");
+    }
+
     // For iter variable
     int iter_bits;
     // Allocating buffer for CRC Encoded Output
