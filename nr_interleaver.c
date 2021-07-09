@@ -15,7 +15,7 @@ int * NR_PC_CODED_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig)
         *(intrlvMat + iter_bits) = (int *)calloc(T, sizeof(int));
     }
 
-    if (pcConfig->iBIL) {
+    if (pcConfig->UL_DL == 0) {
         cnt = 0;
 
         for (int iter_row = 0; iter_row < T; iter_row++) {
@@ -66,7 +66,7 @@ double * NR_PC_CODED_BITS_DEINTERLEAVING(double * dataBits, struct PC_CONFIG * p
         *(deintrlvMat + iter_bits) = (double *)calloc(T, sizeof(double));
     }
 
-    if (pcConfig->iBIL) {
+    if (pcConfig->UL_DL == 0) {
         cnt = 0;
 
         for (int iter_col = 0; iter_col < T; iter_col++) {
