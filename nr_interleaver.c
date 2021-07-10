@@ -11,19 +11,25 @@ int * NR_PC_CODED_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig)
 
     int ** intrlvMat = (int **)calloc(T, sizeof(int *));
 
-    for (int iter_bits = 0; iter_bits < T; iter_bits++) {
-        *(intrlvMat + iter_bits) = (int *)calloc(T, sizeof(int));
+    for (int iter_rows = 0; iter_rows < T; iter_rows++) {
+        *(intrlvMat + iter_rows) = (int *)calloc(T, sizeof(int));
+
+        for (int iter_cols = 0; iter_cols < T; iter_cols++) {
+            *(*(intrlvMat + iter_rows) + iter_cols) = -1;
+        }
     }
 
-    if (pcConfig->UL_DL == 0) {
+    if (pcConfig->iBIL == 1) {
+        if (_DEBUG_ == 1) {
+            printf("\tPeforming coded bit interleaving...\n");
+        }
+
         cnt = 0;
 
-        for (int iter_row = 0; iter_row < T; iter_row++) {
-            for (int iter_col = 0; iter_col < T-iter_row; iter_col++) {
+        for (int iter_rows = 0; iter_rows < T; iter_rows++) {
+            for (int iter_cols = 0; iter_cols < T-iter_rows; iter_cols++) {
                 if (cnt < E) {
-                    *(*(intrlvMat + iter_row) + iter_col) = *(dataBits + cnt);
-                } else {
-                    *(*(intrlvMat + iter_row) + iter_col) = -1;
+                    *(*(intrlvMat + iter_cols) + iter_rows) = *(dataBits + cnt);
                 }
                 cnt++;
             }
@@ -33,8 +39,8 @@ int * NR_PC_CODED_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig)
 
         for (int iter_col = 0; iter_col < T; iter_col++) {
             for (int iter_row = 0; iter_row < T-iter_col; iter_row++) {
-                if (*(*(intrlvMat + iter_row) + iter_col) > 0) {
-                    *(intrlvData + cnt) = *(*(intrlvMat + iter_row) + iter_col);
+                if (*(*(intrlvMat + iter_col) + iter_row) >= 0) {
+                    *(intrlvData + cnt) = *(*(intrlvMat + iter_col) + iter_row);
                     cnt++;
                 }
             }
@@ -62,30 +68,46 @@ double * NR_PC_CODED_BITS_DEINTERLEAVING(double * dataBits, struct PC_CONFIG * p
 
     double ** deintrlvMat = (double **)calloc(T, sizeof(double *));
 
-    for (int iter_bits = 0; iter_bits < T; iter_bits++) {
-        *(deintrlvMat + iter_bits) = (double *)calloc(T, sizeof(double));
+    for (int iter_row = 0; iter_row < T; iter_row++) {
+        *(deintrlvMat + iter_row) = (double *)calloc(T, sizeof(double));
+        
+        for (int iter_cols = 0; iter_cols < T; iter_cols++) {
+            *(*(deintrlvMat + iter_row) + iter_cols) = -1;
+        }
     }
 
-    if (pcConfig->UL_DL == 0) {
+    cnt = 0;
+
+    for (int iter_rows = 0; iter_rows < T; iter_rows++) {
+        for (int iter_cols = 0; iter_cols < T-iter_rows; iter_cols++) {
+            if (cnt < E) {
+                *(*(deintrlvMat + iter_cols) + iter_rows) = -2;
+            }
+            cnt++;
+        }
+    }
+
+    if (pcConfig->iBIL == 1) {
+        if (_DEBUG_ == 1) {
+            printf("\tPeforming coded bit deinterleaving...\n");
+        }
         cnt = 0;
 
-        for (int iter_col = 0; iter_col < T; iter_col++) {
-            for (int iter_row = 0; iter_row < T-iter_col; iter_row++) {
-                if (cnt < E) {
-                    *(*(deintrlvMat + iter_row) + iter_col) = *(dataBits + cnt);
-                } else {
-                    *(*(deintrlvMat + iter_row) + iter_col) = -1;
+        for (int iter_rows = 0; iter_rows < T; iter_rows++) {
+            for (int iter_cols = 0; iter_cols < T-iter_rows; iter_cols++) {
+                if (cnt < E && (*(*(deintrlvMat + iter_rows) + iter_cols) == -2)) {
+                    *(*(deintrlvMat + iter_rows) + iter_cols) = *(dataBits + cnt);
+                    cnt++;
                 }
-                cnt++;
             }
         }
 
         cnt = 0;
 
-        for (int iter_row = 0; iter_row < T; iter_row++) {
-            for (int iter_col = 0; iter_col < T-iter_row; iter_col++) {
-                if (*(*(deintrlvMat + iter_row) + iter_col) != -1) {
-                    *(deintrlvData + cnt) = *(*(deintrlvMat + iter_row) + iter_col);
+        for (int iter_cols = 0; iter_cols < T; iter_cols++) {
+            for (int iter_rows = 0; iter_rows < T-iter_cols; iter_rows++) {
+                if (*(*(deintrlvMat + iter_rows) + iter_cols) != -1) {
+                    *(deintrlvData + cnt) = *(*(deintrlvMat + iter_rows) + iter_cols);
                     cnt++;
                 }
             }

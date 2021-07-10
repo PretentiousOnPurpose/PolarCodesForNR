@@ -1,15 +1,15 @@
-#define _DEBUG_ 0
+#define _DEBUG_ 1
 
 // Polar Codes
 struct PC_CONFIG {
     int E; // Rate-Matched Output
     int K; // Input Data Block size (in bits)
     int N; // Polar Encoding Output Size
-    int n; // log2(N)
+    int n;
     int nMax; // 9 - Downlink | 10 - Uplink
     int UL_DL; // Uplink/Downlink
-    int iIL;
-    int iBIL;
+    int iIL; // Input bit interleaving
+    int iBIL; // Code bit interleaving
     int K_IL_MAX;
     int L; // List length for SCL
     int crcLen; // CRC Length

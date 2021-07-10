@@ -101,41 +101,25 @@ double * bitDeselection(double * dataBits, struct PC_CONFIG * pcConfig) {
 }
 
 int * NR_PC_RATE_MATCH(int * dataBits, struct PC_CONFIG * pcConfig) {
-    int * rateMatchedIntrlvData = NULL;
-
-    if (pcConfig->iBIL == 1) {
-
-        if (_DEBUG_ == 1) {
-            printf("Performing Rate Matching...\n");
-        }
-
-        int * subBlockIntrlvData = subBlockInterleaving(dataBits, pcConfig);
-        int * rateMatchedData = bitSelection(subBlockIntrlvData, pcConfig);
-        rateMatchedIntrlvData = rateMatchedData; //NR_PC_CODED_BITS_INTERLEAVING(rateMatchedData, pcConfig);
-    } else {
-        return dataBits;
-        pcConfig->E = pcConfig->N;
+    if (_DEBUG_ == 1) {
+        printf("Performing Rate Matching...\n");
     }
+
+    int * subBlockIntrlvData = subBlockInterleaving(dataBits, pcConfig);
+    int * rateMatchedData = bitSelection(subBlockIntrlvData, pcConfig);
+    int * rateMatchedIntrlvData = NR_PC_CODED_BITS_INTERLEAVING(rateMatchedData, pcConfig);
 
     return rateMatchedIntrlvData;
 }
 
 double * NR_PC_RATE_RECOVER(double * dataBits, struct PC_CONFIG * pcConfig) {
-    double * rateRecoveredData;
-
-    if (pcConfig->iBIL == 1) {
-
-        if (_DEBUG_ == 1) {
-            printf("Performing Rate Recovery...\n");
-        }
-
-        double * deintrlvData = dataBits; //NR_PC_CODED_BITS_DEINTERLEAVING(dataBits, pcConfig);
-        double * rateRecoveredIntrlvData = bitDeselection(deintrlvData, pcConfig);
-        rateRecoveredData = subBlockDeinterleaving(rateRecoveredIntrlvData, pcConfig);
-
-    } else {
-        return dataBits;
+    if (_DEBUG_ == 1) {
+        printf("Performing Rate Recovery...\n");
     }
+
+    double * deintrlvData = NR_PC_CODED_BITS_DEINTERLEAVING(dataBits, pcConfig);
+    double * rateRecoveredIntrlvData = bitDeselection(deintrlvData, pcConfig);
+    double * rateRecoveredData =   subBlockDeinterleaving(rateRecoveredIntrlvData, pcConfig);
 
     return rateRecoveredData;
 }

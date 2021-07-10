@@ -8,9 +8,12 @@ int main() {
 
     srand(108);
     
+    
+    struct PC_CONFIG pcConfig;
+
     // Polar Code Config
-    pcConfig.E = 144;
-    pcConfig.K = 72;
+    pcConfig.E = 12;
+    pcConfig.K = 6;
     pcConfig.nMax = 10;
     pcConfig.iBIL = 0;
     pcConfig.iIL = 0;
@@ -26,27 +29,19 @@ int main() {
     int remLen = 0;
     int err = 1;
 
-    int * dataBits = DATA_GEN(pcConfig.K); // - pcConfig.crcLen);
-    int * cp = (int * )calloc(pcConfig.K, sizeof(int));
-    ARRAY_INT_COPY(cp, dataBits, pcConfig.K);
-    int * encData = NR_PC_ENCODER(dataBits, &pcConfig);
-    PRINT_ARRAY_INT(encData, pcConfig.N);
-    double * modData = BPSK_MOD(encData, pcConfig.N);
-    PRINT_ARRAY_DOUBLE(modData, 5);
-    printf("MODATA_____END____\n");
-    double * demodData = BPSK_DEMOD(modData, pcConfig.N, pcConfig.LR_PROB_1);
-    PRINT_ARRAY_DOUBLE(demodData, 5);
-    int * dataHat = NR_PC_DECODER(demodData, &pcConfig);
+    int * dataBits = DATA_GEN(pcConfig.E); // - pcConfig.crcLen);
+    PRINT_ARRAY_INT(dataBits, pcConfig.E);
+    int * intrlvdata = NR_PC_CODED_BITS_INTERLEAVING(dataBits, &pcConfig);
+    PRINT_ARRAY_INT(intrlvdata, pcConfig.E);
 
-    err = isEqual_INT(cp, dataHat, pcConfig.K); // - pcConfig.crcLen);
-    PRINT_ARRAY_INT(cp, pcConfig.K);
-    PRINT_ARRAY_INT(dataHat, pcConfig.K);
+    double * dd = (double *)calloc(pcConfig.E, sizeof(double));
 
-    if (err == 0) {
-        printf("Successful Transmission\n");
-    } else {
-        printf("Corrupted Reception\n");
+    for (int i = 0; i < pcConfig.E; i++) {
+        *(dd + i) = (double)intrlvdata[i];
     }
+
+    double * deintrlvdata = NR_PC_CODED_BITS_DEINTERLEAVING(dd, &pcConfig);
+    PRINT_ARRAY_DOUBLE(deintrlvdata, pcConfig.E);
 
     return 0;
 }

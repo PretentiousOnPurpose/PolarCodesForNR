@@ -34,7 +34,7 @@ void PRINT_ARRAY_DOUBLE(double * dataBits, int numBits) {
     int iter_bits;
     
     for (iter_bits = 0; iter_bits < numBits; iter_bits++) {
-        printf("%f,", *(dataBits + iter_bits));
+        printf("%d,", (int)(*(dataBits + iter_bits)));
     }
     printf("\n");
   
