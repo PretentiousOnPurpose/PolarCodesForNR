@@ -1,4 +1,4 @@
-#define _DEBUG_ 1
+#define _DEBUG_ 0
 
 // Polar Codes
 struct PC_CONFIG {

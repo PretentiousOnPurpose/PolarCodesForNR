@@ -129,18 +129,18 @@ double * NR_PC_CODED_BITS_DEINTERLEAVING(double * dataBits, struct PC_CONFIG * p
 }
 
 int * NR_PC_INPUT_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig, int FWD_BWD) {
-    if (_DEBUG_ == 1 && FWD_BWD == 0) {
-        printf("Peforming Input bit interleaving...\n");
-    }
-
-    if (_DEBUG_ == 1 && FWD_BWD == 1) {
-        printf("Peforming Input bit deinterleaving...\n");
-    }
-
     int * dataOut = (int *)calloc(pcConfig->K, sizeof(int));
     int cnt = 0;
     
-    if (pcConfig->iIL) {
+    if (pcConfig->iIL == 1) {
+        if (_DEBUG_ == 1 && FWD_BWD == 0) {
+            printf("Peforming Input bit interleaving...\n");
+        }
+
+        if (_DEBUG_ == 1 && FWD_BWD == 1) {
+            printf("Peforming Input bit deinterleaving...\n");
+        }
+        
         for (int iter_bits = 0; iter_bits < pcConfig->K_IL_MAX; iter_bits++) {
             if (*(INPUT_INTERLEAVE_PATTERN + iter_bits) >= pcConfig->K_IL_MAX - pcConfig->K) {
                 if (FWD_BWD == 0) {

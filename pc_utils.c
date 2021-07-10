@@ -14,7 +14,7 @@ int * DATA_GEN(int numBits) {
     int * dataBits = (int *)calloc(numBits, sizeof(int));
 
     for (iter_bits = 0; iter_bits < numBits; iter_bits++) {
-        *(dataBits + iter_bits) = rand() % 2;
+        *(dataBits + iter_bits) = 1; //rand() % 2;
     }
 
     return dataBits;
