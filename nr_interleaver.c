@@ -37,10 +37,10 @@ int * NR_PC_CODED_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig)
 
         cnt = 0;
 
-        for (int iter_col = 0; iter_col < T; iter_col++) {
-            for (int iter_row = 0; iter_row < T-iter_col; iter_row++) {
-                if (*(*(intrlvMat + iter_col) + iter_row) >= 0) {
-                    *(intrlvData + cnt) = *(*(intrlvMat + iter_col) + iter_row);
+        for (int iter_cols = 0; iter_cols < T; iter_cols++) {
+            for (int iter_rows = 0; iter_rows < T-iter_cols; iter_rows++) {
+                if (*(*(intrlvMat + iter_cols) + iter_rows) >= 0) {
+                    *(intrlvData + cnt) = *(*(intrlvMat + iter_cols) + iter_rows);
                     cnt++;
                 }
             }
@@ -52,8 +52,8 @@ int * NR_PC_CODED_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig)
         }
     }
 
-    for (int iter_bits = 0; iter_bits < T; iter_bits++) {
-        free(*(intrlvMat + iter_bits));
+    for (int iter_rows = 0; iter_rows < T; iter_rows++) {
+        free(*(intrlvMat + iter_rows));
     }
 
     free(intrlvMat);
@@ -68,11 +68,11 @@ double * NR_PC_CODED_BITS_DEINTERLEAVING(double * dataBits, struct PC_CONFIG * p
 
     double ** deintrlvMat = (double **)calloc(T, sizeof(double *));
 
-    for (int iter_row = 0; iter_row < T; iter_row++) {
-        *(deintrlvMat + iter_row) = (double *)calloc(T, sizeof(double));
+    for (int iter_rows = 0; iter_rows < T; iter_rows++) {
+        *(deintrlvMat + iter_rows) = (double *)calloc(T, sizeof(double));
         
         for (int iter_cols = 0; iter_cols < T; iter_cols++) {
-            *(*(deintrlvMat + iter_row) + iter_cols) = -1;
+            *(*(deintrlvMat + iter_rows) + iter_cols) = -1;
         }
     }
 
@@ -119,8 +119,8 @@ double * NR_PC_CODED_BITS_DEINTERLEAVING(double * dataBits, struct PC_CONFIG * p
         }
     }
 
-    for (int iter_bits = 0; iter_bits < T; iter_bits++) {
-        free(*(deintrlvMat + iter_bits));
+    for (int iter_rows = 0; iter_rows < T; iter_rows++) {
+        free(*(deintrlvMat + iter_rows));
     }
 
     free(deintrlvMat);
