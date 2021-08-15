@@ -34,7 +34,11 @@ int * NR_PC_GET_REL_SEQ(struct PC_CONFIG * pcConfig) {
     int N = pcConfig->N, E = pcConfig->E, K = pcConfig->K;
     NR_PC_GET_N(pcConfig);
 
+    int rel_seq_tmp2_len = 0;
+
     int * rel_seq = (int *)calloc(K, sizeof(int));
+    int * rel_seq_tmp2 = (int *)calloc(N, sizeof(int));
+
     int * subBlockIntrlvPattern = subBlockInterleavePattern(N);
     int * rel_seq_tmp = (int * )calloc(N, sizeof(int));
 
@@ -53,10 +57,19 @@ int * NR_PC_GET_REL_SEQ(struct PC_CONFIG * pcConfig) {
     if (E < N) {
         if ((double)K / E <= (double)7/16) {
             for (int iter_bits = 0; iter_bits < N-E; iter_bits++) {
-                
+                rel_seq_tmp2 = unionElToArray(rel_seq_tmp2, N, *(subBlockIntrlvPattern + iter_bits), &rel_seq_tmp2_len);
             }
-        } else {
 
+            if (E >= 3 * (double)N / 4) {
+                rel_seq_tmp2 = seqUnion(rel_seq_tmp2, linspace(0, (int)ceil(3*(double)*N/4 - (double)*E/2)-1), rel_seq_tmp2_len, (int)ceil(3*(double)*N/4 - (double)*E/2), &rel_seq_tmp2_len);
+            } else {
+                 rel_seq_tmp2 = seqUnion(rel_seq_tmp2, linspace(0, (int)ceil(9*(double)*N/16 - (double)*E/4)-1), rel_seq_tmp2_len, (int)ceil(9*(double)*N/16 - (double)*E/4), &rel_seq_tmp2_len);               
+            }
+
+        } else {
+            for (int iter_bits = E; iter_bits < N; iter_bits++) {
+                rel_seq_tmp2 = unionElToArray(rel_seq_tmp2, N, *(subBlockIntrlvPattern + iter_bits), &rel_seq_tmp2_len);
+            }
         }
     }
 

@@ -401,6 +401,8 @@ int * seqUnion(int seq1, int seq2, int L1, int L2, int * L) {
         *(master_seq + iter_bits) = *(master_seq_tmp);
     }
 
+    free(master_seq_tmp)
+
     return master_seq;
 }
 
@@ -413,3 +415,21 @@ int isElementInArray(int * seq, int len, int el) {
 
     return 0;
 }
+
+int * unionElToArray(int * seq, int L, int el, int * seq_len) {
+    int * newSeq = (int *)calloc(L + 1, sizeof(int));
+
+    if (!(isElementInArray(seq, L, el))) {
+        for (int iter_seq = 0; iter_seq < L; iter_seq++) {
+            *(newSeq + iter_seq) = *(seq + iter_seq);
+        }
+
+        *(newSeq + L) = el;
+        *(seq_len) = *(seq_len) + 1;
+        
+        return newSeq;
+    }
+
+    return seq;
+}
+
