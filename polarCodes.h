@@ -44,6 +44,7 @@ int * bitSelection(int * dataBits, struct PC_CONFIG * pcConfig);
 double * bitDeselection(double * dataBits, struct PC_CONFIG * pcConfig);
 int * NR_PC_RATE_MATCH(int * dataBits, struct PC_CONFIG * pcConfig);
 double * NR_PC_RATE_RECOVER(double * dataBits, struct PC_CONFIG * pcConfig);
+int * subBlockInterleavePattern(int N);
 
 // Likelihood Calculation
 double PC_LikelihoodRatio_L(double x1, double x2);
@@ -90,3 +91,6 @@ int isEqual_DOUBLE(double * x1, double * x2, int L);
 void ARRAY_INT_COPY(int * dst, int * src, int L);
 int bitXORSum(int * x1, int * x2, int L);
 double norm(double * x, int L);
+int * linspace(int start, int stop, int step);
+int * seqUnion(int seq1, int seq2, int L1, int L2);
+int isElementInArray(int * seq, int len, int el);

@@ -5,6 +5,20 @@
 
 int SUB_BLOCK_INTERLEAVE_PATTERN[] = {0, 1, 2, 4, 3, 5, 6, 7, 8, 16, 9, 17, 10, 18, 11, 19, 12, 20, 13, 21, 14, 22, 15, 23, 24, 25, 26, 28, 27, 29, 30, 31};
 
+int * subBlockInterleavePattern(int N) {
+    if (_DEBUG_ == 1) {
+        printf("\nGenerating Sub Block Interleaving Pattern for N = %d...\n", N);
+    }
+
+    int * intrlvPattern = (int *)calloc(N, sizeof(int));
+
+    for (int iter_bits = 0; iter_bits < N; iter_bits++) {
+        *(intrlvPattern + iter_bits) = SUB_BLOCK_INTERLEAVE_PATTERN[(int)floor(32 * (double)iter_bits / N)] * N / 32 + (iter_bits % (N / 32));
+    }
+
+    return intrlvPattern;
+}
+
 int * subBlockInterleaving(int * dataBits, struct PC_CONFIG * pcConfig) {
     if (_DEBUG_ == 1) {
         printf("\tPerforming Sub Block Interleaving...\n");

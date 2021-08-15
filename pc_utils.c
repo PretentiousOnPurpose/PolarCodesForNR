@@ -364,3 +364,52 @@ void ARRAY_INT_COPY(int * dst, int * src, int L) {
         *(dst + iter) = *(src + iter);
     }
 }
+
+int * linspace(int start, int stop, int step) {
+    int len = (int)((double)(stop - start)/step + 1);
+
+    int * seq = (int *)calloc(len, sizeof(int));
+
+    for (int iter_seq = 0; iter_seq < len; iter_seq++) {
+        *(seq + iter_seq) = start + iter_seq * step;
+    }
+
+    return seq;
+}
+
+int * seqUnion(int seq1, int seq2, int L1, int L2, int * L) {
+    int iter_bits;
+    int * master_seq_tmp = (int *)calloc(L1 + L2, sizeof(int));
+    int * master_seq = NULL; (int *)calloc(L1 + L2, sizeof(int));
+
+    for (iter_bits = 0; iter_bits < L1; iter_bits++) {
+        *(master_seq_tmp + iter_bits) = *(seq1 + iter_bits);
+    }
+
+    *L = L1;
+
+    for (int iter_bits = L1; iter_bits < L1 + L2; iter_bits++) {
+        if (!(isElementInArray(seq1, L1, *(seq2 + iter_bits)))) {
+            *(master_seq_tmp + *L) = *(seq2 + iter_bits);
+            L++;
+        }
+    }
+
+    master_seq = (int *)calloc(*L, sizeof(int));
+
+    for (int iter_bits = 0; iter_bits < *L; iter_bits++) {
+        *(master_seq + iter_bits) = *(master_seq_tmp);
+    }
+
+    return master_seq;
+}
+
+int isElementInArray(int * seq, int len, int el) {
+    for (int iter_seq = 0; iter_seq < len; iter_seq++) {
+        if (*(seq + iter_seq) == el) {
+            return 1;
+        }
+    }
+
+    return 0;
+}

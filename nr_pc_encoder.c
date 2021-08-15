@@ -30,27 +30,37 @@ int * NR_PC_GET_FROZEN_POS(struct PC_CONFIG * pcConfig) {
 
 
 int * NR_PC_GET_REL_SEQ(struct PC_CONFIG * pcConfig) {
-    int iter_seq = 0, iter_master_seq = 0, iter_bits;
-
+    int iter_seq = 0, iter_master_seq = 0;
+    int N = pcConfig->N, E = pcConfig->E, K = pcConfig->K;
     NR_PC_GET_N(pcConfig);
 
-    int * rel_seq = (int *)calloc(pcConfig->K, sizeof(int));
+    int * rel_seq = (int *)calloc(K, sizeof(int));
+    int * subBlockIntrlvPattern = subBlockInterleavePattern(N);
+    int * rel_seq_tmp = (int * )calloc(N, sizeof(int));
 
-    int * rel_seq_tmp = (int * )calloc(pcConfig->N, sizeof(int));
-
-    while (iter_seq < pcConfig->N) {
-        if (MASTER_REL_SEQ[iter_master_seq] < pcConfig->N) {
+    while (iter_seq < N) {
+        if (MASTER_REL_SEQ[iter_master_seq] < N) {
             *(rel_seq_tmp + iter_seq) = MASTER_REL_SEQ[iter_master_seq];
             iter_seq++;
         }
         iter_master_seq++;
     }
 
-    for (iter_bits = 0; iter_bits < pcConfig->K; iter_bits++) {
-        *(rel_seq + iter_bits) = *(rel_seq_tmp + pcConfig->N - pcConfig->K + iter_bits);
+    for (int iter_bits = 0; iter_bits < K; iter_bits++) {
+        *(rel_seq + iter_bits) = *(rel_seq_tmp + N - K + iter_bits);
     }
 
-    rel_seq = mergeSort(rel_seq, pcConfig->K);
+    if (E < N) {
+        if ((double)K / E <= (double)7/16) {
+            for (int iter_bits = 0; iter_bits < N-E; iter_bits++) {
+                
+            }
+        } else {
+
+        }
+    }
+
+    rel_seq = mergeSort(rel_seq, K);
 
     free(rel_seq_tmp);
     return rel_seq;
