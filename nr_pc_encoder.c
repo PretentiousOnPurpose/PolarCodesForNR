@@ -30,7 +30,7 @@ int * NR_PC_GET_FROZEN_POS(struct PC_CONFIG * pcConfig) {
 
 
 int * NR_PC_GET_REL_SEQ(struct PC_CONFIG * pcConfig) {
-    int iter_seq = 0, iter_master_seq = 0;
+    int iter_seq = 0, iter_master_seq = 0, cntBitLoc = 0, tmpVar = 0;
     int N = pcConfig->N, E = pcConfig->E, K = pcConfig->K;
     NR_PC_GET_N(pcConfig);
 
@@ -50,9 +50,10 @@ int * NR_PC_GET_REL_SEQ(struct PC_CONFIG * pcConfig) {
         iter_master_seq++;
     }
 
-    for (int iter_bits = 0; iter_bits < K; iter_bits++) {
-        *(rel_seq + iter_bits) = *(rel_seq_tmp + N - K + iter_bits);
-    }
+    // for (int iter_bits = 0; iter_bits < K; iter_bits++) {
+    //     *(rel_seq + iter_bits) = *(rel_seq_tmp + N - K + iter_bits);
+    // }
+
 
     if (E < N) {
         if ((double)K / E <= (double)7/16) {
@@ -71,6 +72,22 @@ int * NR_PC_GET_REL_SEQ(struct PC_CONFIG * pcConfig) {
                 rel_seq_tmp2 = unionElToArray(rel_seq_tmp2, N, *(subBlockIntrlvPattern + iter_bits), &rel_seq_tmp2_len);
             }
         }
+    }
+
+
+    for (int iter_bits = 0; iter_bits < N; iter_bits++) {
+        tmpVar = *(rel_seq_tmp + N - iter_bits);
+
+        if (isElementInArray(rel_seq_tmp2, rel_seq_tmp2_len, tmpVar)) {
+            continue;
+        }
+
+        cntPosLoc++;        
+        *(rel_seq + cntPosLoc) = tmpVar;
+
+        if (cntPosLoc == K) {
+            break;
+        }        
     }
 
     rel_seq = mergeSort(rel_seq, K);
