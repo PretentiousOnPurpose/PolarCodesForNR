@@ -94,4 +94,4 @@ double norm(double * x, int L);
 int * linspace(int start, int stop, int step);
 int * seqUnion(int seq1, int seq2, int L1, int L2, int * L);
 int isElementInArray(int * seq, int len, int el);
-int * unionElToArray(int * seq, int L, int el);
+int * unionElToArray(int * seq, int L, int el, int * seq_len);

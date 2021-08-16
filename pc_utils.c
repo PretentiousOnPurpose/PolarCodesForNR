@@ -401,7 +401,7 @@ int * seqUnion(int seq1, int seq2, int L1, int L2, int * L) {
         *(master_seq + iter_bits) = *(master_seq_tmp);
     }
 
-    free(master_seq_tmp)
+    free(master_seq_tmp);
 
     return master_seq;
 }

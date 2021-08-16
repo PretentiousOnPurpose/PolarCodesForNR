@@ -62,9 +62,9 @@ int * NR_PC_GET_REL_SEQ(struct PC_CONFIG * pcConfig) {
             }
 
             if (E >= 3 * (double)N / 4) {
-                rel_seq_tmp2 = seqUnion(rel_seq_tmp2, linspace(0, (int)ceil(3*(double)*N/4 - (double)*E/2)-1), rel_seq_tmp2_len, (int)ceil(3*(double)*N/4 - (double)*E/2), &rel_seq_tmp2_len);
+                rel_seq_tmp2 = seqUnion(rel_seq_tmp2, linspace(0, (int)ceil(3*(double)N/4 - (double)E/2)-1), rel_seq_tmp2_len, (int)ceil(3*(double)N/4 - (double)E/2), &rel_seq_tmp2_len);
             } else {
-                 rel_seq_tmp2 = seqUnion(rel_seq_tmp2, linspace(0, (int)ceil(9*(double)*N/16 - (double)*E/4)-1), rel_seq_tmp2_len, (int)ceil(9*(double)*N/16 - (double)*E/4), &rel_seq_tmp2_len);               
+                 rel_seq_tmp2 = seqUnion(rel_seq_tmp2, linspace(0, (int)ceil(9*(double)N/16 - (double)E/4)-1), rel_seq_tmp2_len, (int)ceil(9*(double)N/16 - (double)E/4), &rel_seq_tmp2_len);               
             }
 
         } else {
@@ -82,10 +82,10 @@ int * NR_PC_GET_REL_SEQ(struct PC_CONFIG * pcConfig) {
             continue;
         }
 
-        cntPosLoc++;        
-        *(rel_seq + cntPosLoc) = tmpVar;
+        cntBitLoc++;        
+        *(rel_seq + cntBitLoc) = tmpVar;
 
-        if (cntPosLoc == K) {
+        if (cntBitLoc == K) {
             break;
         }        
     }
@@ -93,6 +93,8 @@ int * NR_PC_GET_REL_SEQ(struct PC_CONFIG * pcConfig) {
     rel_seq = mergeSort(rel_seq, K);
 
     free(rel_seq_tmp);
+    free(rel_seq_tmp2);
+    
     return rel_seq;
 
 }
