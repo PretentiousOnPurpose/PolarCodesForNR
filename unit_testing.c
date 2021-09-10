@@ -1,47 +1,79 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
-#include <math.h>
-#include "polarCodes.h"
 
-int main() {
-    pcConfig.E = 144;
-    pcConfig.K = 72;
-    pcConfig.nMax = 10;
-    pcConfig.iBIL = 0;
-    pcConfig.iIL = 0;
-    pcConfig.UL_DL = 0;
-    pcConfig.L = 8;
-    pcConfig.crcLen = 11;
-    pcConfig.crcPolyID = 5; 
-    pcConfig.decodingMethod = 0;
-    pcConfig.K_IL_MAX = 164;
-    pcConfig.LR_PROB_1 = 1;
-
-    int err = 0;
-
-    int * cp = (int *)calloc(72, sizeof(int));
-
-    int * dataBits = DATA_GEN(pcConfig.K);
-    PRINT_ARRAY_INT(dataBits, pcConfig.K);
-    printf("\nDATA\n\n");
-
-    ARRAY_INT_COPY(cp, dataBits, pcConfig.K);
-
-    int * encData = NR_PC_ENCODER(dataBits, &pcConfig);
-    PRINT_ARRAY_INT(encData, pcConfig.N);
-    printf("\nENC_DATA\n\n");
-
-    double * modData = BPSK_MOD(dataBits, pcConfig.N);
-    double * demodData = BPSK_DEMOD(modData, pcConfig.N, 0);
-
-    int * decData = NR_PC_DECODER(demodData, &pcConfig);
-    PRINT_ARRAY_INT(decData, pcConfig.K);
-    printf("\nDEC_DATA\n");
+void PRINT_ARRAY_INT(int * dataBits, int numBits) {
+    int iter_bits;
     
-    err = isEqual_INT(decData, cp, pcConfig.K);
+    for (iter_bits = 0; iter_bits < numBits; iter_bits++) {
+        printf("%d,", *(dataBits + iter_bits));
+    }
+    printf("\n");
+  
+}
 
-    printf("Result: %d\n", err);
+int isElementInArray(int * seq, int len, int el) {
+    for (int iter_seq = 0; iter_seq < len; iter_seq++) {
+        if (*(seq + iter_seq) == el) {
+            return 1;
+        }
+    }
 
     return 0;
 }
+
+int * seqUnion(int * seq1, int * seq2, int L1, int L2, int * L) {
+    int iter_bits;
+    int * master_seq_tmp = (int *)calloc(L1 + L2, sizeof(int));
+    int * master_seq = NULL; //(int *)calloc(L1 + L2, sizeof(int));
+
+    for (iter_bits = 0; iter_bits < L1; iter_bits++) {
+        *(master_seq_tmp + iter_bits) = *(seq1 + iter_bits);
+    }
+
+    *L = L1;
+
+    for (int iter_bits = L1; iter_bits < L1 + L2; iter_bits++) {
+        if (!(isElementInArray(seq1, L1, *(seq2 + iter_bits - L1)))) {
+            *(master_seq_tmp + *L) = *(seq2 + iter_bits - L1);
+            *L = *L + 1;
+        }
+    }
+
+    master_seq = (int *)calloc(*L, sizeof(int));
+
+    for (int iter_bits = 0; iter_bits < *L; iter_bits++) {
+        *(master_seq + iter_bits) = *(master_seq_tmp);
+    }
+
+    free(master_seq_tmp);
+
+    return master_seq;
+}
+
+
+int main(void) {
+	// your code goes here
+	
+	int * a1 = (int *)calloc(4, sizeof(int));
+	a1[0] = 1;
+	a1[1] = 4;
+	a1[2] = 6;
+	a1[3] = 10;
+
+	int * a2 = (int *)calloc(6, sizeof(int));
+	a2[0] = 1;
+	a2[1] = 4;
+	a2[2] = 6;
+	a2[3] = 10;
+	a2[4] = 13;
+	a2[5] = 18;
+
+    int a = 0;
+
+    int * a3 = seqUnion(a1, a2, 4, 6, &a);
+
+    printf("Element is Present: %d\n", isElementInArray(a1, 4, 0));	
+    printf("Element is Present: %d\n", isElementInArray(a2, 6, 13));	
+	return 0;
+}
+

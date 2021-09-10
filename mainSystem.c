@@ -11,8 +11,8 @@ int main() {
     struct PC_CONFIG pcConfig;
 
     // Polar Code Config
-    pcConfig.E = 100;
-    pcConfig.K = 72;
+    pcConfig.E = 94;
+    pcConfig.K = 28;
     pcConfig.nMax = 9;
     pcConfig.iBIL = 0;
     pcConfig.iIL = 0;

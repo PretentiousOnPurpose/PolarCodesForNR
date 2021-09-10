@@ -389,9 +389,9 @@ int * seqUnion(int * seq1, int * seq2, int L1, int L2, int * L) {
     *L = L1;
 
     for (int iter_bits = L1; iter_bits < L1 + L2; iter_bits++) {
-        if (!(isElementInArray(seq1, L1, *(seq2 + iter_bits)))) {
-            *(master_seq_tmp + *L) = *(seq2 + iter_bits);
-            L++;
+        if (!(isElementInArray(seq1, L1, *(seq2 + iter_bits - L1)))) {
+            *(master_seq_tmp + *L) = *(seq2 + iter_bits - L1);
+            *L = *L + 1;
         }
     }
 
