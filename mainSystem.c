@@ -15,7 +15,7 @@ int main() {
     pcConfig.K = 72;
     pcConfig.nMax = 9;
     pcConfig.iBIL = 0;
-    pcConfig.iIL = 1;
+    pcConfig.iIL = 0;
     pcConfig.K_IL_MAX = 164;
     pcConfig.UL_DL = 0;
     pcConfig.L = 8;
@@ -42,10 +42,10 @@ int main() {
     PRINT_ARRAY_INT(crcData, pcConfig.K);
     int * encData = NR_PC_ENCODER(crcData, &pcConfig);
     PRINT_ARRAY_INT(encData, pcConfig.N);
-    printf("\n\n\n");
-    PRINT_ARRAY_INT(subBlockInterleavePattern(128), pcConfig.N);
-    // int * rateMatcData = NR_PC_RATE_MATCH(encData, &pcConfig);
-    // PRINT_ARRAY_INT(rateMatcData, pcConfig.E);
+    // printf("\n\n\n");
+    // PRINT_ARRAY_INT(subBlockInterleavePattern(128), pcConfig.N);
+    int * rateMatcData = NR_PC_RATE_MATCH(encData, &pcConfig);
+    PRINT_ARRAY_INT(rateMatcData, pcConfig.E);
 
     // double * modData = BPSK_MOD(rateMatcData, pcConfig.E);
     // if (_DEBUG_ == 1) {

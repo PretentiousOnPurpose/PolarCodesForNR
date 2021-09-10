@@ -31,13 +31,13 @@ int * NR_PC_GET_FROZEN_POS(struct PC_CONFIG * pcConfig) {
 
 int * NR_PC_GET_REL_SEQ(struct PC_CONFIG * pcConfig) {
     int iter_seq = 0, iter_master_seq = 0, cntBitLoc = 0, tmpVar = 0;
-    int N = pcConfig->N, E = pcConfig->E, K = pcConfig->K;
     NR_PC_GET_N(pcConfig);
+    int N = pcConfig->N, E = pcConfig->E, K = pcConfig->K;
 
     int rel_seq_tmp2_len = 0;
 
     int * rel_seq = (int *)calloc(K, sizeof(int));
-    int * rel_seq_tmp2 = (int *)calloc(N, sizeof(int));
+    int * rel_seq_tmp2 = NULL; //(int *)calloc(N, sizeof(int));
 
     int * subBlockIntrlvPattern = subBlockInterleavePattern(N);
     int * rel_seq_tmp = (int * )calloc(N, sizeof(int));
@@ -50,11 +50,6 @@ int * NR_PC_GET_REL_SEQ(struct PC_CONFIG * pcConfig) {
         iter_master_seq++;
     }
 
-    // for (int iter_bits = 0; iter_bits < K; iter_bits++) {
-    //     *(rel_seq + iter_bits) = *(rel_seq_tmp + N - K + iter_bits);
-    // }
-
-
     if (E < N) {
         if ((double)K / E <= (double)7/16) {
             for (int iter_bits = 0; iter_bits < N-E; iter_bits++) {
@@ -62,28 +57,30 @@ int * NR_PC_GET_REL_SEQ(struct PC_CONFIG * pcConfig) {
             }
 
             if (E >= 3 * (double)N / 4) {
-                rel_seq_tmp2 = seqUnion(rel_seq_tmp2, linspace(0, (int)ceil(3*(double)N/4 - (double)E/2)-1), rel_seq_tmp2_len, (int)ceil(3*(double)N/4 - (double)E/2), &rel_seq_tmp2_len);
+                rel_seq_tmp2 = seqUnion(rel_seq_tmp2, linspace(0, (int)ceil(3*(double)N/4 - (double)E/2)-1, 1), rel_seq_tmp2_len, (int)ceil(3*(double)N/4 - (double)E/2), &rel_seq_tmp2_len);
             } else {
-                 rel_seq_tmp2 = seqUnion(rel_seq_tmp2, linspace(0, (int)ceil(9*(double)N/16 - (double)E/4)-1), rel_seq_tmp2_len, (int)ceil(9*(double)N/16 - (double)E/4), &rel_seq_tmp2_len);               
+                 rel_seq_tmp2 = seqUnion(rel_seq_tmp2, linspace(0, (int)ceil(9*(double)N/16 - (double)E/4)-1, 1), rel_seq_tmp2_len, (int)ceil(9*(double)N/16 - (double)E/4), &rel_seq_tmp2_len);               
             }
 
         } else {
+            rel_seq_tmp2 = (int *)calloc(N-E, sizeof(int));
+            rel_seq_tmp2_len = N-E;
             for (int iter_bits = E; iter_bits < N; iter_bits++) {
-                rel_seq_tmp2 = unionElToArray(rel_seq_tmp2, N, *(subBlockIntrlvPattern + iter_bits), &rel_seq_tmp2_len);
+                *(rel_seq_tmp2 + iter_bits - E) = *(subBlockIntrlvPattern + iter_bits);
             }
+
         }
     }
 
-
     for (int iter_bits = 0; iter_bits < N; iter_bits++) {
-        tmpVar = *(rel_seq_tmp + N - iter_bits);
+        tmpVar = *(rel_seq_tmp + N - iter_bits - 1);
 
         if (isElementInArray(rel_seq_tmp2, rel_seq_tmp2_len, tmpVar)) {
             continue;
         }
 
-        cntBitLoc++;        
         *(rel_seq + cntBitLoc) = tmpVar;
+        cntBitLoc++;
 
         if (cntBitLoc == K) {
             break;

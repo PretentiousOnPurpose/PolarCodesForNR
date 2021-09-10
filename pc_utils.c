@@ -377,10 +377,10 @@ int * linspace(int start, int stop, int step) {
     return seq;
 }
 
-int * seqUnion(int seq1, int seq2, int L1, int L2, int * L) {
+int * seqUnion(int * seq1, int * seq2, int L1, int L2, int * L) {
     int iter_bits;
     int * master_seq_tmp = (int *)calloc(L1 + L2, sizeof(int));
-    int * master_seq = NULL; (int *)calloc(L1 + L2, sizeof(int));
+    int * master_seq = NULL; //(int *)calloc(L1 + L2, sizeof(int));
 
     for (iter_bits = 0; iter_bits < L1; iter_bits++) {
         *(master_seq_tmp + iter_bits) = *(seq1 + iter_bits);
