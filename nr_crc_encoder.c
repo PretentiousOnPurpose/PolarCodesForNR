@@ -46,10 +46,10 @@ int * NR_CRC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig) {
     // Appending Remainder to the Message Bits
     for (iter_bits = 0; iter_bits < (pcConfig->K - pcConfig->crcLen); iter_bits++) {
         *(crcEncOut + iter_bits) = *(dataBits + iter_bits);
+    }
 
-        if (iter_bits < pcConfig->crcLen) {
-            *(crcEncOut + iter_bits + pcConfig->K - pcConfig->crcLen) = *(rem + iter_bits);    
-        }
+    for (iter_bits = 0; iter_bits < pcConfig->crcLen; iter_bits++) {
+        *(crcEncOut + (pcConfig->K - pcConfig->crcLen) + iter_bits) = *(rem + iter_bits);
     }
 
     return crcEncOut;

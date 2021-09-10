@@ -19,8 +19,8 @@ int main() {
     pcConfig.K_IL_MAX = 164;
     pcConfig.UL_DL = 0;
     pcConfig.L = 8;
-    pcConfig.crcLen = 24;
-    pcConfig.crcPolyID = 1; 
+    pcConfig.crcLen = 11;
+    pcConfig.crcPolyID = 5; 
     pcConfig.decodingMethod = 1;
     pcConfig.iter_BP = 10;
     pcConfig.LR_PROB_1 = 1;
@@ -40,12 +40,12 @@ int main() {
     PRINT_ARRAY_INT(dataBits, pcConfig.K - pcConfig.crcLen);
     int * crcData = NR_CRC_ENCODER(dataBits, &pcConfig);
     PRINT_ARRAY_INT(crcData, pcConfig.K);
-    int * encData = NR_PC_ENCODER(crcData, &pcConfig);
-    PRINT_ARRAY_INT(encData, pcConfig.N);
-    // printf("\n\n\n");
-    // PRINT_ARRAY_INT(subBlockInterleavePattern(128), pcConfig.N);
-    int * rateMatcData = NR_PC_RATE_MATCH(encData, &pcConfig);
-    PRINT_ARRAY_INT(rateMatcData, pcConfig.E);
+    // int * encData = NR_PC_ENCODER(crcData, &pcConfig);
+    // PRINT_ARRAY_INT(encData, pcConfig.N);
+    // // printf("\n\n\n");
+    // // PRINT_ARRAY_INT(subBlockInterleavePattern(128), pcConfig.N);
+    // int * rateMatcData = NR_PC_RATE_MATCH(encData, &pcConfig);
+    // PRINT_ARRAY_INT(rateMatcData, pcConfig.E);
 
     // double * modData = BPSK_MOD(rateMatcData, pcConfig.E);
     // if (_DEBUG_ == 1) {
