@@ -159,6 +159,6 @@ int * NR_PC_INPUT_BITS_INTERLEAVING(int * dataBits, struct PC_CONFIG * pcConfig,
     }
 
     free(dataBits);
-    // exit(0);
+    
     return dataOut;
 }

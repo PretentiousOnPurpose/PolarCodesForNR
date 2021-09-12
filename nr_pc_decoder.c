@@ -163,20 +163,16 @@ int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
         // Perform Successive Cancellation (SC) Decoding
         SC_DECODER(rxLR, pcConfig->N, rxBitsMat, rxLen, frozen_pos);
 
-        for (iter_step = 0; iter_step < pcConfig->n; iter_step++) {
-            free(*(rxBitsMat + iter_step));
-        }
-
         // Extracting Data from Informatiom Bit Positions
         for (iter_bits = 0; iter_bits < pcConfig->K; iter_bits++) {
             *(intrlvData + iter_bits) = *(*(rxBitsMat) + *(rel_seq + iter_bits));
         }
+        
+        for (iter_step = 0; iter_step < pcConfig->n; iter_step++) {
+            free(*(rxBitsMat + iter_step));
+        }
 
-        // for (iter_step = 0; iter_step < pcConfig->n; iter_step++) {
-        //     free(*(rxBitsMat + iter_step));
-        // }
-
-        // free(rxBitsMat);
+        free(rxBitsMat);
         free(rxLen);
 
     } else if (pcConfig->decodingMethod == 2) {
