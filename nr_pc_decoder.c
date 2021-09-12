@@ -180,8 +180,8 @@ int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
         free(rxLen);
 
     } else if (pcConfig->decodingMethod == 2) {
-        // Perform SC List Decoding
-        // decData = SCL_DECODER(rxLR, pcConfig);
+        // Perform BP List Decoding
+        // decData = BPL_DECODER(rxLR, pcConfig);
     } else {
         double ** rxBeliefsMat = (double **)calloc(pcConfig->n + 1, sizeof(double));
 
