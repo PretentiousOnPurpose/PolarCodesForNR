@@ -51,16 +51,11 @@ double PC_LikelihoodRatio_L(double x1, double x2);
 double PC_LikelihoodRatio_R(double x1, double x2, int bit);
 int PC_LLR_TO_BIT(double rxLR);
 double * LR_TO_PROB(double * rxLR, int L);
-double PROB_A_B_EQ(double P1, double P2);
-double PROB_A_B_XOR(double P1, double P2);
 
 // Successive Cancellation (SC) and SC List Decoder 
 void SC_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen, int * frozen_pos);
 int * SCL_DECODER(double * rxLR, struct PC_CONFIG * pcConfig);
 
-// Belief Propagation Decoder
-void BP_ProcessUnit(double ** rxBeliefsMat, int currStep, int ind1, int ind2, int * frozen_pos);
-void BP_DECODER(double ** rxBeliefsMat, int L, int * frozen_pos, int iter_BP);
 
 // BPSK Modulation and LLR based Demodulation
 double * BPSK_MOD(int * dataBits, int L);

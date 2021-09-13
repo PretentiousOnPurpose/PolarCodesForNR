@@ -93,51 +93,6 @@ double * LR_TO_PROB(double * rxLR, int L) {
     return rxProb;
 }
 
-double PROB_A_B_EQ(double P1, double P2) {
-    double P_1 = P1 * P2;
-    P_1 = P_1 / (P_1 + ((1 - P1) * (1 - P2)));
-
-    return P_1;
-}
-
-double PROB_A_B_XOR(double P1, double P2) {
-    double P_1 = ((1 - P1) * P2 + P1 * (1 - P2));
-    P_1 = P_1 / (P_1 + (P1 * P2 + (1 - P1) * (1 - P2)));
-
-    return P_1;
-}
-
-void BP_ProcessUnit(double ** rxBeliefsMat, int currStep, int ind1, int ind2, int * frozen_pos) {
-    *(*(rxBeliefsMat + currStep - 1) + ind1) = PROB_A_B_XOR(*(*(rxBeliefsMat + currStep) + ind1), PROB_A_B_EQ(*(*(rxBeliefsMat + currStep) + ind2), *(*(rxBeliefsMat + currStep - 1) + ind2)));
-    *(*(rxBeliefsMat + currStep - 1) + ind2) = (*(*(rxBeliefsMat + currStep) + ind2));
-
-    if (*(frozen_pos + ind1) && currStep == 1) {
-        *(*(rxBeliefsMat + currStep - 1) + ind1) = 0;
-    }
-
-    if (*(frozen_pos + ind2) && currStep == 1) {
-        *(*(rxBeliefsMat + currStep - 1) + ind2) = 0;
-    }
-
-}
-
-
-void BP_DECODER(double ** rxBeliefsMat, int L, int * frozen_pos, int iter_BP) {
-    int iter, iter_step, iter_group, iter_LR, n = (int)log2(L);
-
-    for (iter = 0; iter < iter_BP; iter++) {
-        // Backward Message Passing
-        for (iter_step = n; iter_step >= 1; iter_step--) {
-            for (iter_group = 0; iter_group < (1 << (n - iter_step)); iter_group++) {
-                for (iter_LR = 0; iter_LR < (1 << (iter_step - 1)); iter_LR++) {
-                    BP_ProcessUnit(rxBeliefsMat, iter_step, iter_LR + iter_group * (1 << iter_step), iter_LR + iter_group * (1 << iter_step) + (1 << (iter_step - 1)), frozen_pos);
-                }
-            }
-        }
-    }
-}
-
-
 int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
     if (_DEBUG_ == 1) {
         printf("Peforming polar decoding...\n");
@@ -176,36 +131,9 @@ int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
         free(rxLen);
 
     } else if (pcConfig->decodingMethod == 2) {
-        // Perform BP List Decoding
-        // decData = BPL_DECODER(rxLR, pcConfig);
-    } else {
-        double ** rxBeliefsMat = (double **)calloc(pcConfig->n + 1, sizeof(double));
-
-        for (iter_step = 0; iter_step < pcConfig->n; iter_step++) {
-            *(rxBeliefsMat + iter_step) = (double *)calloc(pcConfig->N, sizeof(double));
-
-            for (iter_bits = 0; iter_bits < pcConfig->N; iter_bits++) {
-                *(*(rxBeliefsMat + iter_step) + iter_bits) = 1.0;
-            }
-        }
-
-        *(rxBeliefsMat + pcConfig->n) = rxLR;
-
-        // Perform Belief Propagation (BP) based List Decoding
-        BP_DECODER(rxBeliefsMat, pcConfig->N, frozen_pos, pcConfig->iter_BP);
-
-        // Extracting Data from Informatiom Bit Positions
-        for (iter_bits = 0; iter_bits < pcConfig->K; iter_bits++) {
-            if (*(*(rxBeliefsMat) + *(rel_seq + iter_bits)) >= 0.5) {
-                *(intrlvData + iter_bits) = 1;
-            }
-        }
-        
-        for (iter_step = 0; iter_step < pcConfig->n + 1; iter_step++) {
-            free(*(rxBeliefsMat + iter_step));
-        }
-
-        free(rxBeliefsMat);
+        // CRC-aided Belief Propagation List Decoder
+    } else if (pcConfig->decodingMethod == 3) {
+        // CRC-aided Successive Cancellation List Decoder
     }
 
     dataBits = NR_PC_INPUT_BITS_INTERLEAVING(intrlvData, pcConfig, 1);
