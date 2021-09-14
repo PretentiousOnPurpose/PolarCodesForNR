@@ -49,11 +49,11 @@ int * subBlockInterleavePattern(int N);
 // Likelihood Calculation
 double PC_LikelihoodRatio_L(double x1, double x2);
 double PC_LikelihoodRatio_R(double x1, double x2, int bit);
-int PC_LLR_TO_BIT(double rxLR);
+double PC_LLR_TO_BIT(double rxLR);
 double * LR_TO_PROB(double * rxLR, int L);
 
 // Successive Cancellation (SC) and SC List Decoder 
-void SC_DECODER(double * rxLR, int L, int ** rxBitsMat, int * rxLen, int * frozen_pos);
+void SC_DECODER(double * rxLR, int L, double ** rxBitsMat, int * rxLen, int * frozen_pos);
 int * SCL_DECODER(double * rxLR, struct PC_CONFIG * pcConfig);
 
 

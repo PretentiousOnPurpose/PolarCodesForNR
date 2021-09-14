@@ -1,79 +1,182 @@
-// #include <stdio.h>
-// #include <stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include "polarCodes.h"
 
-// void PRINT_ARRAY_INT(int * dataBits, int numBits) {
-//     int iter_bits;
-    
-//     for (iter_bits = 0; iter_bits < numBits; iter_bits++) {
-//         printf("%d,", *(dataBits + iter_bits));
-//     }
-//     printf("\n");
-  
-// }
-
-// int isElementInArray(int * seq, int len, int el) {
-//     for (int iter_seq = 0; iter_seq < len; iter_seq++) {
-//         if (*(seq + iter_seq) == el) {
-//             return 1;
-//         }
-//     }
-
-//     return 0;
-// }
-
-// int * seqUnion(int * seq1, int * seq2, int L1, int L2, int * L) {
-//     int iter_bits;
-//     int * master_seq_tmp = (int *)calloc(L1 + L2, sizeof(int));
-//     int * master_seq = NULL; //(int *)calloc(L1 + L2, sizeof(int));
-
-//     for (iter_bits = 0; iter_bits < L1; iter_bits++) {
-//         *(master_seq_tmp + iter_bits) = *(seq1 + iter_bits);
-//     }
-
-//     *L = L1;
-
-//     for (int iter_bits = L1; iter_bits < L1 + L2; iter_bits++) {
-//         if (!(isElementInArray(seq1, L1, *(seq2 + iter_bits - L1)))) {
-//             *(master_seq_tmp + *L) = *(seq2 + iter_bits - L1);
-//             *L = *L + 1;
-//         }
-//     }
-
-//     master_seq = (int *)calloc(*L, sizeof(int));
-
-//     for (int iter_bits = 0; iter_bits < *L; iter_bits++) {
-//         *(master_seq + iter_bits) = *(master_seq_tmp);
-//     }
-
-//     free(master_seq_tmp);
-
-//     return master_seq;
-// }
-
-
-// int main(void) {
-// 	// your code goes here
+double PC_LikelihoodRatio_L(double x1, double x2) {    
+    double LR = (1 + x1 * x2) / (x1 + x2);
 	
-// 	int * a1 = (int *)calloc(4, sizeof(int));
-// 	a1[0] = 1;
-// 	a1[1] = 4;
-// 	a1[2] = 6;
-// 	a1[3] = 10;
+    if (LR == 0) {
+        LR = 0.01;
+    }
 
-// 	int * a2 = (int *)calloc(6, sizeof(int));
-// 	a2[0] = 1;
-// 	a2[1] = 4;
-// 	a2[2] = 6;
-// 	a2[3] = 10;
-// 	a2[4] = 13;
-// 	a2[5] = 18;
+    if (LR > 10) {
+        LR = 10;
+    }
 
-//     int a = 0;
+    return LR;
+}
 
-//     int * a3 = seqUnion(a1, a2, 4, 6, &a);
+double PC_LikelihoodRatio_R(double x1, double x2, int bit) {
+    double LR = ((pow(x1, 1 - 2 * bit)) * x2);
 
-//     printf("Element is Present: %d\n", isElementInArray(a1, 4, 0));	
-//     printf("Element is Present: %d\n", isElementInArray(a2, 6, 13));	
-// 	return 0;
-// }
+    if (LR == 0) {
+        LR = 0.01;
+    }
 
+    if (LR > 10) {
+        LR = 10;
+    }
+
+    return LR;
+}
+
+double PC_LLR_TO_BIT(double rxLR) {
+    return 1.0 * (rxLR <= 1.0) + 0 * (rxLR > 1.0);
+}
+
+void SC_DECODER(double * rxLR, int L, double ** rxBitsMat, int * rxLen, int * frozen_pos) {
+    int * rxBits = (int *)calloc(L, sizeof(int));
+    double * rxLR_L = (double *)calloc(L/2, sizeof(double));
+    double * rxLR_R = (double *)calloc(L/2, sizeof(double));
+
+ 
+    for (int iter_lr = 0; iter_lr < L/2; iter_lr++) {
+        *(rxLR_L + iter_lr) = PC_LikelihoodRatio_L(*(rxLR + iter_lr), *(rxLR + iter_lr + L/2));
+        *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + iter_lr) = (*(rxLR_L + iter_lr));
+    }
+
+    if (L > 2) {
+        SC_DECODER(rxLR_L, L/2, rxBitsMat, rxLen, frozen_pos);
+    } else if (L == 2) {        
+        // if ((*(frozen_pos + *(rxLen + (int)log2(L/2))) == 1)) { 
+        //     *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2))) = 0;
+        // } else {
+            *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2))) = PC_LLR_TO_BIT(*(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2))));
+        // }
+    }
+
+    for (int iter_lr = 0; iter_lr < L/2; iter_lr++) {
+        *(rxLR_R + iter_lr) = PC_LikelihoodRatio_R(*(rxLR + iter_lr), *(rxLR + iter_lr + L/2), *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + iter_lr));
+        *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + L/2 + iter_lr) = (*(rxLR_R + iter_lr));
+    }
+    
+    *(rxLen + (int)log2(L/2)) = *(rxLen + (int)log2(L/2)) + L;
+    
+    if (L > 2) {        
+        SC_DECODER(rxLR_R, L/2, rxBitsMat, rxLen, frozen_pos);
+    } else {
+        // if ((*(frozen_pos + *(rxLen + (int)log2(L/2))) == 1)) { 
+        //     *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + 1) = 0;
+        // } else {
+            *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) - L + 1) = PC_LLR_TO_BIT(*(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) - L + 1));
+        // }
+    }
+
+    if (L > 2) {
+        for (int iter_lr = 0; iter_lr < L/2; iter_lr += L/2) {
+            *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2) - L) + iter_lr) = (double)((int)(*(*(rxBitsMat + (int)log2(L/4)) + *(rxLen + (int)log2(L/2) - L) + iter_lr)) ^ (int)(*(*(rxBitsMat + (int)log2(L/4)) + *(rxLen + (int)log2(L/2) - L) + iter_lr + L/4)));
+            *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2) - L) + iter_lr + L/4) = (double)((int)(*(*(rxBitsMat + (int)log2(L/4)) + *(rxLen + (int)log2(L/2) - L) + iter_lr + L/4)));
+        }
+    }
+
+    free(rxLR_L);
+    free(rxLR_R);
+}
+
+double * LR_TO_PROB(double * rxLR, int L) {
+    int iter_LR;
+
+    double * rxProb = (double *)calloc(L, sizeof(double));
+
+    for (int iter_LR = 0; iter_LR < L; iter_LR++) {
+        if (*(rxLR + iter_LR) < 0) {
+            *(rxProb + iter_LR) = *(rxLR + iter_LR) / (-4);
+        } else if (*(rxLR + iter_LR) > 0) {
+            *(rxProb + iter_LR) = 1 - *(rxLR + iter_LR) / 4;
+        } else {
+            *(rxProb + iter_LR) = rand() % 2;
+        }
+    }
+
+    return rxProb;
+}
+
+int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
+    if (_DEBUG_ == 1) {
+        printf("Peforming polar decoding...\n");
+    }
+
+    int iter_bits, iter_step;
+
+    int * intrlvData = (int *)calloc(pcConfig->K, sizeof(int));
+    int * dataBits = NULL;
+
+    int * rel_seq = NR_PC_GET_REL_SEQ(pcConfig);
+    int * frozen_pos = NR_PC_GET_FROZEN_POS(pcConfig);
+
+    pcConfig->N = 8;
+    pcConfig->n = 3;
+    pcConfig->K = 8;
+
+    if (pcConfig->decodingMethod == 1) {
+        double ** rxBitsMat = (double **)calloc(pcConfig->n, sizeof(double *));
+
+        for (iter_step = 0; iter_step < pcConfig->n; iter_step++) {
+            *(rxBitsMat + iter_step) = (double *)calloc(pcConfig->N, sizeof(double));
+        }
+
+        int * rxLen = (int *)calloc(pcConfig->n, sizeof(int));
+
+        // Perform Successive Cancellation (SC) Decoding
+        SC_DECODER(rxLR, pcConfig->N, rxBitsMat, rxLen, frozen_pos);
+
+        PRINT_MAT_DOUBLE(rxBitsMat, pcConfig->N, pcConfig->n);
+        exit(0);
+
+        // Extracting Data from Informatiom Bit Positions
+        for (iter_bits = 0; iter_bits < pcConfig->K; iter_bits++) {
+            *(intrlvData + iter_bits) = (int)(*(*(rxBitsMat) + *(rel_seq + iter_bits)));
+        }
+        
+        for (iter_step = 0; iter_step < pcConfig->n; iter_step++) {
+            free(*(rxBitsMat + iter_step));
+        }
+
+        free(rxBitsMat);
+        free(rxLen);
+
+    } else if (pcConfig->decodingMethod == 2) {
+        // CRC-aided Belief Propagation List Decoder
+    } else if (pcConfig->decodingMethod == 3) {
+        // CRC-aided Successive Cancellation List Decoder
+    }
+
+    dataBits = NR_PC_INPUT_BITS_INTERLEAVING(intrlvData, pcConfig, 1);
+
+    return dataBits;
+}
+
+void main() {
+
+   struct PC_CONFIG pcConfig;
+
+    // Polar Code Config
+    pcConfig.E = 256;
+    pcConfig.K = 128;
+    pcConfig.nMax = 9;
+    pcConfig.iBIL = 0;
+    pcConfig.iIL = 0;
+    pcConfig.K_IL_MAX = 164;
+    pcConfig.UL_DL = 0;
+    pcConfig.L = 8;
+    pcConfig.crcLen = 24;
+    pcConfig.crcPolyID = 1; 
+    pcConfig.decodingMethod = 1;
+    pcConfig.iter_BP = 1;
+    pcConfig.LR_PROB_1 = pcConfig.decodingMethod == 1 ? 0:1; // if 0 - output is Likelihood Ratio else Probability of bit being 1
+
+    double rxLR[] = {10.0, 10.0, 10.0, 10.0, 10.0, 0.01, 0.01, 10.0};
+    NR_PC_DECODER(rxLR, &pcConfig);
+
+}
