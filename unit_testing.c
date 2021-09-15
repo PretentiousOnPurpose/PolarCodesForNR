@@ -46,6 +46,8 @@ void SC_DECODER(double * rxLR, int L, double ** rxBitsMat, int * rxLen, int * fr
         *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + iter_lr) = (*(rxLR_L + iter_lr));
     }
 
+    // PRINT_MAT_DOUBLE(rxBitsMat, 8, 3);
+    // exit(0);
     if (L > 2) {
         SC_DECODER(rxLR_L, L/2, rxBitsMat, rxLen, frozen_pos);
     } else if (L == 2) {        
@@ -54,6 +56,11 @@ void SC_DECODER(double * rxLR, int L, double ** rxBitsMat, int * rxLen, int * fr
         // } else {
             *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2))) = PC_LLR_TO_BIT(*(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2))));
         // }
+    }
+
+    if (L == 8) {
+        PRINT_MAT_DOUBLE(rxBitsMat, 8, 3);
+    //    exit(0);
     }
 
     for (int iter_lr = 0; iter_lr < L/2; iter_lr++) {
@@ -73,12 +80,15 @@ void SC_DECODER(double * rxLR, int L, double ** rxBitsMat, int * rxLen, int * fr
         // }
     }
 
-    if (L > 2) {
-        for (int iter_lr = 0; iter_lr < L/2; iter_lr += L/2) {
-            *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2) - L) + iter_lr) = (double)((int)(*(*(rxBitsMat + (int)log2(L/4)) + *(rxLen + (int)log2(L/2) - L) + iter_lr)) ^ (int)(*(*(rxBitsMat + (int)log2(L/4)) + *(rxLen + (int)log2(L/2) - L) + iter_lr + L/4)));
-            *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2) - L) + iter_lr + L/4) = (double)((int)(*(*(rxBitsMat + (int)log2(L/4)) + *(rxLen + (int)log2(L/2) - L) + iter_lr + L/4)));
-        }
+    for (int iter_lr = 0; iter_lr < L/2; iter_lr++) {
+        *(*(rxBitsMat + (int)log2(L)) + *(rxLen + (int)log2(L/2)) - L + iter_lr) = (double)((int)(*(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) - L + iter_lr)) ^ (int)(*(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) - L + iter_lr + L/2)));
+        *(*(rxBitsMat + (int)log2(L)) + *(rxLen + (int)log2(L/2)) - L + iter_lr + L/2) = (double)((int)(*(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) - L + iter_lr + L/2)));
     }
+
+    // if (L == 4) {
+        // PRINT_MAT_DOUBLE(rxBitsMat, 8, 3);
+        // exit(0);
+    // }
 
     free(rxLR_L);
     free(rxLR_R);
