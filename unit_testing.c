@@ -35,7 +35,7 @@ double PC_LLR_TO_BIT(double rxLR) {
     return 1.0 * (rxLR <= 1.0) + 0 * (rxLR > 1.0);
 }
 
-void SC_DECODER(double * rxLR, int L, double ** rxBitsMat, int * rxLen, int * frozen_pos) {
+void SC_DECODER(double * rxLR, int L, double ** rxBitsMat, int * rxLen, int * frozen_pos, struct PC_CONFIG * pcConfig) {
     int * rxBits = (int *)calloc(L, sizeof(int));
     double * rxLR_L = (double *)calloc(L/2, sizeof(double));
     double * rxLR_R = (double *)calloc(L/2, sizeof(double));
@@ -46,21 +46,14 @@ void SC_DECODER(double * rxLR, int L, double ** rxBitsMat, int * rxLen, int * fr
         *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + iter_lr) = (*(rxLR_L + iter_lr));
     }
 
-    // PRINT_MAT_DOUBLE(rxBitsMat, 8, 3);
-    // exit(0);
     if (L > 2) {
-        SC_DECODER(rxLR_L, L/2, rxBitsMat, rxLen, frozen_pos);
+        SC_DECODER(rxLR_L, L/2, rxBitsMat, rxLen, frozen_pos, pcConfig);
     } else if (L == 2) {        
         // if ((*(frozen_pos + *(rxLen + (int)log2(L/2))) == 1)) { 
         //     *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2))) = 0;
         // } else {
             *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2))) = PC_LLR_TO_BIT(*(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2))));
         // }
-    }
-
-    if (L == 8) {
-        PRINT_MAT_DOUBLE(rxBitsMat, 8, 3);
-    //    exit(0);
     }
 
     for (int iter_lr = 0; iter_lr < L/2; iter_lr++) {
@@ -71,7 +64,7 @@ void SC_DECODER(double * rxLR, int L, double ** rxBitsMat, int * rxLen, int * fr
     *(rxLen + (int)log2(L/2)) = *(rxLen + (int)log2(L/2)) + L;
     
     if (L > 2) {        
-        SC_DECODER(rxLR_R, L/2, rxBitsMat, rxLen, frozen_pos);
+        SC_DECODER(rxLR_R, L/2, rxBitsMat, rxLen, frozen_pos, pcConfig);
     } else {
         // if ((*(frozen_pos + *(rxLen + (int)log2(L/2))) == 1)) { 
         //     *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + 1) = 0;
@@ -80,15 +73,13 @@ void SC_DECODER(double * rxLR, int L, double ** rxBitsMat, int * rxLen, int * fr
         // }
     }
 
-    for (int iter_lr = 0; iter_lr < L/2; iter_lr++) {
-        *(*(rxBitsMat + (int)log2(L)) + *(rxLen + (int)log2(L/2)) - L + iter_lr) = (double)((int)(*(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) - L + iter_lr)) ^ (int)(*(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) - L + iter_lr + L/2)));
-        *(*(rxBitsMat + (int)log2(L)) + *(rxLen + (int)log2(L/2)) - L + iter_lr + L/2) = (double)((int)(*(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) - L + iter_lr + L/2)));
-    }
 
-    // if (L == 4) {
-        // PRINT_MAT_DOUBLE(rxBitsMat, 8, 3);
-        // exit(0);
-    // }
+    if (L < pow(2, pcConfig->n)) {
+        for (int iter_lr = 0; iter_lr < L/2; iter_lr++) {
+            *(*(rxBitsMat + (int)log2(L)) + *(rxLen + (int)log2(L/2)) - L + iter_lr) = (double)((int)(*(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) - L + iter_lr)) ^ (int)(*(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) - L + iter_lr + L/2)));
+            *(*(rxBitsMat + (int)log2(L)) + *(rxLen + (int)log2(L/2)) - L + iter_lr + L/2) = (double)((int)(*(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) - L + iter_lr + L/2)));
+        }
+    }
 
     free(rxLR_L);
     free(rxLR_R);
@@ -139,7 +130,7 @@ int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
         int * rxLen = (int *)calloc(pcConfig->n, sizeof(int));
 
         // Perform Successive Cancellation (SC) Decoding
-        SC_DECODER(rxLR, pcConfig->N, rxBitsMat, rxLen, frozen_pos);
+        SC_DECODER(rxLR, pcConfig->N, rxBitsMat, rxLen, frozen_pos, pcConfig);
 
         PRINT_MAT_DOUBLE(rxBitsMat, pcConfig->N, pcConfig->n);
         exit(0);
@@ -186,7 +177,7 @@ void main() {
     pcConfig.iter_BP = 1;
     pcConfig.LR_PROB_1 = pcConfig.decodingMethod == 1 ? 0:1; // if 0 - output is Likelihood Ratio else Probability of bit being 1
 
-    double rxLR[] = {10.0, 10.0, 10.0, 10.0, 10.0, 0.01, 0.01, 10.0};
+    double rxLR[] = {10.0, 10.0, 10.0, 10.0, 10.0, 0.01, 10.0, 10.0};
     NR_PC_DECODER(rxLR, &pcConfig);
 
 }

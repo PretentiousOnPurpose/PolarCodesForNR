@@ -53,7 +53,7 @@ double PC_LLR_TO_BIT(double rxLR);
 double * LR_TO_PROB(double * rxLR, int L);
 
 // Successive Cancellation (SC) and SC List Decoder 
-void SC_DECODER(double * rxLR, int L, double ** rxBitsMat, int * rxLen, int * frozen_pos);
+void SC_DECODER(double * rxLR, int L, double ** rxBitsMat, int * rxLen, int * frozen_pos, struct PC_CONFIG * pcConfig);
 int * SCL_DECODER(double * rxLR, struct PC_CONFIG * pcConfig);
 
 
