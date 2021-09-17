@@ -11,9 +11,9 @@ int main() {
     struct PC_CONFIG pcConfig;
 
     // Polar Code Config
-    pcConfig.E = 256;
-    pcConfig.K = 128;
-    pcConfig.nMax = 9;
+    pcConfig.E = 144;
+    pcConfig.K = 72;
+    pcConfig.nMax = 10;
     pcConfig.iBIL = 0;
     pcConfig.iIL = 0;
     pcConfig.K_IL_MAX = 164;
@@ -28,9 +28,9 @@ int main() {
     int remLen = 0;
     int err = 1;
 
-    int * dataBits = DATA_GEN(pcConfig.K - pcConfig.crcLen);
-    int * crcData = NR_CRC_ENCODER(dataBits, &pcConfig);
-    int * encData = NR_PC_ENCODER(crcData, &pcConfig);
+    int * dataBits = DATA_GEN(pcConfig.K); // - pcConfig.crcLen);
+    // int * crcData = NR_CRC_ENCODER(dataBits, &pcConfig);
+    int * encData = NR_PC_ENCODER(dataBits, &pcConfig);
     int * rateMatcData = NR_PC_RATE_MATCH(encData, &pcConfig);
     double * modData = BPSK_MOD(rateMatcData, pcConfig.E);
     double * rxData = AWGN(modData, pcConfig.E, 0);
@@ -40,16 +40,16 @@ int main() {
     // exit(0);
     int * decData = NR_PC_DECODER(rateRecoverData, &pcConfig);
     // PRINT_ARRAY_INT(decData, pcConfig.K);
-    int * dataHat = NR_CRC_DECODER(decData, &pcConfig, &err);
+    // int * dataHat = NR_CRC_DECODER(decData, &pcConfig, &err);
 
     // PRINT_ARRAY_INT(dataHat, pcConfig.K-pcConfig.crcLen);
 
     printf("Result: ");
 
     if (err == 0) {
-        printf("Successful Transmission with %d out of %d bits in error\n", bitXORSum(dataHat, dataBits, pcConfig.K - pcConfig.crcLen), pcConfig.K - pcConfig.crcLen);
+        printf("Successful Transmission with %d out of %d bits in error\n", bitXORSum(decData, dataBits, pcConfig.K - pcConfig.crcLen), pcConfig.K - pcConfig.crcLen);
     } else {
-        printf("Corrupted Reception with %d out of %d bits in error\n", bitXORSum(dataHat, dataBits, pcConfig.K - pcConfig.crcLen), pcConfig.K - pcConfig.crcLen);
+        printf("Corrupted Reception with %d out of %d bits in error\n", bitXORSum(decData, dataBits, pcConfig.K - pcConfig.crcLen), pcConfig.K - pcConfig.crcLen);
     }
 
     return 0;
