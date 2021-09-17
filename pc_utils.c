@@ -14,7 +14,7 @@ int * DATA_GEN(int numBits) {
     int * dataBits = (int *)calloc(numBits, sizeof(int));
 
     for (iter_bits = 0; iter_bits < numBits; iter_bits++) {
-        *(dataBits + iter_bits) = 1; //rand() % 2;
+        *(dataBits + iter_bits) = rand() % 2;
     }
 
     return dataBits;
@@ -245,7 +245,7 @@ double * BPSK_MOD(int * dataBits, int L) {
     return modData;
 }
 
-double * AWGN(double * modData, int L, double noiseVar) {
+double * AWGN(double * modData, int L, double SNR) {
     if (_DEBUG_ == 1) {
         printf("Simulating AWGN Channel...\n");
     }
@@ -254,7 +254,7 @@ double * AWGN(double * modData, int L, double noiseVar) {
     double * rxData = (double *)calloc(L, sizeof(double));
 
     for (iter_syms = 0; iter_syms < L; iter_syms++) {
-        *(rxData + iter_syms) = *(modData + iter_syms) + sqrt(noiseVar) * randn();
+        *(rxData + iter_syms) = *(modData + iter_syms) + sqrt(1/(2 * SNR)) * randn();
     }
     
     return rxData;

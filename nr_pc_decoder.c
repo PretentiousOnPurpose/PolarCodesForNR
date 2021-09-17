@@ -48,11 +48,11 @@ void SC_DECODER(double * rxLR, int L, double ** rxBitsMat, int * rxLen, int * fr
     if (L > 2) {
         SC_DECODER(rxLR_L, L/2, rxBitsMat, rxLen, frozen_pos, pcConfig);
     } else if (L == 2) {        
-    //     if ((*(frozen_pos + *(rxLen + (int)log2(L/2))) == 1)) { 
-    //         *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2))) = 0;
-    //     } else {
+        if ((*(frozen_pos + *(rxLen + (int)log2(L/2))) == 1)) { 
+            *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2))) = 0;
+        } else {
             *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2))) = PC_LLR_TO_BIT(*(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2))));
-        // }
+        }
     }
 
     for (int iter_lr = 0; iter_lr < L/2; iter_lr++) {
@@ -65,11 +65,11 @@ void SC_DECODER(double * rxLR, int L, double ** rxBitsMat, int * rxLen, int * fr
     if (L > 2) {        
         SC_DECODER(rxLR_R, L/2, rxBitsMat, rxLen, frozen_pos, pcConfig);
     } else {
-        // if ((*(frozen_pos + *(rxLen + (int)log2(L/2))) == 1)) { 
-        //     *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) + 1) = 0;
-        // } else {
+        if ((*(frozen_pos + *(rxLen + (int)log2(L/2)) - L + 1) == 1)) { 
+            *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) - L + 1) = 0;
+        } else {
             *(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) - L + 1) = PC_LLR_TO_BIT(*(*(rxBitsMat + (int)log2(L/2)) + *(rxLen + (int)log2(L/2)) - L + 1));
-        // }
+        }
     }
 
     if (L < pow(2, pcConfig->n)) {
@@ -126,8 +126,8 @@ int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
         // Perform Successive Cancellation (SC) Decoding
         SC_DECODER(rxLR, pcConfig->N, rxBitsMat, rxLen, frozen_pos, pcConfig);
 
-        PRINT_MAT_DOUBLE(rxBitsMat, pcConfig->N, pcConfig->n);
-        exit(0);
+        // PRINT_MAT_DOUBLE(rxBitsMat, pcConfig->N, pcConfig->n);
+        // exit(0);
         // Extracting Data from Informatiom Bit Positions
         for (iter_bits = 0; iter_bits < pcConfig->K; iter_bits++) {
             *(intrlvData + iter_bits) = (int)(*(*(rxBitsMat) + *(rel_seq + iter_bits)));

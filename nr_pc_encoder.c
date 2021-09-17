@@ -160,9 +160,9 @@ int * PC_SET_DATABITS(int * dataBits, struct PC_CONFIG * pcConfig) {
 
     int * encData = (int *)calloc(pcConfig->N, sizeof(int));
 
-    for (iter_bits = 0; iter_bits < pcConfig->N; iter_bits++) {
-        // *(encData + *(rel_seq + iter_bits)) = *(dataBits + iter_bits);
-        *(encData + (iter_bits)) = iter_bits%2; //*(dataBits + iter_bits);
+    for (iter_bits = 0; iter_bits < pcConfig->K; iter_bits++) {
+        *(encData + *(rel_seq + iter_bits)) = *(dataBits + iter_bits);
+        // *(encData + (iter_bits)) = iter_bits%2; //*(dataBits + iter_bits);
     }  
 
     return encData;

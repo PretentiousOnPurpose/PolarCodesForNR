@@ -62,7 +62,7 @@ double * BPSK_MOD(int * dataBits, int L);
 double * BPSK_DEMOD(double * rxSyms, int L, int LR_LLR);
 
 // AWGN Channels
-double * AWGN(double * txSyms, int L, double noiseVar);
+double * AWGN(double * txSyms, int L, double SNR);
 
 // Utilities and Misc.
 int * DATA_GEN(int numBits);
