@@ -38,11 +38,11 @@ int main() {
     int * encData = NR_PC_ENCODER(crcData, &pcConfig);
     int * rateMatcData = NR_PC_RATE_MATCH(encData, &pcConfig);
     double * modData = BPSK_MOD(rateMatcData, pcConfig.E);
-    double * rxData = AWGN(modData, pcConfig.E, SNR);
-    double * rxLR = BPSK_DEMOD(rxData, pcConfig.E, pcConfig.LR_PROB_1);
-    double * rateRecoverData = NR_PC_RATE_RECOVER(rxLR, &pcConfig);
-    int * decData = NR_PC_DECODER(rateRecoverData, &pcConfig);
-    int * dataHat = NR_CRC_DECODER(decData, &pcConfig, &err);
+    // double * rxData = AWGN(modData, pcConfig.E, SNR);
+    // double * rxLR = BPSK_DEMOD(rxData, pcConfig.E, pcConfig.LR_PROB_1);
+    // double * rateRecoverData = NR_PC_RATE_RECOVER(rxLR, &pcConfig);
+    // int * decData = NR_PC_DECODER(rateRecoverData, &pcConfig);
+    // int * dataHat = NR_CRC_DECODER(decData, &pcConfig, &err);
 
     printf("Result: ");
 

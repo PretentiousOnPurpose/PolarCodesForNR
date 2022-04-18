@@ -254,7 +254,7 @@ double * AWGN(double * modData, int L, double SNR) {
     double * rxData = (double *)calloc(L, sizeof(double));
 
     for (iter_syms = 0; iter_syms < L; iter_syms++) {
-        *(rxData + iter_syms) = *(modData + iter_syms) + sqrt(1/(2 * SNR)) * randn();
+        *(rxData + iter_syms) = *(modData + iter_syms) + sqrt(1/(SNR)) * randn();
     }
     
     return rxData;

@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "polarcodes.h": "c",
+        "stdlib.h": "c"
+    }
+}

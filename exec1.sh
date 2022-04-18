@@ -1,3 +1,3 @@
 clear
-gcc ./mainSystem.c ./nr_crc_encoder.c ./nr_crc_decoder.c ./nr_pc_encoder.c ./nr_pc_decoder.c ./nr_interleaver.c ./nr_rate_match.c ./pc_utils.c -lm -g
-./a.out
+gcc ./mainSystem.c ./src/nr_crc_encoder.c ./src/nr_crc_decoder.c ./src/nr_pc_encoder.c ./src/nr_pc_decoder.c ./src/nr_interleaver.c ./src/nr_rate_match.c ./src/pc_utils.c -lm -g
+./a.exe
