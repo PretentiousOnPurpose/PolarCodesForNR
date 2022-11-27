@@ -147,6 +147,42 @@ int * incr_degree_poly(int * poly, int numBits, int incr_deg) {
     return newPoly;
 }
 
+double * zeros_d(int len) {
+    int iter_bits;
+    double * dataBits = (double *)calloc(len, sizeof(double));
+
+    for (iter_bits = 0; iter_bits < len; iter_bits++) {
+        *(dataBits + iter_bits) = 0;
+    }
+
+    return dataBits;
+}
+
+
+double * ones_d(int len) {
+    int iter_bits;
+    double * dataBits = (double *)calloc(len, sizeof(double));
+
+    for (iter_bits = 0; iter_bits < len; iter_bits++) {
+        *(dataBits + iter_bits) = 1.0;
+    }
+
+    return dataBits;
+}
+
+
+int * zeros(int len) {
+    int iter_bits;
+    int * dataBits = (int *)calloc(len, sizeof(int));
+
+    for (iter_bits = 0; iter_bits < len; iter_bits++) {
+        *(dataBits + iter_bits) = 0;
+    }
+
+    return dataBits;
+}
+
+
 int * ones(int len) {
     int iter_bits;
     int * dataBits = (int *)calloc(len, sizeof(int));
@@ -265,13 +301,14 @@ int * BSC_Channel(int * dataBits, int L, double rho) {
 }
 
 
-double * AWGN(double * modData, int L, double SNR) {
+double * AWGN(double * modData, int L, double SNRdB) {
     if (_DEBUG_ == 1) {
         printf("Simulating AWGN Channel...\n");
     }
 
     int iter_syms;
     double * rxData = (double *)calloc(L, sizeof(double));
+    double SNR = pow(10, SNRdB / 10);
 
     for (iter_syms = 0; iter_syms < L; iter_syms++) {
         *(rxData + iter_syms) = *(modData + iter_syms) + sqrt(1/(SNR)) * randn();
@@ -453,4 +490,79 @@ int * unionElToArray(int * seq, int L, int el, int * seq_len) {
 
     return seq;
 }
+
+double * addVectors_d(double * x1, double * x2, int len) {
+    int iter_var;
+
+    double * y = (double *)calloc(len, sizeof(double));
+
+    for (iter_var = 0; iter_var < len; iter_var++) {
+        *(y + iter_var) = *(x1 + iter_var) + *(x2 + iter_var);
+    }
+
+    return y;
+}
+
+double * subVectors_d(double * x1, double * x2, int len) {
+    int iter_var;
+
+    double * res = (double *)calloc(len, sizeof(double));
+
+    for (iter_var = 0; iter_var < len; iter_var++) {
+        *(res + iter_var) = *(x1 + iter_var) - *(x2 + iter_var);
+    }
+
+    return res;
+}
+
+double * subVectorByConstant(double * x, double val, int len) {
+    int iter_var;
+
+    double * res = (double *)calloc(len, sizeof(double));
+
+    for (iter_var = 0; iter_var < len; iter_var++) {
+        *(res + iter_var) = *(x + iter_var) - val;
+    }
+
+    return res;
+}
+
+double sum_d(double * x, int len) {
+    int iter_var;
+    double res = 0;
+
+    for (iter_var = 0; iter_var < len; iter_var++) {
+        res += *(x + iter_var);
+    }
+
+    return res;
+}
+
+double * squareArray_d(double * x, int len) {
+    int iter_var;
+    double * res = (double *)calloc(len, sizeof(double));
+
+    for (iter_var = 0; iter_var < len; iter_var++) {
+        *(res + iter_var) = (*(x + iter_var)) * (*(x + iter_var));
+    }
+
+    return res;
+}
+
+double mean_d(double * x, int len) {
+    double res = sum_d(x, len);
+
+    return res / len;
+}
+
+double variance_d(double * x, int len) {
+    double mean = mean_d(x, len);
+
+    double * dataSubMean = subVectorByConstant(x, mean, len);
+
+    dataSubMean = squareArray_d(dataSubMean, len);
+
+    return mean_d(dataSubMean, len);
+}
+
 

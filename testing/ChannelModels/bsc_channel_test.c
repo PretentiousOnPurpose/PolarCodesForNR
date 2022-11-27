@@ -16,6 +16,7 @@ int main() {
     float tolerance = 0.05;
     double diff;
 
+    printf("CRC-aided Polar Codes for 5G NR\n\n");
     printf("Testing the Binary Symmetric Channel...\n\n");
     printf("The empirical rho from the BSC Channel is expected to be: rho ± %0.2lf\n", tolerance);
     printf("Sequence length set to: %d bits\n\n", seqLen);

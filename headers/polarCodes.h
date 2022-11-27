@@ -62,7 +62,7 @@ double * BPSK_MOD(int * dataBits, int L);
 double * BPSK_DEMOD(double * rxSyms, int L, int LR_LLR);
 
 // AWGN Channel
-double * AWGN(double * txSyms, int L, double SNR);
+double * AWGN(double * txSyms, int L, double SNRdB);
 // Binary Symmetric Channel
 int * BSC_Channel(int * dataBits, int L, double rho);
 
@@ -77,7 +77,10 @@ int * poly_long_div(int * P1, int * P2, int L1, int L2, int * remLen);
 int degree_poly(int * poly, int numBits);
 int * incr_degree_poly(int * poly, int numBits, int incr_deg);
 int * CRCGenerator(int * msg, int * crcPoly, int msgLen, int crcPolyLen);
+int * zeros(int len);
 int * ones(int len);
+double * zeros_d(int len);
+double * ones_d(int len);
 void bitxor(int * x1, int * x2, int len);
 int * merge(int * s1, int * s2, int L1, int L2);
 int * mergeSort(int * s, int L);
@@ -92,3 +95,12 @@ int * linspace(int start, int stop, int step);
 int * seqUnion(int * seq1, int * seq2, int L1, int L2, int * L);
 int isElementInArray(int * seq, int len, int el);
 int * unionElToArray(int * seq, int L, int el, int * seq_len);
+double * addVectors_d(double * x1, double * x2, int len);
+double * subVectors_d(double * x1, double * x2, int len);
+double mean_d(double * x, int len);
+double variance_d(double * x, int len);
+double sum_d(double * x, int len);
+double * squareArray_d(double * x, int len);
+double * subVectorByConstant(double * x, double val, int len);
+
+
