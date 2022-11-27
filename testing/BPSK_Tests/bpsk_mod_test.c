@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
-#include "src/polarCodes.h"
+#include "../../headers/polarCodes.h"
 
 int main() {
 
