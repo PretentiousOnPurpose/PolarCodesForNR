@@ -245,6 +245,26 @@ double * BPSK_MOD(int * dataBits, int L) {
     return modData;
 }
 
+int * BSC_Channel(int * dataBits, int L, double rho) {
+    if (_DEBUG_ == 1) {
+        printf("Simulating Binary Symmetric Channel...\n");
+    }
+
+    int iter_syms;
+    int * rxData = (int *)calloc(L, sizeof(double));
+
+    for (iter_syms = 0; iter_syms < L; iter_syms++) {
+        if ((rand() / RAND_MAX) >= (1 - rho)) {
+            *(rxData + iter_syms) = 1 - *(dataBits + iter_syms);
+        } else {
+            *(rxData + iter_syms) = *(dataBits + iter_syms);            
+        }
+    }
+    
+    return rxData;
+}
+
+
 double * AWGN(double * modData, int L, double SNR) {
     if (_DEBUG_ == 1) {
         printf("Simulating AWGN Channel...\n");

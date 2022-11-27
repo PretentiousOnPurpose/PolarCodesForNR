@@ -3,7 +3,7 @@
 // Polar Codes
 struct PC_CONFIG {
     int E; // Rate-Matched Output
-    int K; // Input Data Block size (in bits)
+    int K; // Input Data Block size (in bits)`
     int N; // Polar Encoding Output Size
     int n;
     int nMax; // 9 - Downlink | 10 - Uplink
@@ -61,8 +61,10 @@ int * SCL_DECODER(double * rxLR, struct PC_CONFIG * pcConfig);
 double * BPSK_MOD(int * dataBits, int L);
 double * BPSK_DEMOD(double * rxSyms, int L, int LR_LLR);
 
-// AWGN Channels
+// AWGN Channel
 double * AWGN(double * txSyms, int L, double SNR);
+// Binary Symmetric Channel
+int * BSC_Channel(int * dataBits, int L, double rho);
 
 // Utilities and Misc.
 int * DATA_GEN(int numBits);
