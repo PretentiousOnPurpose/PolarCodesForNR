@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "polarCodes.h"
+#include "../headers/polarCodes.h"
+
 double PC_LikelihoodRatio_L(double x1, double x2) {    
     double LR = (1 + x1 * x2) / (x1 + x2);
 	

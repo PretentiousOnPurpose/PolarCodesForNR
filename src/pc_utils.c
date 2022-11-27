@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
-#include "polarCodes.h"
+#include "../headers/polarCodes.h"
 
 int * DATA_GEN(int numBits) {
     if (_DEBUG_ == 1) {

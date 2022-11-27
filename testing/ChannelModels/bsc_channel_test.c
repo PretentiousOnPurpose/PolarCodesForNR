@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
-#include "src/polarCodes.h"
+#include "../../headers/polarCodes.h"
 
 int main() {
 
@@ -17,6 +17,7 @@ int main() {
     double diff;
 
     printf("Tolerance setting for the BSC Channel: %f\n", tolerance * seqLen);
+    printf("Sequence length set to: %d bits\n", seqLen);
 
     for (iter_for = 0; iter_for < 3; iter_for++) {
         dataBits = ones(seqLen);

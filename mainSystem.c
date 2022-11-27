@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
-#include "src/polarCodes.h"
+#include "headers/polarCodes.h"
 
 int main() {
 
@@ -37,7 +37,7 @@ int main() {
     int * encData = NR_PC_ENCODER(crcData, &pcConfig);
     int * rateMatcData = NR_PC_RATE_MATCH(encData, &pcConfig);
     double * modData = BPSK_MOD(rateMatcData, pcConfig.E);
-    double * rxData = BSC_Channel(modData, pcConfig.E, 0.9);
+    double * rxData = AWGN(modData, pcConfig.E, 0.9);
     double * rxLR = BPSK_DEMOD(rxData, pcConfig.E, pcConfig.LR_PROB_1);
     double * rateRecoverData = NR_PC_RATE_RECOVER(rxLR, &pcConfig);
     int * decData = NR_PC_DECODER(rateRecoverData, &pcConfig);
