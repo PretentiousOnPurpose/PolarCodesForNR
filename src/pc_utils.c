@@ -254,7 +254,7 @@ int * BSC_Channel(int * dataBits, int L, double rho) {
     int * rxData = (int *)calloc(L, sizeof(double));
 
     for (iter_syms = 0; iter_syms < L; iter_syms++) {
-        if ((rand() / RAND_MAX) >= (1 - rho)) {
+        if (((double)rand() / RAND_MAX) >= (1 - rho)) {
             *(rxData + iter_syms) = 1 - *(dataBits + iter_syms);
         } else {
             *(rxData + iter_syms) = *(dataBits + iter_syms);            
