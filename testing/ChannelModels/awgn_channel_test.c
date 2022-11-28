@@ -12,7 +12,7 @@ int main() {
     double snr[7] = {-10, -5, 0, 5, 10};
     double * dataBits, * rxData, *noiseData;
 
-    float tolerance = 0.25;
+    float tolerance = 0.5;
     double noiseVar, SNRdB;
 
     printf("CRC-aided Polar Codes for 5G NR\n\n");
@@ -38,7 +38,6 @@ int main() {
             printf("Result: Case %d PASSED\n", iter_for);
         }
     }
-
 
     return 0;
 }
