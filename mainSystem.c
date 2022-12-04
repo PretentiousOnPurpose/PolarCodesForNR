@@ -11,10 +11,10 @@ int main() {
     struct PC_CONFIG pcConfig;
 
     // Polar Code Config
-    pcConfig.E = 4029;
-    pcConfig.K = 1024;
+    pcConfig.E = 512;
+    pcConfig.K = 100;
     pcConfig.nMax = 10;
-    pcConfig.iBIL = 1;
+    pcConfig.iBIL = 0;
     pcConfig.iIL = 0;
     pcConfig.K_IL_MAX = 164;
     pcConfig.UL_DL = 0;
@@ -27,17 +27,16 @@ int main() {
 
     int remLen = 0;
     int err = 1;
-    double SNR_dB = 10;
-    double SNR = pow(10, SNR_dB / 10);
+    double SNR_dB = 5;
 
-    printf("SNR: %f\n", SNR);
+    printf("SNR (dB): %f\n", SNR_dB);
 
     int * dataBits = DATA_GEN(pcConfig.K - pcConfig.crcLen);
     int * crcData = NR_CRC_ENCODER(dataBits, &pcConfig);
     int * encData = NR_PC_ENCODER(crcData, &pcConfig);
     int * rateMatcData = NR_PC_RATE_MATCH(encData, &pcConfig);
     double * modData = BPSK_MOD(rateMatcData, pcConfig.E);
-    double * rxData = AWGN(modData, pcConfig.E, 0.9);
+    double * rxData = AWGN(modData, pcConfig.E, SNR_dB);
     double * rxLR = BPSK_DEMOD(rxData, pcConfig.E, pcConfig.LR_PROB_1);
     double * rateRecoverData = NR_PC_RATE_RECOVER(rxLR, &pcConfig);
     int * decData = NR_PC_DECODER(rateRecoverData, &pcConfig);
