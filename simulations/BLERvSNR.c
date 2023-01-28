@@ -38,7 +38,7 @@ int main() {
 
     int remLen = 0;
     int err = 1;
-    double SNR_dB = -1;
+    double SNR_dB = 5;
 
     int dataBlockLen = 10 * (pcConfig.K - pcConfig.crcLen);
     int encBlockLen = 10 * pcConfig.E;
