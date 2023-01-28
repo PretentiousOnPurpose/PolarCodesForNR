@@ -7,7 +7,18 @@
 int main() {
 
     srand(time(NULL));
-    
+
+    int * dataBits = NULL;
+    int * crcData = NULL;
+    int * encData = NULL;
+    int * rateMatchData = NULL;
+    double * modData = NULL;
+    double * rxData = NULL;
+    double * rxLR = NULL;
+    double * rateRecoverData = NULL;
+    int * decData = NULL;
+    int * dataHat = NULL;    
+
     struct PC_CONFIG pcConfig;
 
     // Polar Code Config
@@ -29,26 +40,46 @@ int main() {
     int err = 1;
     double SNR_dB = 5;
 
+    int dataBlockLen = 10 * (pcConfig.K - pcConfig.crcLen);
+    int encBlockLen = 10 * pcConfig.E;
+
     printf("SNR (dB): %f\n", SNR_dB);
 
-    int * dataBits = DATA_GEN(pcConfig.K - pcConfig.crcLen);
-    int * crcData = NR_CRC_ENCODER(dataBits, &pcConfig);
-    int * encData = NR_PC_ENCODER(crcData, &pcConfig);
-    int * rateMatcData = NR_PC_RATE_MATCH(encData, &pcConfig);
-    double * modData = BPSK_MOD(rateMatcData, pcConfig.E);
-    double * rxData = AWGN(modData, pcConfig.E, SNR_dB);
-    double * rxLR = BPSK_DEMOD(rxData, pcConfig.E, pcConfig.LR_PROB_1);
-    double * rateRecoverData = NR_PC_RATE_RECOVER(rxLR, &pcConfig);
-    int * decData = NR_PC_DECODER(rateRecoverData, &pcConfig);
-    int * dataHat = NR_CRC_DECODER(decData, &pcConfig, &err);
+
+    int * dataBlock = DATA_GEN(dataBlockLen);
+
+    int * dataBlockHat = (int *)malloc(sizeof(int) * dataBlockLen);
+
+    for (int iter_blk = 0; iter_blk < 10; iter_blk++) {
+        dataBits = (dataBlock + iter_blk * (pcConfig.K - pcConfig.crcLen));
+
+        crcData = NR_CRC_ENCODER(dataBits, &pcConfig);        
+        encData = NR_PC_ENCODER(crcData, &pcConfig);        
+        rateMatchData = NR_PC_RATE_MATCH(encData, &pcConfig);        
+        modData = BPSK_MOD(rateMatchData, pcConfig.E);        
+        
+        rxData = AWGN(modData, pcConfig.E, SNR_dB);        
+        
+        rxLR = BPSK_DEMOD(rxData, pcConfig.E, pcConfig.LR_PROB_1);        
+        rateRecoverData = NR_PC_RATE_RECOVER(rxLR, &pcConfig);        
+        decData = NR_PC_DECODER(rateRecoverData, &pcConfig);        
+        dataHat = NR_CRC_DECODER(decData, &pcConfig, &err);
+
+        for (int iter_bits = 0; iter_bits < (pcConfig.K - pcConfig.crcLen); iter_bits++) {
+            *(dataBlockHat + iter_blk * (pcConfig.K - pcConfig.crcLen) + iter_bits) = *(dataHat + iter_bits);
+        }        
+    }    
+
+    err = bitXORSum(dataBlockHat, dataBlock, 10 * (pcConfig.K - pcConfig.crcLen)); // Tmp
 
     printf("Result: ");
 
     if (err == 0) {
-        printf("Successful Transmission with %d out of %d bits in error\n", bitXORSum(dataHat, dataBits, pcConfig.K - pcConfig.crcLen), pcConfig.K - pcConfig.crcLen);
+        printf("Successful Transmission with %d out of %d bits in error\n", err, 10 * (pcConfig.K - pcConfig.crcLen));
     } else {
-        printf("Corrupted Reception with %d out of %d bits in error\n", bitXORSum(dataHat, dataBits, pcConfig.K - pcConfig.crcLen), pcConfig.K - pcConfig.crcLen);
+        printf("Corrupted Reception with %d out of %d bits in error\n", err, 10 * (pcConfig.K - pcConfig.crcLen));
     }
+
 
     return 0;
 }
