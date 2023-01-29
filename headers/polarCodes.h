@@ -102,5 +102,6 @@ double variance_d(double * x, int len);
 double sum_d(double * x, int len);
 double * squareArray_d(double * x, int len);
 double * subVectorByConstant(double * x, double val, int len);
+double * intToDoubleArray(int * x, int len);
 
 

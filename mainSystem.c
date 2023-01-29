@@ -14,6 +14,8 @@ int main() {
     int * rateMatchData = NULL;
     double * modData = NULL;
     double * rxData = NULL;
+    int * rxData_i = NULL;
+    
     double * rxLR = NULL;
     double * rateRecoverData = NULL;
     int * decData = NULL;
@@ -25,8 +27,8 @@ int main() {
     pcConfig.E = 512;
     pcConfig.K = 100;
     pcConfig.nMax = 10;
-    pcConfig.iBIL = 0;
-    pcConfig.iIL = 0;
+    pcConfig.iBIL = 1;
+    pcConfig.iIL = 1;
     pcConfig.K_IL_MAX = 164;
     pcConfig.UL_DL = 0;
     pcConfig.L = 8;
@@ -38,7 +40,7 @@ int main() {
 
     int remLen = 0;
     int err = 1;
-    double SNR_dB = -1;
+    double SNR_dB = 1;
 
     int dataBlockLen = 10 * (pcConfig.K - pcConfig.crcLen);
     int encBlockLen = 10 * pcConfig.E;
@@ -58,9 +60,12 @@ int main() {
         rateMatchData = NR_PC_RATE_MATCH(encData, &pcConfig);        
         modData = BPSK_MOD(rateMatchData, pcConfig.E);        
         
-        rxData = AWGN(modData, pcConfig.E, SNR_dB);        
+        rxData = AWGN(modData, pcConfig.E, SNR_dB);
         
-        rxLR = BPSK_DEMOD(rxData, pcConfig.E, pcConfig.LR_PROB_1);        
+        // rxData_i = BSC_Channel(rateMatchData, pcConfig.E, 0.000000000);        
+        // rxData = intToDoubleArray(rxData_i, pcConfig.E);
+
+        rxLR = BPSK_DEMOD(rxData, pcConfig.E, pcConfig.LR_PROB_1);                
         rateRecoverData = NR_PC_RATE_RECOVER(rxLR, &pcConfig);        
         decData = NR_PC_DECODER(rateRecoverData, &pcConfig);        
         dataHat = NR_CRC_DECODER(decData, &pcConfig, &err);
