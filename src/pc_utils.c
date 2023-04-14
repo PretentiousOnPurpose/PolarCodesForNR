@@ -574,3 +574,91 @@ double * intToDoubleArray(int * x, int len) {
 
     return y;
  }
+int * charToINTArray(char data) {
+    int * dataBits = (int *)malloc(8 * sizeof(int));
+
+    for (int iterBits = 0; iterBits < 8; iterBits++) {
+        *(dataBits + iterBits) = ((data & (1 << (8 - iterBits - 1))) > 0);
+    }
+
+    return dataBits;
+}
+
+char INTArrayToChar(int * dataBits) {
+    char data = 0x00000000;
+
+    for (int iterBits = 0; iterBits < 8; iterBits++) {
+        data = data | (1 << iterBits) * dataBits[7-iterBits];
+    }
+
+    return data % 0xff;
+}
+
+int * loadImg(int * imgLen) {
+    FILE * fp;
+    int numBytes;
+    char dataByte;
+    int * dataBits;
+    int * tmpBits;
+    
+    fp = fopen("./images/test_image.png", "rb");
+    fseek(fp, 0, SEEK_END);
+    numBytes = ftell(fp);
+    *imgLen = numBytes * 8;
+    dataBits = (int *)malloc(numBytes * 8 * sizeof(int));
+    rewind(fp);
+
+    for (int iterBytes = 0; iterBytes < numBytes; iterBytes++) {
+        fread(&dataByte, 1, 1, fp);
+        tmpBits = charToINTArray(dataByte);
+        for (int iterBits = 0; iterBits < 8; iterBits++) {
+            dataBits[iterBytes * 8 + iterBits] = tmpBits[iterBits];
+        }
+    }
+
+    fclose(fp);
+
+    return dataBits;
+} 
+
+int saveImg(int * imgData, int imgLen) {
+    FILE * fp = fopen("./images/test_image_rec.png", "wb");
+    char data = 0x00000000;
+
+
+    for (int iterBytes = 0; iterBytes < imgLen / 8; iterBytes++) {
+        data = INTArrayToChar(&imgData[iterBytes * 8]);
+        fwrite(&data, 1, 1, fp);
+    }
+
+    fclose(fp);
+    return 0;
+} 
+
+int * appendZerosINT(int * data, int len, int numZeros) {
+    int * data_a = (int * )malloc((len + numZeros) * sizeof(int));
+
+    for (int iter_data = 0; iter_data < (len + numZeros); iter_data++) {
+        if (iter_data < len) {
+            *(data_a + iter_data) = *(data + iter_data);        
+        } else {
+            *(data_a + iter_data) = 0;        
+        }
+    }
+
+    free(data);
+
+    return data_a;
+}
+
+int * clipLastZerosINT(int * data, int len, int numZeros) {
+    int * data_a = (int * )malloc((len - numZeros) * sizeof(int));
+
+    for (int iter_data = 0; iter_data < (len - numZeros); iter_data++) {
+        *(data_a + iter_data) = *(data + iter_data);        
+    }
+
+    free(data);
+
+    return data_a;
+}

@@ -145,6 +145,7 @@ int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
         // CRC-aided Belief Propagation List Decoder
     } else if (pcConfig->decodingMethod == 3) {
         // CRC-aided Successive Cancellation List Decoder
+        
     }
 
     dataBits = NR_PC_INPUT_BITS_INTERLEAVING(intrlvData, pcConfig, 1);

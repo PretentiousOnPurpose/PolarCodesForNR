@@ -103,5 +103,9 @@ double sum_d(double * x, int len);
 double * squareArray_d(double * x, int len);
 double * subVectorByConstant(double * x, double val, int len);
 double * intToDoubleArray(int * x, int len);
-
-
+int * charToINTArray(char data);
+char INTArrayToChar(int * dataBits);
+int * loadImg(int * imgLen); 
+int saveImg(int * imgData, int imgLen);
+int * clipLastZerosINT(int * data, int len, int numZeros);
+int * appendZerosINT(int * data, int len, int numZeros);
