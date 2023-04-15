@@ -1,34 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
-
-int * appendZerosINT(int * data, int len, int numZeros) {
-    int * data_a = (int * )malloc((len + numZeros) * sizeof(int));
-
-    for (int iter_data = 0; iter_data < (len + numZeros); iter_data++) {
-        if (iter_data < len) {
-            *(data_a + iter_data) = *(data + iter_data);        
-        } else {
-            *(data_a + iter_data) = 0;        
-        }
-    }
-
-    free(data);
-
-    return data_a;
-}
-
-int * clipLastZerosINT(int * data, int len, int numZeros) {
-    int * data_a = (int * )malloc((len - numZeros) * sizeof(int));
-
-    for (int iter_data = 0; iter_data < (len - numZeros); iter_data++) {
-        *(data_a + iter_data) = *(data + iter_data);        
-    }
-
-    free(data);
-
-    return data_a;
-}
 
 int * charToINTArray(char data) {
     int * dataBits = (int *)malloc(8 * sizeof(int));
@@ -51,54 +24,56 @@ char INTArrayToChar(int * dataBits) {
     return data;
 }
 
-int * loadImg(int * imgLen) {
-    FILE * fp;
-    int numBytes;
-    char dataByte;
-    int * dataBits;
-    int * tmpBits;
+// int * loadImg(int * imgLen) {
+//     FILE * fp;
+//     int numBytes;
+//     char dataByte;
+//     int * dataBits;
+//     int * tmpBits;
     
-    fp = fopen("./images/test_image.jpg", "rb");
-    fseek(fp, 0, SEEK_END);
-    numBytes = ftell(fp);
-    *imgLen = numBytes * 8;
-    dataBits = (int *)malloc(numBytes * 8 * sizeof(int));
-    rewind(fp);
+//     fp = fopen("./images/test_image.jpg", "rb");
+//     fseek(fp, 0, SEEK_END);
+//     numBytes = ftell(fp);
+//     *imgLen = numBytes * 8;
+//     dataBits = (int *)malloc(numBytes * 8 * sizeof(int));
+//     rewind(fp);
 
-    for (int iterBytes = 0; iterBytes < numBytes; iterBytes++) {
-        fread(&dataByte, 1, 1, fp);
-        tmpBits = charToINTArray(dataByte);
-        for (int iterBits = 0; iterBits < 8; iterBits++) {
-            dataBits[iterBytes * 8 + iterBits] = tmpBits[iterBits];
-        }
-    }
+//     for (int iterBytes = 0; iterBytes < numBytes; iterBytes++) {
+//         fread(&dataByte, 1, 1, fp);
+//         tmpBits = charToINTArray(dataByte);
+//         for (int iterBits = 0; iterBits < 8; iterBits++) {
+//             dataBits[iterBytes * 8 + iterBits] = tmpBits[iterBits];
+//         }
+//     }
 
-    fclose(fp);
+//     fclose(fp);
 
-    return dataBits;
-} 
+//     return dataBits;
+// } 
 
-int saveImg(int * imgData, int imgLen) {
-    FILE * fp = fopen("./images/test_image_rec.jpg", "wb");
-    char data = 0x00000000;
+// int saveImg(int * imgData, int imgLen) {
+//     FILE * fp = fopen("./images/test_image_rec.jpg", "wb");
+//     char data = 0x00000000;
 
 
-    for (int iterBytes = 0; iterBytes < imgLen / 8; iterBytes++) {
-        data = INTArrayToChar(&imgData[iterBytes * 8]);
-        fwrite(&data, 1, 1, fp);
-    }
+//     for (int iterBytes = 0; iterBytes < imgLen / 8; iterBytes++) {
+//         data = INTArrayToChar(&imgData[iterBytes * 8]);
+//         fwrite(&data, 1, 1, fp);
+//     }
 
-    fclose(fp);
-    return 0;
-} 
+//     fclose(fp);
+//     return 0;
+// } 
 
 
 void main() {
-    int imgLen = 0;
-    int * imgData = loadImg(&imgLen);
-    imgData = appendZerosINT(imgData, imgLen, 123);
-    imgData = clipLastZerosINT(imgData, imgLen + 123, 123);
+    // int imgLen = 0;
+    // int * imgData = loadImg(&imgLen);
+    // imgData = appendZerosINT(imgData, imgLen, 123);
+    // imgData = clipLastZerosINT(imgData, imgLen + 123, 123);
 
-    saveImg(imgData, imgLen);
+    // saveImg(imgData, imgLen);
+
+    printf("%lf\n", (double)sqrt(1/(10)));
 
 }

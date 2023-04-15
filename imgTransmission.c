@@ -24,10 +24,10 @@ int main() {
     struct PC_CONFIG pcConfig;
 
     // Polar Code Config
-    pcConfig.E = 512;
-    pcConfig.K = 256;
+    pcConfig.E = 1024;
+    pcConfig.K = 512;
     pcConfig.nMax = 10;
-    pcConfig.iBIL = 0;
+    pcConfig.iBIL = 2;
     pcConfig.iIL = 0;
     pcConfig.K_IL_MAX = 164;
     pcConfig.UL_DL = 0;
@@ -40,7 +40,7 @@ int main() {
 
     int remLen = 0;
     int err = 1;
-    double SNR_dB = 10;
+    double SNR_dB = 7;
 
 
     // saveImg(imgData, imgLen);
@@ -85,10 +85,6 @@ int main() {
 
     dataBlockHat = clipLastZerosINT(dataBlockHat, numBlockEnc * (pcConfig.K - pcConfig.crcLen) + numZeroAppend, numZeroAppend);
     dataBlock = clipLastZerosINT(dataBlock, numBlockEnc * (pcConfig.K - pcConfig.crcLen) + numZeroAppend, numZeroAppend);
-
-    for (int iterBits = 0; iterBits < 1000; iterBits++) {
-        *(dataBlockHat + iterBits) = *(dataBlock + iterBits);
-    }
 
     saveImg(dataBlockHat, imgLen);
 

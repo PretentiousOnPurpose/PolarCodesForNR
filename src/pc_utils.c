@@ -311,7 +311,7 @@ double * AWGN(double * modData, int L, double SNRdB) {
     double SNR = pow(10, SNRdB / 10);
 
     for (iter_syms = 0; iter_syms < L; iter_syms++) {
-        *(rxData + iter_syms) = *(modData + iter_syms) + sqrt(1/(SNR)) * randn();
+        *(rxData + iter_syms) = *(modData + iter_syms) + (double)(1/sqrt(SNR)) * randn();
     }
     
     return rxData;
@@ -601,7 +601,7 @@ int * loadImg(int * imgLen) {
     int * dataBits;
     int * tmpBits;
     
-    fp = fopen("./images/test_image.png", "rb");
+    fp = fopen("./images/test_im_bin", "rb");
     fseek(fp, 0, SEEK_END);
     numBytes = ftell(fp);
     *imgLen = numBytes * 8;
@@ -622,7 +622,7 @@ int * loadImg(int * imgLen) {
 } 
 
 int saveImg(int * imgData, int imgLen) {
-    FILE * fp = fopen("./images/test_image_rec.png", "wb");
+    FILE * fp = fopen("./images/test_im_rec_bin", "wb");
     char data = 0x00000000;
 
 
