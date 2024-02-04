@@ -30,93 +30,27 @@ int * NR_PC_GET_FROZEN_POS(struct PC_CONFIG * pcConfig) {
 
 
 int * NR_PC_GET_REL_SEQ(struct PC_CONFIG * pcConfig) {
-    int iter_seq = 0, iter_master_seq = 0, cntBitLoc = 0, tmpVar = 0;
-    NR_PC_GET_N(pcConfig);
-    int N = pcConfig->N, E = pcConfig->E, K = pcConfig->K;
+    int iter_seq = 0, iter_master_seq = 0;
 
-    int rel_seq_tmp2_len = K;
+    NR_PC_GET_N(pcConfig);
+    int N = pcConfig->N, K = pcConfig->K;
 
     int * rel_seq = (int *)calloc(K, sizeof(int));
-    int * rel_seq_tmp2 = (int *)calloc(K, sizeof(int));
 
-    int * subBlockIntrlvPattern = subBlockInterleavePattern(N);
-    int * rel_seq_tmp = (int * )calloc(N, sizeof(int));
-
-    while (iter_seq < N) {
+    while (iter_seq < K) {        
         if (MASTER_REL_SEQ[iter_master_seq] < N) {
-            *(rel_seq_tmp + iter_seq) = MASTER_REL_SEQ[iter_master_seq];
+            *(rel_seq + iter_seq) = MASTER_REL_SEQ[iter_master_seq];
             iter_seq++;
         }
+
         iter_master_seq++;
     }
-
-    if (E < N) {
-        if ((double)K / E <= (double)7/16) {
-            for (int iter_bits = 0; iter_bits < K; iter_bits++) {
-                *(rel_seq_tmp2 + iter_bits) = *(subBlockIntrlvPattern + iter_bits);
-            }
-
-            if (E >= 3 * (double)N / 4) {
-                rel_seq_tmp2 = seqUnion(rel_seq_tmp2, linspace(0, (int)ceil(3*(double)N/4 - (double)E/2)-1, 1), rel_seq_tmp2_len, (int)ceil(3*(double)N/4 - (double)E/2), &rel_seq_tmp2_len);
-            } else {
-                 rel_seq_tmp2 = seqUnion(rel_seq_tmp2, linspace(0, (int)ceil(9*(double)N/16 - (double)E/4)-1, 1), rel_seq_tmp2_len, (int)ceil(9*(double)N/16 - (double)E/4), &rel_seq_tmp2_len);               
-            }
-
-        } else {
-            for (int iter_bits = E; iter_bits < N; iter_bits++) {
-                *(rel_seq_tmp2 + iter_bits - E) = *(subBlockIntrlvPattern + iter_bits);
-            }
-        }
-    }
-
-    for (int iter_bits = 0; iter_bits < N; iter_bits++) {
-        tmpVar = *(rel_seq_tmp + N - iter_bits - 1);
-
-        if (isElementInArray(rel_seq_tmp2, rel_seq_tmp2_len, tmpVar)) {
-            continue;
-        }
-
-        *(rel_seq + cntBitLoc) = tmpVar;
-        cntBitLoc++;
-
-        if (cntBitLoc == K) {
-            break;
-        }        
-    }
-
-    rel_seq = mergeSort(rel_seq, K);
-
-    free(rel_seq_tmp);
-    free(rel_seq_tmp2);
     
     return rel_seq;
-
 }
 
 void NR_PC_GET_N(struct PC_CONFIG * pcConfig) {
-    int n1, n2, n_min = 5, Rmin_inv = 8;
-
-    if ((pcConfig->E <= (9.0/8) * pow(2, (ceil(log2(pcConfig->E)) - 1))) && ((double)pcConfig->K/pcConfig->E < (9.0/16)) ) {
-        n1 = ceil(log2(pcConfig->E)) - 1;
-    } else {
-        n1 = ceil(log2(pcConfig->E));
-    }
-
-    n2 = ceil(log2(Rmin_inv * pcConfig->K));
-
-    if (n1 <= n2 && n1 <= pcConfig->nMax) {
-        pcConfig->n = n1;
-    } else if (n2 <= n1 && n2 <= pcConfig->nMax) {
-        pcConfig->n = n2;
-    } else {
-        pcConfig->n = pcConfig->nMax;
-    }
-
-    if (pcConfig->n < n_min) {
-        pcConfig->n = n_min;
-    }
-
-    pcConfig->N = (1 << pcConfig->n);
+    pcConfig->N = (1 << (int)ceil(log2(pcConfig->K)));
 }
 
 int * NR_PC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig) {
@@ -126,14 +60,15 @@ int * NR_PC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig) {
 
     // For Iter Vars
     int iter_step, iter_bits, iter_group;
+
     // Set Frozen Bits and Placing Data bits in appropriate locations
     int * encData = PC_SET_DATABITS(dataBits, pcConfig);
 
-    // // Polar Transform - Encoding
+    // Polar Transform - Encoding
     for (iter_step = 1; iter_step <= pcConfig->n; iter_step++) {
         for (iter_group = 0; iter_group < (1 << (pcConfig->n - iter_step)); iter_group++) {
             for (iter_bits = 0; iter_bits < (1 << (iter_step - 1)); iter_bits++) {
-                encData = POLAR_TRANSFORM(encData, iter_bits + iter_group * (1 << iter_step), iter_bits + iter_group * (1 << iter_step) + (1 << (iter_step - 1)));
+                POLAR_TRANSFORM(encData, iter_bits + iter_group * (1 << iter_step), iter_bits + iter_group * (1 << iter_step) + (1 << (iter_step - 1)));
             }
         }
     }
@@ -141,12 +76,9 @@ int * NR_PC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig) {
     return encData;
 }
 
-int * POLAR_TRANSFORM(int * dataBits, int ind1, int ind2) {
-
+void POLAR_TRANSFORM(int * dataBits, int ind1, int ind2) {
     *(dataBits + ind1) = *(dataBits + ind1) ^ *(dataBits + ind2);
     *(dataBits + ind2) = *(dataBits + ind2); // Redundant Step
-
-    return dataBits;
 }
 
 int * PC_SET_DATABITS(int * dataBits, struct PC_CONFIG * pcConfig) {
@@ -158,7 +90,6 @@ int * PC_SET_DATABITS(int * dataBits, struct PC_CONFIG * pcConfig) {
 
     for (iter_bits = 0; iter_bits < pcConfig->K; iter_bits++) {
         *(encData + *(rel_seq + iter_bits)) = *(dataBits + iter_bits);
-        // *(encData + (iter_bits)) = iter_bits%2; //*(dataBits + iter_bits);
     }  
 
     return encData;

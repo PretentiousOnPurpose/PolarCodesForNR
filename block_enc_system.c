@@ -34,21 +34,19 @@ int main() {
     int * dataBits = DATA_GEN(pcConfig.K - pcConfig.crcLen);
     int * crcData = NR_CRC_ENCODER(dataBits, &pcConfig);
     int * encData = NR_PC_ENCODER(crcData, &pcConfig);
-    int * rateMatcData = NR_PC_RATE_MATCH(encData, &pcConfig);
-    double * modData = BPSK_MOD(rateMatcData, pcConfig.E);
-    double * rxData = AWGN(modData, pcConfig.E, SNR_dB);
-    double * rxLR = BPSK_DEMOD(rxData, pcConfig.E, pcConfig.LR_PROB_1);
-    double * rateRecoverData = NR_PC_RATE_RECOVER(rxLR, &pcConfig);
-    int * decData = NR_PC_DECODER(rateRecoverData, &pcConfig);
-    int * dataHat = NR_CRC_DECODER(decData, &pcConfig, &err);
+    // double * modData = BPSK_MOD(encData, pcConfig.E);
+    // double * rxData = AWGN(modData, pcConfig.E, SNR_dB);
+    // double * rxLR = BPSK_DEMOD(rxData, pcConfig.E, pcConfig.LR_PROB_1);
+    // int * decData = NR_PC_DECODER(rxLR, &pcConfig);
+    // int * dataHat = NR_CRC_DECODER(decData, &pcConfig, &err);
 
-    printf("Result: ");
+    // printf("Result: ");
 
-    if (err == 0) {
-        printf("Successful Transmission with %d out of %d bits in error\n", bitXORSum(dataHat, dataBits, pcConfig.K - pcConfig.crcLen), pcConfig.K - pcConfig.crcLen);
-    } else {
-        printf("Corrupted Reception with %d out of %d bits in error\n", bitXORSum(dataHat, dataBits, pcConfig.K - pcConfig.crcLen), pcConfig.K - pcConfig.crcLen);
-    }
+    // if (err == 0) {
+    //     printf("Successful Transmission with %d out of %d bits in error\n", bitXORSum(dataHat, dataBits, pcConfig.K - pcConfig.crcLen), pcConfig.K - pcConfig.crcLen);
+    // } else {
+    //     printf("Corrupted Reception with %d out of %d bits in error\n", bitXORSum(dataHat, dataBits, pcConfig.K - pcConfig.crcLen), pcConfig.K - pcConfig.crcLen);
+    // }
 
     return 0;
 }
