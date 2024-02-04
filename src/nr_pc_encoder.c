@@ -126,12 +126,8 @@ int * NR_PC_ENCODER(int * dataBits, struct PC_CONFIG * pcConfig) {
 
     // For Iter Vars
     int iter_step, iter_bits, iter_group;
-    int * intrlvCodedData;
-
-    int * intrlvData = NR_PC_INPUT_BITS_INTERLEAVING(dataBits, pcConfig, 0);
-
     // Set Frozen Bits and Placing Data bits in appropriate locations
-    int * encData = PC_SET_DATABITS(intrlvData, pcConfig);
+    int * encData = PC_SET_DATABITS(dataBits, pcConfig);
 
     // // Polar Transform - Encoding
     for (iter_step = 1; iter_step <= pcConfig->n; iter_step++) {

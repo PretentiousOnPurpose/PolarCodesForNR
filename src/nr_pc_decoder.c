@@ -109,8 +109,8 @@ int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
 
     int iter_bits, iter_step;
 
-    int * intrlvData = (int *)calloc(pcConfig->K, sizeof(int));
-    int * dataBits = NULL;
+    int * dataBits = (int *)calloc(pcConfig->K, sizeof(int));
+    // int * dataBits = NULL;
 
     int * rel_seq = NR_PC_GET_REL_SEQ(pcConfig);
     int * frozen_pos = NR_PC_GET_FROZEN_POS(pcConfig);
@@ -131,7 +131,7 @@ int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
         // exit(0);
         // Extracting Data from Informatiom Bit Positions
         for (iter_bits = 0; iter_bits < pcConfig->K; iter_bits++) {
-            *(intrlvData + iter_bits) = (int)(*(*(rxBitsMat) + *(rel_seq + iter_bits)));
+            *(dataBits + iter_bits) = (int)(*(*(rxBitsMat) + *(rel_seq + iter_bits)));
         }
         
         for (iter_step = 0; iter_step < pcConfig->n; iter_step++) {
@@ -148,7 +148,7 @@ int * NR_PC_DECODER(double * rxLR, struct PC_CONFIG * pcConfig) {
         
     }
 
-    dataBits = NR_PC_INPUT_BITS_INTERLEAVING(intrlvData, pcConfig, 1);
+    // dataBits = NR_PC_INPUT_BITS_INTERLEAVING(dataBits, pcConfig, 1);
 
     return dataBits;
 }
